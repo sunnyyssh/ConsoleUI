@@ -1,0 +1,184 @@
+﻿@startuml
+'Console interface
+
+
+abstract UIElement $Core
+{    
+    + bool IsDrawn { get; }
+    + Sizing Sizing { get; private init; }
+    + int? Height { get; private init; }
+    + int? Width { get; private init; }
+    + double? HeightRelation { get; private init; }
+    + double? WidthRelation { get; private init; }
+    'protected internal member
+    #~  {abstract} DrawState GetDrawState(DrawOptions)
+    ~ event RemoveElementEventHandler Remove
+    # void Remove(RemoveOptions)
+    ~ event RemoveElementEventHandler Redraw
+    # void Redraw(RedrawOptions)
+    
+}
+
+abstract UIManager $Core
+{
+    + {static} UIManager? Instance { get; }
+    + {static} UIManager Initialize(UIManagerOptions)
+    + int Width { get; }
+    + int Height { get; }
+    + UIElement[] Children { get; }
+    # List<UIElement> ChildrenList { get; private init; }
+    + {abstract} int BufferWidth { get; }
+    + {abstract} int BufferHeight { get; }
+    + {abstract} void AddChild(UIElement)
+    + {abstract} void RemoveChild(UIElement)
+    + {abstract} void Run()
+    + {abstract} void Exit()
+    # {abstract} void GiveFocus(IFocusable)
+    # {abstract} void RemoveFocus(IFocusable)
+    # {abstract} void RedrawChild(UIElement, RedrawOptions)
+    # {abstract} void AssignFocusFlowTo(Wrapper)
+    # {abstract} void ContinueFocusFlowFrom(Wrapper)
+}
+UIManager "*" o- UIElement
+
+' internal type
+class DefaultUIManager implements UIManager
+{
+    
+}
+
+interface IFocusable $Core
+{
+    + void ForceEnterFocus(ForceEnterFocusOptions)
+    + void ForceExitFocus(ForceExitFocusOptions)
+    + event ForceEnterFocusEventHandler ForceEnterFocus
+    + event ForceExitFocusEventHandler ForceExitFocus
+    + {abstract} void EnterFocus(EnterFocusOptions)
+    + {abstract} void ExitFocus(ExitFocusOptions)
+    + {abstract} bool IsWaitingFocus { get; }
+    + {abstract} bool IsFocused { get; }
+}
+
+interface IKeyWaiter $Core implements IFocusable
+{
+    + {abstract} void OnKeyPressed(ConsoleKeyInfo)   
+}
+
+abstract Wrapper $Core implements UIElement, IKeyWaiter
+{
+    + UIElement[] Children { get; }
+    # List<UIElement> ChildrenList { get; private init; }
+    # bool CheckChildrenTree(UIElement) 
+    # {abstract} void GiveFocus(IFocusable)
+    # {abstract} void RemoveFocus(IFocusable)
+    # {abstract} void AssignFocusFlowTo(Wrapper)
+    # {abstract} void ContinueFocusFlowFrom(Wrapper)
+}
+Wrapper "*" o- UIElement 
+
+enum Sizing
+{
+    Relational
+    Absolute
+    
+}
+UIElement *- Sizing
+
+class GridWrapper implements Wrapper
+{
+    
+}
+
+class StackWrapper implements Wrapper
+{
+    + Orientation Orientation { get; protected init; }
+    + void AddChild(UIElement)
+}
+StackWrapper *- Orientation
+
+class CanvasWrapper implements Wrapper
+{
+    
+}
+
+enum Orientation
+{
+    Horizontal
+    Vertical
+}
+
+'struct ConsolePixel
+'{
+'    + ConsoleColor Background { get; }
+'    + ConsoleColor Foreground { set; }
+'    + char Char { get; }
+'}
+
+abstract ObservableObject
+{
+    + event PropertyUpdatedHandler PropertyUpdated
+    + void OnChange(string)
+}
+
+class Observable<T> implements ObservableObject
+{
+    + T Value { get; set; }
+}
+
+abstract DataElement<TPresenting> implements UIElement
+{
+    - TPresenting? _presentationState
+    - Binder<TPresenting>? _binder
+    # Bind<TObservable>(TObservable, Func<TObservable, TPresenting>)
+'    + {abstract} void Redraw()
+}
+
+'internal type
+abstract class "Binder<TPresenting>" as ABinder
+{
+    + {abstract} TPresenting? GetPresentation()
+}
+
+'internal type
+class Binder<TObservable, TPresenting> implements ABinder
+{
+    - WeakReference<TObservable> _observableInstance
+    - Func<TObservable, TPresenting> _presenter
+}
+
+DataElement *-- ABinder
+DataElement o- ObservableObject
+
+abstract Border implements UIElement
+{
+    
+}
+
+class SingleLineBorder implements Border
+
+class DoubleLineBorder implements Border
+
+class SolidBorder implements Border
+
+class TextBlock implements DataElement
+{
+    + Bind(Observable<string>)
+    + Text { get; set; }
+}
+
+class TextBox implements DataElement, IKeyWaiter
+{
+    - TextBlock _textBlock
+    - Border _border
+    + Bind(Observable<string>)
+    + Text { get; set; }
+}
+
+TextBox *- TextBlock
+TextBox *-- Border
+TextBlock o-- Observable
+
+hide *
+show $Core
+
+@enduml
