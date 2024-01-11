@@ -1,6 +1,41 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public class UIManagerSettings
+public sealed class UIManagerSettings
 {
+    private readonly Color _background = Color.White;
+
+    private readonly Color _foreground = Color.Black;
+
+    public Color Background
+    {
+        get => _background;
+        init
+        {
+            if (!Enum.IsDefined(value))
+                throw new ArgumentException("Enum value is not defined.", nameof(value));
+            if (value != Color.Transparent)
+            {
+                _background = value;
+            }
+        }
+    }
     
+    public Color Foreground
+    {
+        get => _foreground;
+        init
+        {
+            if (!Enum.IsDefined(value))
+                throw new ArgumentException("Enum value is not defined.", nameof(value));
+            if (value != Color.Transparent)
+            {
+                _foreground = value;
+            }
+        }
+    }
+
+    public UIManagerSettings()
+    {
+        
+    }
 }
