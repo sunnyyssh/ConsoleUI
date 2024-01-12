@@ -2,9 +2,9 @@
 'Console interface
 
 
-abstract UIElement $Core
+abstract UIElement $Core $Public
 {    
-    + bool IsDrawn { get; }
+    + bool IsDrawn { get; private set; }
     + Sizing Sizing { get; private init; }
     + int? Height { get; private init; }
     + int? Width { get; private init; }
@@ -12,14 +12,14 @@ abstract UIElement $Core
     + double? WidthRelation { get; private init; }
     'protected internal member
     #~  {abstract} DrawState GetDrawState(DrawOptions)
-    ~ event RemoveElementEventHandler Remove
+    ~ event RemoveElementEventHandler RemoveElement
     # void Remove(RemoveOptions)
-    ~ event RemoveElementEventHandler Redraw
+    ~ event RemoveElementEventHandler RedrawElement
     # void Redraw(RedrawOptions)
     
 }
 
-abstract UIManager $Core
+abstract UIManager $Core $Public
 {
     + {static} UIManager? Instance { get; }
     + {static} UIManager Initialize(UIManagerOptions)
@@ -41,13 +41,12 @@ abstract UIManager $Core
 }
 UIManager "*" o- UIElement
 
-' internal type
-class DefaultUIManager implements UIManager
+class DefaultUIManager $Internal implements UIManager
 {
     
 }
 
-interface IFocusable $Core
+interface IFocusable $Core $Public
 {
     + void ForceEnterFocus(ForceEnterFocusOptions)
     + void ForceExitFocus(ForceExitFocusOptions)
@@ -59,12 +58,12 @@ interface IFocusable $Core
     + {abstract} bool IsFocused { get; }
 }
 
-interface IKeyWaiter $Core implements IFocusable
+interface IKeyWaiter $Core $Public implements IFocusable
 {
     + {abstract} void OnKeyPressed(ConsoleKeyInfo)   
 }
 
-abstract Wrapper $Core implements UIElement, IKeyWaiter
+abstract Wrapper $Core $Public implements UIElement, IKeyWaiter
 {
     + UIElement[] Children { get; }
     # List<UIElement> ChildrenList { get; private init; }
@@ -76,7 +75,16 @@ abstract Wrapper $Core implements UIElement, IKeyWaiter
 }
 Wrapper "*" o- UIElement 
 
-enum Sizing
+class FocusManager $Core $Internal
+{
+    
+}
+
+FocusManager --* UIManager
+FocusManager -* Wrapper
+
+
+enum Sizing $Public
 {
     Relational
     Absolute
@@ -84,48 +92,41 @@ enum Sizing
 }
 UIElement *- Sizing
 
-class GridWrapper implements Wrapper
+class GridWrapper $Public implements Wrapper
 {
     
 }
 
-class StackWrapper implements Wrapper
+class StackWrapper $Public implements Wrapper
 {
     + Orientation Orientation { get; protected init; }
     + void AddChild(UIElement)
 }
 StackWrapper *- Orientation
 
-class CanvasWrapper implements Wrapper
+class CanvasWrapper $Public implements Wrapper
 {
     
 }
 
-enum Orientation
+enum Orientation $Public
 {
     Horizontal
     Vertical
 }
 
-'struct ConsolePixel
-'{
-'    + ConsoleColor Background { get; }
-'    + ConsoleColor Foreground { set; }
-'    + char Char { get; }
-'}
-
-abstract ObservableObject
+abstract ObservableObject $Public
 {
     + event PropertyUpdatedHandler PropertyUpdated
     + void OnChange(string)
 }
 
-class Observable<T> implements ObservableObject
+class Observable<T> $Public implements ObservableObject
 {
     + T Value { get; set; }
 }
 
-abstract DataElement<TPresenting> implements UIElement
+abstract DataElement<TPresenting> $Public implements UIElement
 {
     - TPresenting? _presentationState
     - Binder<TPresenting>? _binder
@@ -134,13 +135,13 @@ abstract DataElement<TPresenting> implements UIElement
 }
 
 'internal type
-abstract class "Binder<TPresenting>" as ABinder
+abstract class "Binder<TPresenting>" as ABinder $Internal
 {
     + {abstract} TPresenting? GetPresentation()
 }
 
 'internal type
-class Binder<TObservable, TPresenting> implements ABinder
+class Binder<TObservable, TPresenting> $Internal implements ABinder
 {
     - WeakReference<TObservable> _observableInstance
     - Func<TObservable, TPresenting> _presenter
@@ -149,24 +150,24 @@ class Binder<TObservable, TPresenting> implements ABinder
 DataElement *-- ABinder
 DataElement o- ObservableObject
 
-abstract Border implements UIElement
+abstract Border $Public implements UIElement
 {
     
 }
 
-class SingleLineBorder implements Border
+class SingleLineBorder $Public implements Border
 
-class DoubleLineBorder implements Border
+class DoubleLineBorder $Public implements Border
 
-class SolidBorder implements Border
+class SolidBorder $Public implements Border
 
-class TextBlock implements DataElement
+class TextBlock $Public implements DataElement
 {
     + Bind(Observable<string>)
     + Text { get; set; }
 }
 
-class TextBox implements DataElement, IKeyWaiter
+class TextBox $Public implements DataElement, IKeyWaiter
 {
     - TextBlock _textBlock
     - Border _border
@@ -178,7 +179,7 @@ TextBox *- TextBlock
 TextBox *-- Border
 TextBlock o-- Observable
 
-hide *
+'hide *
 show $Core
 
 @enduml

@@ -1,0 +1,8 @@
+﻿@startuml
+
+
+User -> UIManager : 1. Run()
+UIManager --> User : *returning thread control*
+UIManager -> UIManager 
+
+@enduml

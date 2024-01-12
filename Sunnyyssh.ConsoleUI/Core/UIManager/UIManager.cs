@@ -15,6 +15,8 @@ public abstract class UIManager
         [DebuggerStepThrough] private set => _instance = value ?? throw new ArgumentNullException();
     }
     protected UIManagerSettings Settings { get; private init; }
+    
+    private protected FocusManager FocusManager { get; private init; }
 
     public static bool IsInitialized => _instance is not null;
 
@@ -83,7 +85,8 @@ public abstract class UIManager
         child.RemoveElement += RemoveChild;
         if (child is IFocusable focusableChild)
         {
-            focusableChild.ForceEnteredFocus += 
+            //focusableChild.ForceEnteredFocus +=
+            throw new NotImplementedException();
         }
     }
 

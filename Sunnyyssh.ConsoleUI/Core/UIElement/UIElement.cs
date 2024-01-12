@@ -12,9 +12,9 @@ public abstract class UIElement
     
     public int? Width { get; private init; }
     
-    public double? WidthRelation { get; private init; }
-    
     public double? HeightRelation { get; private init; }
+    
+    public double? WidthRelation { get; private init; }
 
     internal event RemoveElementEventHandler? RemoveElement;
 
