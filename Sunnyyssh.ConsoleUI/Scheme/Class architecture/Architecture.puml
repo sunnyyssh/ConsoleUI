@@ -18,7 +18,7 @@ abstract UIElement $Core $Public
     # void Redraw(RedrawOptions)
     
 }
-
+' Может по-другому его назвать
 abstract UIManager $Core $Public
 {
     + {static} UIManager? Instance { get; }
@@ -83,6 +83,9 @@ class FocusManager $Core $Internal
 FocusManager --* UIManager
 FocusManager -* Wrapper
 
+' Класс, инкапсулирующий все рисование на консоль.
+' Потокобезопасен
+class Drawer $Internal $Core
 
 enum Sizing $Public
 {

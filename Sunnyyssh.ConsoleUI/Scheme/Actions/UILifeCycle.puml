@@ -1,0 +1,16 @@
+﻿@startuml
+
+start
+
+:Запуск;
+:Отрисовка;
+fork
+:Чтение клавиш; 
+fork again
+while (не отменено)
+  :;
+endwhile
+end fork
+end
+
+@enduml
