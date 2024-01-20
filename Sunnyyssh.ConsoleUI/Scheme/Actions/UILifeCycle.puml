@@ -6,10 +6,10 @@ start
 :Отрисовка;
 fork
 :Чтение клавиш; 
+:Cancelled;
 fork again
-while (не отменено)
-  :;
-endwhile
+:Отрисовка;
+:Cancelled;
 end fork
 end
 
