@@ -2,7 +2,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-public abstract class UIManager
+public abstract partial class UIManager
 {
     
     private static UIManager? _instance;
@@ -65,12 +65,8 @@ public abstract class UIManager
             throw new IncorrectRunException("Console UI is already running.");
         }
 
-        Thread runningThread = new Thread(
-            () => RunWithCancellation(Cancellation.Token))
-        {
-            IsBackground = false
-        };
-        runningThread.Start();
+        RunWithCancellation(Cancellation.Token);
+        
     }
 
     public void Exit()
@@ -133,21 +129,4 @@ public abstract class UIManager
     }
 
     #endregion
-    
-    protected sealed class ChildInfo
-    {
-        public UIElement Child { get; private init; }
-        public int Left { get; private init; }
-        public int Top { get; private init; }
-        public int Width { get; private init; }
-        public int Height { get; private init; }
-        public ChildInfo(UIElement child, int left, int top, int width, int height)
-        {
-            ArgumentNullException.ThrowIfNull(child, nameof(child));
-            Child = child;
-            Left = left;
-            Width = width;
-            Height = height;
-        }
-    }
 }

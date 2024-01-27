@@ -1,8 +1,8 @@
 ﻿@startuml
 
-
 User -> UIManager : 1. Run() 
-UIManager --> User : *returning thread control*
-UIManager -> UIManager 
+UIManager -> Drawer : starts drawing thread
+UIManager -> KeyListener : starts key listening
+UIManager -> UIManager : 
 
 @enduml
