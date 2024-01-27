@@ -59,6 +59,11 @@ public class RequestsQueue<T> : IEnumerable<T>
     {
         _requestWaitEvent.WaitOne();
     }
+
+    public void ForceStopWaiting()
+    {
+        _requestWaitEvent.Set();
+    }
     
     public IEnumerator<T> GetEnumerator()
     {

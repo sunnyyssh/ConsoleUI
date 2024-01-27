@@ -1,13 +1,15 @@
-﻿using System.Collections.Concurrent;
-using Sunnyyssh.ConsoleUI;
+﻿// Tested core implementation.
+// Not Tested actual drawing.
 
 namespace Sunnyyssh.ConsoleUI;
 
 partial class UIManager
 {
-    protected static class Drawer
+    public static class Drawer
     {
         public static bool IsRunning { get; private set; }
+
+        private static readonly CancellationTokenSource Cancellation = new CancellationTokenSource();
 
         /// <summary>
         /// 
@@ -21,7 +23,7 @@ partial class UIManager
             DrawRequestsQueue.Enqueue(drawState);
         }
         
-        public static void StartWithCancellation(CancellationToken cancellationToken)
+        public static void Start()
         {
             if (IsRunning)
             {
@@ -29,7 +31,7 @@ partial class UIManager
             }
             Thread drawingThread = new Thread(() =>
             {
-                RunWithCancellation(cancellationToken);
+                RunWithCancellation(Cancellation.Token);
             })
             {
                 // false because this thread should hold the app running.
@@ -44,14 +46,29 @@ partial class UIManager
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                DrawRequests();
+                DrawRequests(cancellationToken);
                 
-                DrawRequestsQueue.WaitForRequests();
                 // Waiting for the request.
+                DrawRequestsQueue.WaitForRequests();
             }
+
+            Console.WriteLine("Really stopped");
         }
 
-        private static void DrawRequests()
+        public static void Stop()
+        {
+            if (!IsRunning)
+            {
+                // TODO throw an exception.
+            }
+            
+            // It's necessary to cancel before exiting waiting
+            // because otherwise it goes to the another iteration and waits again before it canceles 
+            Cancellation.Cancel();
+            DrawRequestsQueue.ForceStopWaiting();
+        }
+        
+        private static void DrawRequests(CancellationToken cancellationToken)
         {
             if (DrawRequestsQueue.IsEmpty)
                 return;    
@@ -60,12 +77,15 @@ partial class UIManager
 
             var combinedRequest = InternalDrawState.Combine(allRequests);
 
-            DrawSingleRequest(combinedRequest);
+            DrawSingleRequest(combinedRequest, cancellationToken);
         }
 
-        private static void DrawSingleRequest(InternalDrawState drawState)
+        private static void DrawSingleRequest(InternalDrawState drawState, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (cancellationToken.IsCancellationRequested)
+                return;
+            Console.WriteLine("Drawing state");
+            //throw new NotImplementedException();
         }
     }
 }

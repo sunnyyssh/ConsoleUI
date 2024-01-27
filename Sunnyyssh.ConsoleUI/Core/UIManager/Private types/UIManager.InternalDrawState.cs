@@ -2,7 +2,7 @@
 
 partial class UIManager
 {
-    protected class InternalDrawState
+    public class InternalDrawState
     {
         // TODO
 
@@ -13,6 +13,7 @@ partial class UIManager
         
         public static InternalDrawState Combine(IEnumerable<InternalDrawState> drawStates)
         {
+            return new InternalDrawState();
             throw new NotImplementedException("Stupid ass damn ass");
         }
     }
