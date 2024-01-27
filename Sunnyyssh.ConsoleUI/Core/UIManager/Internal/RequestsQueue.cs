@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
+//TODO make it internal.
 public class RequestsQueue<T> : IEnumerable<T>
 {
     private readonly AutoResetEvent _requestWaitEvent = new AutoResetEvent(false);

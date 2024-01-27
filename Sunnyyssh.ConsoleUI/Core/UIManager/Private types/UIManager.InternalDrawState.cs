@@ -1,20 +1,51 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿// Tested type.
+
+namespace Sunnyyssh.ConsoleUI;
 
 partial class UIManager
 {
-    public class InternalDrawState
+    //TODO make it protected.
+    public sealed class InternalDrawState
     {
         // TODO
+        public PixelLine[] Lines { get; private init; }
 
-        public static InternalDrawState Combine(params InternalDrawState[] drawStates)
+        public InternalDrawState(PixelLine[] lines)
         {
-            return Combine((IEnumerable<InternalDrawState>)drawStates);
+            Lines = lines ?? throw new ArgumentNullException(nameof(lines));
         }
-        
-        public static InternalDrawState Combine(IEnumerable<InternalDrawState> drawStates)
+
+        public static InternalDrawState Combine(params InternalDrawState[] orderedDrawStates)
         {
-            return new InternalDrawState();
-            throw new NotImplementedException("Stupid ass damn ass");
+            ArgumentNullException.ThrowIfNull(orderedDrawStates, nameof(orderedDrawStates));
+
+            var lines = orderedDrawStates
+                // making one sequence of lines from sequence of sequences of lines.
+                .SelectMany(
+                    state => state.Lines,
+                    (_, line) => line)
+                // Grouping lines by their Top value
+                // and making one line from each group using overlapping
+                .GroupBy(
+                    line => line.Top,
+                    line => line,
+                    (_, lines) => PixelLine.Overlap(lines.ToArray()))
+                .ToArray();
+
+            InternalDrawState result = new InternalDrawState(lines);
+            return result;
+        }
+
+        public static InternalDrawState Shift(int leftShift, int topShift, InternalDrawState drawState)
+        {
+            return new InternalDrawState(
+                drawState.Lines
+                .Select(l => 
+                    new PixelLine(
+                        l.Left + leftShift, 
+                        l.Top + topShift, 
+                        l.Pixels))
+                .ToArray());
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Sunnyyssh.ConsoleUI;
 
 partial class UIManager
 {
+    //TODO make it protected.
     public static class Drawer
     {
         public static bool IsRunning { get; private set; }
@@ -84,8 +85,8 @@ partial class UIManager
         {
             if (cancellationToken.IsCancellationRequested)
                 return;
-            Console.WriteLine("Drawing state");
-            //throw new NotImplementedException();
+            
+            throw new NotImplementedException();
         }
     }
 }
