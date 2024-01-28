@@ -33,9 +33,9 @@ public static class TestGenerator
     }
 
 #if INTERNAL_TYPES_TESTS
-    public static UIManager.InternalDrawState GenInternalDrawState()
+    public static InternalDrawState GenInternalDrawState()
     {
-        return new UIManager.InternalDrawState(
+        return new InternalDrawState(
             Enumerable.Range(0, 5)
                 .Select(i => GenPixelLine(top: i))
                 .ToArray());

@@ -13,6 +13,8 @@ public sealed class PixelInfo
 
     public PixelInfo(char c, Color foreground, Color background)
     {
+        if (IsCharSpecial(c))
+            throw new ArgumentException(@"The char must not be one of { \n \r \t \b \f \v \a }.", nameof(c));
         Char = c;
         Foreground = foreground;
         Background = background;
@@ -22,5 +24,14 @@ public sealed class PixelInfo
     public PixelInfo() : this('\u0000', Color.Transparent, Color.Transparent)
     {
         IsVisible = false;
+    }
+
+    private static readonly char[] _prohibitedChars = { '\n', '\t', '\r', '\b', '\f', '\v', '\a', };
+    private static bool IsCharSpecial(char c)
+    {
+        for (int i = 0; i < _prohibitedChars.Length; i++)
+            if (_prohibitedChars[i] == c)
+                return true;
+        return false;
     }
 }
