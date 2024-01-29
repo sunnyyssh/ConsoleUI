@@ -20,6 +20,17 @@ public sealed class PixelLine
 
     public PixelInfo this[int n] => Pixels[n];
 
+    public PixelLine(int left, int top, Color background, Color foreground, string line)
+    {
+        ArgumentNullException.ThrowIfNull(line, nameof(line));
+        var pixels = Enumerable.Range(0, line.Length)
+            .Select(i => new PixelInfo(line[i], background, foreground))
+            .ToArray();
+        Left = left;
+        Top = top;
+        Pixels = pixels;
+    }
+
     public PixelLine(int left, int top, PixelInfo[] pixels)
     {
         ArgumentNullException.ThrowIfNull(pixels, nameof(pixels));

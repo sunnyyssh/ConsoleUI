@@ -3,8 +3,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
     
-//TODO make it protected.
-public static class Drawer
+internal static class Drawer
 {
     private static DrawerPal DrawerPal;
 
@@ -53,7 +52,7 @@ public static class Drawer
     {
         // In dependence on options different DrawerPal instances can be initialized.
         // The realization may differ depending on platform, specific options etc.
-        DrawerPal = new DrawerPal(options.ThrowOnBorderConflicts); // Default DrawerPal.
+        DrawerPal = new DrawerPal(options.DefaultBackground, options.DefaultForeground, options.ThrowOnBorderConflicts); // Default DrawerPal.
     }
     
     private static void RunWithCancellation(CancellationToken cancellationToken)

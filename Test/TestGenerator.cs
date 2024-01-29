@@ -1,4 +1,4 @@
-﻿#define INTERNAL_TYPES_TESTS
+﻿// #define INTERNAL_TYPES_TESTS
 
 using Sunnyyssh.ConsoleUI;
 
@@ -8,7 +8,7 @@ public static class TestGenerator
 {
     private static Random random = new Random();
 
-    public static Color GenColor() => (Color)random.Next(17) - 1;
+    public static Color GenColor() => (Color)random.Next(5);
 
     public static char GenChar() => (char)random.Next((int)'a', (int)'z');
     
@@ -22,7 +22,7 @@ public static class TestGenerator
         return new PixelInfo(GenChar(), GenColor(), GenColor());
     }
 
-    public static PixelLine GenPixelLine(int top = -1, int left = -1, int length = -1)
+    public static PixelLine GenPixelLine(int left = -1, int top = -1, int length = -1)
     {
         int glength = length == -1 ? random.Next(5, 20) : length;
         int gtop = top == -1 ? random.Next(3) : top;
@@ -30,6 +30,14 @@ public static class TestGenerator
         PixelInfo[] pixels = Enumerable.Range(0, glength).Select(_ => GenPixelInfo()).ToArray();
 
         return new PixelLine(gleft, gtop, pixels);
+    }
+
+    public static PixelLine GenPixelLine(int left, int top, Color background, Color foreground, string text)
+    {
+        var pixels = Enumerable.Range(0, text.Length)
+            .Select(i => new PixelInfo(text[i], background, foreground))
+            .ToArray();
+        return new PixelLine(left, top, pixels);
     }
 
 #if INTERNAL_TYPES_TESTS

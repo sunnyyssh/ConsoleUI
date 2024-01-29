@@ -1,4 +1,3 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-// TODO make it internal.
-public record DrawerOptions(Color DefaultBackground, bool ThrowOnBorderConflicts);
+internal record DrawerOptions(Color DefaultBackground, Color DefaultForeground, bool ThrowOnBorderConflicts);

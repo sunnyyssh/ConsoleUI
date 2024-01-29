@@ -6,12 +6,18 @@ namespace Sunnyyssh.ConsoleUI;
 public sealed class PixelInfo
 {
     private string DebuggerDisplay => !IsVisible ? "not visible" : $"c= '{Char}'; f= {Foreground}; b= {Background}";
+
+    public static PixelInfo VisibleEmpty => new(' ', Color.Transparent, Color.Transparent);
+    
     public bool IsVisible { get; private set; }
+    
     public Color Foreground { get; private init; }
+    
     public Color Background { get; private init; }
+    
     public char Char { get; private init; }
 
-    public PixelInfo(char c, Color foreground, Color background)
+    public PixelInfo(char c, Color background = Color.Default, Color foreground = Color.Default)
     {
         if (IsCharSpecial(c))
             throw new ArgumentException(@"The char must not be one of { \n \r \t \b \f \v \a }.", nameof(c));
