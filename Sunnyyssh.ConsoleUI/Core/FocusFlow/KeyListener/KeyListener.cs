@@ -1,6 +1,8 @@
-﻿namespace Sunnyyssh.ConsoleUI.KeyListener;
+﻿// Tested type.
 
-internal static class KeyListener
+namespace Sunnyyssh.ConsoleUI;
+
+public static class KeyListener
 {
     private static KeyPressedHandler? _keyPressed;
 
@@ -32,6 +34,7 @@ internal static class KeyListener
         {
             if (Console.KeyAvailable)
             {
+                // intercept parameter set to true in order not to show pressed key.
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 OnKeyPressed(keyInfo);
             }
@@ -84,6 +87,7 @@ internal static class KeyListener
 
             _keyPressed = (KeyPressedHandler)Delegate.Combine(_keyPressed, value);
 
+            // If listening was stopped it's needed to restore it.
             if (isNeededToRestore)
             {
                 ForceRestore();
@@ -95,6 +99,7 @@ internal static class KeyListener
 
             _keyPressed = (KeyPressedHandler?)Delegate.Remove(_keyPressed, value);
 
+            // If nobody listens then it's not needed to listen keys till someone subscribes event.
             bool isNeededToWait = IsRunning && (_keyPressed is null || _keyPressed.GetInvocationList().Length == 0);
             if (isNeededToWait)
             {

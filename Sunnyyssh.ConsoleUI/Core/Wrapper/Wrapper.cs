@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public class Wrapper
+public abstract class Wrapper // : IFocusManagerHolder
 {
     
 }

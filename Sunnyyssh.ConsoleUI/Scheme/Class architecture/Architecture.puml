@@ -1,6 +1,6 @@
 ﻿@startuml
 'Console interface
-
+' This all is a bullshit
 
 abstract UIElement $Core $Public
 {    

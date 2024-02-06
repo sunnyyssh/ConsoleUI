@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Core\FocusFlow\EventHandlers\" />
       <Folder Include="Core\UIManager\Internal\" />
     </ItemGroup>
 

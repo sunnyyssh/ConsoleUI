@@ -1,3 +1,3 @@
-﻿namespace Sunnyyssh.ConsoleUI.KeyListener;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public record KeyPressedArgs(ConsoleKeyInfo KeyInfo);
