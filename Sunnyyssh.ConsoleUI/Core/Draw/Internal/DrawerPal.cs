@@ -215,8 +215,6 @@ internal class DrawerPal
         return true;
     }
     
-    
-    
     protected virtual void DrawPart(PartLine part, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)

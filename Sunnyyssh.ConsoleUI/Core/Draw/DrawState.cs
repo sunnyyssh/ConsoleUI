@@ -24,7 +24,7 @@ public sealed class DrawState
     }
 
     [Pure]
-    public DrawState SubctractWith(DrawState state)
+    public DrawState SubtractWith(DrawState state)
     {
         return new DrawState(_internalState.SubtractWith(state._internalState));
     }
@@ -32,13 +32,19 @@ public sealed class DrawState
     [Pure]
     public DrawState Shift(int left, int top)
     {
-        return new DrawState(InternalDrawState.Shift(left, top, _internalState));
+        return new DrawState(_internalState.Shift(left, top));
+    }
+
+    [Pure]
+    public DrawState Crop(int width, int height)
+    {
+        return new DrawState(_internalState.Crop(width, height));
     }
     
     [Pure]
     internal InternalDrawState ToInternal(int left, int top)
     {
-        return InternalDrawState.Shift(left, top, _internalState);
+        return _internalState.Shift(left, top);
     }
 
     [Pure]

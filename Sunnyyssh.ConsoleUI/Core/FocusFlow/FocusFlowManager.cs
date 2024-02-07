@@ -2,19 +2,15 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-// TODO make it internal
-public record FocusManagerOptions(ConsoleKey[] FocusChangeKeys, bool FocusFlowLoop, bool ThrowOnNotFocusedHandling = false);
+// TODO ChangeFocusWhenSingle: If there is only one IFocusable in chain nothing should happen (only when looped). It's better to implement it in ConcurrentChain<T>
+public record FocusManagerOptions(ConsoleKey[] FocusChangeKeys, bool FocusFlowLoop, bool ChangeFocusWhenSingle,  bool ThrowOnNotFocusedHandling = false);
 
-// TODO make it internal
 public record FocusFlowEndedArgs();
 
-// TODO make it internal
 public delegate void FocusFlowEndedHandler(FocusFlowManager lostManager, FocusFlowEndedArgs args);
 
-// TODO make it internal
 public delegate void ForceManagerTakeFocusHandler(FocusFlowManager manager);
 
-// TODO make it internal
 public sealed class FocusFlowManager
 {
     private FocusFlowManager? _successor;

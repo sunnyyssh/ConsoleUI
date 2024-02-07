@@ -42,6 +42,29 @@ internal sealed class InternalDrawState
     }
 
     [Pure]
+    public InternalDrawState Crop(int width, int height)
+    {
+        var cropped = Lines
+            .Where(line => line.Top < height)
+            .Select(line => line.Crop(width))
+            .ToArray();
+        return new InternalDrawState(cropped);
+    }
+    
+    [Pure]
+    public InternalDrawState Shift(int leftShift, int topShift)
+    {
+        return new InternalDrawState(
+            Lines
+            .Select(l => 
+                new PixelLine(
+                    l.Left + leftShift, 
+                    l.Top + topShift, 
+                    l.Pixels))
+            .ToArray());
+    }
+
+    [Pure]
     public InternalDrawState SubtractWith(InternalDrawState deductible)
     {
         throw new NotImplementedException();
@@ -68,15 +91,4 @@ internal sealed class InternalDrawState
         return result;
     }
 
-    public static InternalDrawState Shift(int leftShift, int topShift, InternalDrawState drawState)
-    {
-        return new InternalDrawState(
-            drawState.Lines
-            .Select(l => 
-                new PixelLine(
-                    l.Left + leftShift, 
-                    l.Top + topShift, 
-                    l.Pixels))
-            .ToArray());
-    }
 }

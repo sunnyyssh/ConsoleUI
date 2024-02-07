@@ -6,7 +6,7 @@ public delegate void ForceLoseFocusHandler(IFocusable sender);
 
 public interface IFocusable
 {
-    public bool IsWaitingFocus { get; } // TODO add to the focus flow ability to skip not waiting elements
+    public bool IsWaitingFocus { get; } // TODO add to the focus flow ability to skip not-waiting elements
     public bool IsFocused { get; }
     protected internal void TakeFocus();
     protected internal void LoseFocus();

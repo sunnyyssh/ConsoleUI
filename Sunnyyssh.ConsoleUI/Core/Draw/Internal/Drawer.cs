@@ -16,11 +16,15 @@ internal static class Drawer
     
     public static bool IsRunning { get; private set; }
 
+    public static int BufferWidth => DrawerPal.BufferWidth;
+
+    public static int BufferHeight => DrawerPal.BufferHeight;
+    
     public static void EnqueueRequest(InternalDrawState drawState)
     {
         if (!IsRunning)
         {
-            // TODO throw an exception.
+            throw new DrawingException("Drawer is not running.");
         }
         ArgumentNullException.ThrowIfNull(drawState, nameof(drawState));
         
@@ -31,7 +35,7 @@ internal static class Drawer
     {
         if (IsRunning)
         {
-            // TODO throw the exception.
+            throw new DrawingException("It's already running.");
         }
         
         InitializeDrawerPal(options);
@@ -70,7 +74,7 @@ internal static class Drawer
     {
         if (!IsRunning)
         {
-            // TODO throw an exception.
+            throw new DrawingException("It's not running.");
         }
         
         // It's necessary to cancel before exiting waiting

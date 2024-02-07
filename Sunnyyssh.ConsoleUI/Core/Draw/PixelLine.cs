@@ -1,6 +1,7 @@
 ﻿// Tested type.
 
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -19,6 +20,13 @@ public sealed class PixelLine
     public int Top { get; private init; }
 
     public PixelInfo this[int n] => Pixels[n];
+
+    [Pure]
+    public PixelLine Crop(int length)
+    {
+        var cropped = Pixels.Take(length).ToArray();
+        return new PixelLine(Left, Top, cropped);
+    }
 
     public PixelLine(int left, int top, Color background, Color foreground, string line)
     {
