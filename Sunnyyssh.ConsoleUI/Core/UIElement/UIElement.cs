@@ -2,6 +2,10 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+internal delegate void RedrawElementEventHandler(UIElement sender, RedrawElementEventArgs args);
+
+internal record RedrawElementEventArgs(RedrawState State);
+
 public abstract class UIElement
 {
     public bool IsDrawn { get; private set; } = false; // I don't know how to do it.
@@ -16,20 +20,12 @@ public abstract class UIElement
     
     public double? WidthRelation { get; private init; }
 
-    internal event RemoveElementEventHandler? RemoveElement;
-
     internal event RedrawElementEventHandler? RedrawElement;
 
-    protected void Remove(RemoveOptions options)
+    protected void Redraw(RedrawState state)
     {
-        ArgumentNullException.ThrowIfNull(options);
-        RemoveElement?.Invoke(this, new RemoveElementEventsArgs(options));
-    }
-
-    protected void Redraw(RedrawOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-        RedrawElement?.Invoke(this, new RedrawElementEventArgs(options));
+        ArgumentNullException.ThrowIfNull(state);
+        RedrawElement?.Invoke(this, new RedrawElementEventArgs(state));
     }
     
     protected internal abstract DrawState GetDrawState(DrawOptions options);

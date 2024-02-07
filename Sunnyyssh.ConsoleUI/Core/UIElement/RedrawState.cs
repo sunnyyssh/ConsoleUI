@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public class RedrawOptions
+public class RedrawState
 {
     // TODO
 }

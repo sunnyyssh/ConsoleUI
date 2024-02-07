@@ -99,4 +99,28 @@ public sealed class PixelLine
             throw new ArgumentException("Lines must have equal Top property.");
         }
     }
+
+    public static bool AreIntersected(params PixelLine[] pixelLines)
+    {
+        for (int i = 0; i < pixelLines.Length; i++)
+        {
+            var first = pixelLines[i];
+            
+            for (int j = i + 1; j < pixelLines.Length; j++)
+            {
+                var second = pixelLines[j];
+                
+                if (first.Top != second.Top)
+                    continue;
+                if (first.Left > second.Left + second.Length)
+                    continue;
+                if (second.Left < first.Left + first.Length)
+                    continue;
+                
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

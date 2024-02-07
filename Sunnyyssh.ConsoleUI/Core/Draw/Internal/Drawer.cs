@@ -7,12 +7,12 @@ internal static class Drawer
 {
     private static DrawerPal DrawerPal;
 
-    private static readonly CancellationTokenSource Cancellation = new CancellationTokenSource();
+    private static readonly CancellationTokenSource Cancellation = new();
 
     /// <summary>
     /// 
     /// </summary>
-    private static readonly RequestsQueue<InternalDrawState> DrawRequestsQueue = new RequestsQueue<InternalDrawState>();
+    private static readonly RequestsQueue<InternalDrawState> DrawRequestsQueue = new();
     
     public static bool IsRunning { get; private set; }
 

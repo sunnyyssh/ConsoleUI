@@ -1,6 +1,7 @@
 ﻿// Tested type.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -12,7 +13,10 @@ internal sealed class InternalDrawState
 
     public InternalDrawState(PixelLine[] lines)
     {
-        Lines = lines ?? throw new ArgumentNullException(nameof(lines));
+        if (lines is null)
+            throw new ArgumentNullException(nameof(lines));
+        
+        Lines = lines;
     }
 
     public bool TryGetPixel(int left, int top, [NotNullWhen(true)] out PixelInfo? resultPixel)
@@ -31,6 +35,18 @@ internal sealed class InternalDrawState
         return false;
     }
 
+    [Pure]
+    public InternalDrawState IntersectWith(InternalDrawState state)
+    {
+        throw new NotImplementedException();
+    }
+
+    [Pure]
+    public InternalDrawState SubtractWith(InternalDrawState deductible)
+    {
+        throw new NotImplementedException();
+    }
+    
     public static InternalDrawState Combine(params InternalDrawState[] orderedDrawStates)
     {
         ArgumentNullException.ThrowIfNull(orderedDrawStates, nameof(orderedDrawStates));

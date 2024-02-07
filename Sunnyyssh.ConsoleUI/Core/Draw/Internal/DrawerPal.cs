@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Sunnyyssh.ConsoleUI;
     
+// The type is not sealed because it's possible that different platforms should have different console drawing.
 internal class DrawerPal
 {
     #region Fields and Properties
