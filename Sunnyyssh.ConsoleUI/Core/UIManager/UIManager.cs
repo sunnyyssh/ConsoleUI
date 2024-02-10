@@ -40,7 +40,7 @@ public abstract partial class UIManager
         {
             throw new UIManagerException("The application is already running.");
         }
-
+        
         IsRunning = true;
 
         DrawerOptions drawerOptions = new(
@@ -76,7 +76,7 @@ public abstract partial class UIManager
 
     private protected abstract void Draw();
 
-    private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args);
+    private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args); // TODO handle overlapping !!!
     
     protected UIManager(UIManagerSettings settings)
     {

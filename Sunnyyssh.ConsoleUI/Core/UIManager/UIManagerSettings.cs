@@ -34,6 +34,8 @@ public sealed class UIManagerSettings
     public bool ThrowOnBorderConflicts { get; init; } = false;
 
     public ConsoleKey[] FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab };
+
+    public bool EnableOverlapping { get; init; } = true;
 }
 
 /*

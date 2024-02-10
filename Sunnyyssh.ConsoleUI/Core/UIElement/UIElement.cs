@@ -6,21 +6,15 @@ internal delegate void RedrawElementEventHandler(UIElement sender, RedrawElement
 
 internal record RedrawElementEventArgs(RedrawState State);
 
+
+
 public abstract class UIElement
 {
     // TODO Overlapping priority.
     
-    public bool IsDrawn { get; private set; } = false; // I don't know how to do it.
-    
-    public Sizing Sizing { get; private init; }
-    
-    public int? Height { get; private init; }
-    
-    public int? Width { get; private init; }
-    
-    public double? HeightRelation { get; private init; }
-    
-    public double? WidthRelation { get; private init; }
+    public bool IsDrawn { get; private set; } = false; // I don't know how to do it. It's kinda cringe.
+
+    public Size Size { get; }
 
     internal event RedrawElementEventHandler? RedrawElement;
 
@@ -34,11 +28,17 @@ public abstract class UIElement
 
     internal void OnDraw() // Looks a bit weird but...
     {
+        // TODO resolve where UIElement should take its actual size when it tries to redraw
         IsDrawn = true;
     }
 
     internal void OnRemove() // Looks a bit weird but...
     {
         IsDrawn = false;
+    }
+
+    protected UIElement(Size size)
+    {
+        Size = size;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+
+// TODO make it non-static
 public static class KeyListener
 {
     private static KeyPressedHandler? _keyPressed;

@@ -1,7 +1,12 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Diagnostics;
 
-internal sealed class ChildInfo
+namespace Sunnyyssh.ConsoleUI;
+
+// TODO make it internal
+[DebuggerDisplay("{DebuggerDisplay}")]
+public sealed class ChildInfo
 {
+    private string DebuggerDisplay => $"{Child}: Left={Left}; Top={Top}; Width={Width}; Height={Height}";
     public UIElement Child { get; private init; }
     public int Left { get; private init; }
     public int Top { get; private init; }

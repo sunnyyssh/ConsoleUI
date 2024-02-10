@@ -3,6 +3,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
     
+// TODO make it non-static
 internal static class Drawer
 {
     private static DrawerPal DrawerPal;
