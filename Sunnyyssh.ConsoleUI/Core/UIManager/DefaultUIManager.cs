@@ -5,19 +5,46 @@ internal class DefaultUIManager : UIManager
 {
     public DefaultUIManager(UIManagerSettings settings) : base(settings)
     {
-        throw new NotImplementedException();
+        // DefaultUIManager doesn't present anything additional to UIManager implementation.
     }
 
-    public override int BufferWidth => Drawer.BufferWidth;
-    public override int BufferHeight => Drawer.BufferHeight;
-    
     private protected override void Draw()
     {
-        throw new NotImplementedException();
+        var childInfos = ElementsField.GetChildInfos();
+        foreach (var t in childInfos)
+        {
+            DrawChild(t);
+        }
+    }
+
+    private protected override void DrawChild(ChildInfo child)
+    {
+        DrawOptions drawOptions = new(child.Width, child.Height);
+        var drawState = child.Child.RequestDrawState(drawOptions);
+        child.Child.OnDraw();
+        
+        HandleStateDrawing(child, drawState);
     }
 
     private protected override void RedrawChild(UIElement child, RedrawElementEventArgs args)
     {
-        throw new NotImplementedException();
+        if (!ElementsField.TryGetChild(child, out var childInfo))
+            return;
+        
+        var drawState = args.State;
+        HandleStateDrawing(childInfo, drawState);
+    }
+
+    private void HandleStateDrawing(ChildInfo childInfo, DrawState drawState)
+    {
+        var rowDrawState = drawState.ToInternal(childInfo.Left, childInfo.Top);
+        
+        // If some elements overlap current we should handle it.
+        var resultDrawState = childInfo.SubtractStateWithOverlapping(rowDrawState);
+        
+        Drawer.EnqueueRequest(resultDrawState);
+        
+        // We should renew previous state.
+        childInfo.PreviousState = rowDrawState;
     }
 }

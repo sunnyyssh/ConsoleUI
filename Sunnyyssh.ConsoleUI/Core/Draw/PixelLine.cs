@@ -28,6 +28,42 @@ public sealed class PixelLine
         return new PixelLine(Left, Top, cropped);
     }
 
+    [Pure]
+    public PixelLine Subtract(PixelLine deductible)
+    {
+        if (Top != deductible.Top || !IsIntersectedWith(deductible))
+            return Copy();
+
+        var newPixels = new PixelInfo[Pixels.Length];
+        Array.Copy(Pixels, newPixels, Pixels.Length);
+        int leftSubtractionBound = Math.Max(0, deductible.Left - Left);
+        int deductibleOffset = deductible.Left - Left;
+        int rightSubtractionBound = Math.Min(Length, deductible.Left + deductible.Length - Left);
+        
+        for (int i = leftSubtractionBound; i < rightSubtractionBound; i++)
+        {
+            if (deductible[i + deductibleOffset].IsVisible)
+            {
+                newPixels[i] = new PixelInfo();
+            }
+        }
+
+        return new PixelLine(Left, Top, newPixels);
+    }
+
+    public bool IsIntersectedWith(PixelLine line)
+    {
+        return line.Left < Left + Length && Left < line.Left + line.Length;
+    }
+    
+    public PixelLine Copy()
+    {
+        var pixels = new PixelInfo[Pixels.Length];
+        Array.Copy(Pixels, pixels, Pixels.Length);
+        PixelLine copy = new(Left, Top, pixels);
+        return copy;
+    }
+    
     public PixelLine(int left, int top, Color background, Color foreground, string line)
     {
         ArgumentNullException.ThrowIfNull(line, nameof(line));

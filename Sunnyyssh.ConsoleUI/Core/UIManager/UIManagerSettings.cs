@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Runtime.Versioning;
+
+namespace Sunnyyssh.ConsoleUI;
 
 public sealed class UIManagerSettings
 {
@@ -30,7 +32,11 @@ public sealed class UIManagerSettings
             _defaultBackground = value;
         }
     }
-
+    
+    public int? Height { get; [SupportedOSPlatform("Windows")] init; } = null;
+    
+    public int? Width { get; [SupportedOSPlatform("Windows")] init; } = null;
+    
     public bool ThrowOnBorderConflicts { get; init; } = false;
 
     public ConsoleKey[] FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab };

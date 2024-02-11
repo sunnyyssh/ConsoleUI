@@ -2,7 +2,6 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-// TODO make it internal
 [Flags]
 public enum Positioning
 {
@@ -11,7 +10,7 @@ public enum Positioning
     RelationalTop,
     Relational = RelationalLeft | RelationalTop,
 }
-// TODO make it internal
+
 public class Position
 {
     public int? Left { get; }
@@ -30,6 +29,16 @@ public class Position
     
     public Position(Positioning positioning, int? left, int? top, double? leftRelational, double? topRelational)
     {
+        if (positioning.HasFlag(Positioning.RelationalLeft))
+            ArgumentNullException.ThrowIfNull(leftRelational, nameof(leftRelational));
+        else
+            ArgumentNullException.ThrowIfNull(left, nameof(left));
+        
+        if (positioning.HasFlag(Positioning.RelationalTop))
+            ArgumentNullException.ThrowIfNull(topRelational, nameof(topRelational));
+        else
+            ArgumentNullException.ThrowIfNull(top, nameof(top));
+        
         Positioning = positioning;
         Left = left;
         Top = top;

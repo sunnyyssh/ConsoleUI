@@ -33,6 +33,16 @@ public sealed class Size
 
     public Size(Sizing sizing, int? width, int? height, double? heightRelation, double? widthRelation)
     {
+        if (sizing.HasFlag(Sizing.RelationalHeight))
+            ArgumentNullException.ThrowIfNull(heightRelation, nameof(heightRelation));
+        else
+            ArgumentNullException.ThrowIfNull(height, nameof(height));
+        
+        if (sizing.HasFlag(Sizing.RelationalWidth))
+            ArgumentNullException.ThrowIfNull(widthRelation, nameof(widthRelation));
+        else
+            ArgumentNullException.ThrowIfNull(width, nameof(width));
+
         Sizing = sizing;
         HeightRelation = heightRelation;
         WidthRelation = widthRelation;

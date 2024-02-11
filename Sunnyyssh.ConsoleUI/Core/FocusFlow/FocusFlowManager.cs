@@ -88,6 +88,11 @@ public sealed class FocusFlowManager
             return;
         }
 
+        if (IsNeededToChangeFocus(args)) // TODO check if it is correct.
+        {
+            MoveNext();
+        }
+
         if (_chain.Current is {} current)
         {
             bool toKeepFocus = current.HandlePressedKey(args.KeyInfo);

@@ -8,8 +8,6 @@ namespace Sunnyyssh.ConsoleUI;
 // The type is not sealed because it's possible that different platforms should have different console drawing.
 internal class DrawerPal
 {
-    #region Fields and Properties
-
     protected InternalDrawState PreviousState = InternalDrawState.Empty;
     
     private bool _throwOnBorderConflict;
@@ -18,14 +16,14 @@ internal class DrawerPal
 
     protected readonly Color DefaultForeground;
 
-    public int BufferWidth => Console.BufferWidth;
+    public virtual int BufferWidth => Console.WindowWidth;
 
-    public int BufferHeight => Console.BufferHeight;
-
-    #endregion
+    public virtual int BufferHeight => Console.WindowHeight;
 
     public virtual void Clear() => Console.Clear();
-
+    
+    public virtual void OnStart() { }
+    
     public void Redraw(CancellationToken cancellationToken) => DrawSingleRequest(PreviousState, cancellationToken);
     
     public virtual void DrawSingleRequest(InternalDrawState drawState, CancellationToken cancellationToken)
@@ -33,7 +31,11 @@ internal class DrawerPal
         if (cancellationToken.IsCancellationRequested)
             return;
         ArgumentNullException.ThrowIfNull(drawState, nameof(drawState));
+        
         ValidateBorderConflicts(drawState);
+        // If exception on border violation is not thrown 
+        // I should crop the DrawState instance to the actual buffer size.
+        drawState = drawState.Crop(BufferWidth, BufferHeight);
 
         foreach (PixelLine line in drawState.Lines)
         {
@@ -75,6 +77,7 @@ internal class DrawerPal
     
     private bool TryExtractPart(PixelLine sourceLine, ref int startIndex, [NotNullWhen((true))] out PartLine? result)
     {
+        int endIndex = startIndex;
         ConsoleColor? lastBackground = null;
         ConsoleColor? lastForeground = null;
         List<string> subParts = new();
@@ -86,6 +89,7 @@ internal class DrawerPal
                 subParts.Add(notVisibleRow);
             }
             subParts.Add(ExtractVisible(sourceLine, ref lastBackground, ref lastForeground, ref startIndex));
+            endIndex = startIndex;
         }
 
         if (!subParts.Any())
@@ -95,7 +99,7 @@ internal class DrawerPal
         }
         
         result = new PartLine(
-            sourceLine.Left + startIndex - subParts.Sum(p => p.Length),
+            sourceLine.Left + endIndex - subParts.Sum(p => p.Length), // here is bug.
             sourceLine.Top,
             lastBackground ?? ToConsoleBackgroundColor(Color.Transparent),
             lastForeground ?? ToConsoleForegroundColor(Color.Transparent),
@@ -205,7 +209,9 @@ internal class DrawerPal
         if (row.Length == 0)
         {
             result = null;
-            lastBackground = lastForeground = null;
+            if (lastBackground.HasValue || lastForeground.HasValue) // Dangerous
+                return false;
+            lastBackground = lastForeground = null; 
         }
         else
         {
@@ -277,4 +283,5 @@ internal class DrawerPal
     }
 
     protected record PartLine(int Left, int Top, ConsoleColor Background, ConsoleColor Foreground, string Part);
+
 }

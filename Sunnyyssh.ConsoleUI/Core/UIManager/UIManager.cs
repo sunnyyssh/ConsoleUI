@@ -10,9 +10,15 @@ public abstract partial class UIManager
 
     protected readonly FocusFlowManager HeadFocusFlowManager;
 
-    public abstract int BufferWidth { get; }
+    private protected readonly Drawer Drawer;
+
+    private protected readonly KeyListener KeyListener;
+
+    private protected readonly ElementsField ElementsField;
+
+    public int BufferWidth { get; }
     
-    public abstract int BufferHeight { get; }
+    public int BufferHeight { get; }
     
     // It can have different UIManager implementations.
     public static UIManager? Instance { get; private set; }
@@ -34,38 +40,34 @@ public abstract partial class UIManager
         return Instance;
     }
 
-    public virtual void Run()
+    public void Run()
     {
         if (IsRunning)
         {
             throw new UIManagerException("The application is already running.");
         }
-        
         IsRunning = true;
-
-        DrawerOptions drawerOptions = new(
-            Settings.DefaultBackground,
-            Settings.DefaultForeground,
-            Settings.ThrowOnBorderConflicts,
-            false);
-        Drawer.Start(drawerOptions);
-
-        KeyListenerOptions keyListenerOptions = new();
-        KeyListener.Start(keyListenerOptions);
         
+        Drawer.Start();
+        
+        KeyListener.Start();
         // FocusFlowManager should handle pressed keys.
         KeyListener.KeyPressed += HeadFocusFlowManager.HandlePressedKey; 
+        
+        HeadFocusFlowManager.TakeFocus();
         
         Draw();
     }
 
-    public virtual void Stop()
+    public void Stop()
     {
         if (!IsRunning)
         {
             throw new UIManagerException("The application is not running.");
         }
         IsRunning = false;
+        
+        HeadFocusFlowManager.LoseFocus();
         
         Drawer.Stop();
         
@@ -74,9 +76,30 @@ public abstract partial class UIManager
         KeyListener.Stop();
     }
 
+    public bool TryAddChild(UIElement child, Position position)
+    {
+        if (!ElementsField.TryPlaceChild(child, position, out ChildInfo? childInfo))
+            return false;
+
+        child.RedrawElement += RedrawChild;
+        if (child is IFocusable focusableChild)
+        {
+            HeadFocusFlowManager.Add(focusableChild);
+        }
+        
+        if (IsRunning)
+        {
+            DrawChild(childInfo);
+        }
+
+        return true;
+    }
+
     private protected abstract void Draw();
 
-    private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args); // TODO handle overlapping !!!
+    private protected abstract void DrawChild(ChildInfo child);
+
+    private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args); // handle overlapping !!!
     
     protected UIManager(UIManagerSettings settings)
     {
@@ -88,5 +111,20 @@ public abstract partial class UIManager
             // If there are only one IFocusable nothing should happen when focus change is ought to occur.
             false);
         HeadFocusFlowManager = new FocusFlowManager(focusManagerOptions);
+        
+        DrawerOptions drawerOptions = new(
+            Settings.DefaultBackground,
+            Settings.DefaultForeground,
+            Settings.ThrowOnBorderConflicts,
+            Settings.Width,
+            Settings.Height);
+        Drawer = new Drawer(drawerOptions);
+
+        KeyListenerOptions keyListenerOptions = new();
+        KeyListener = new KeyListener(keyListenerOptions);
+
+        BufferWidth = Drawer.BufferWidth;
+        BufferHeight = Drawer.BufferHeight;
+        ElementsField = new ElementsField(BufferWidth, BufferHeight, Settings.EnableOverlapping);
     }
 }

@@ -2,21 +2,29 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+public delegate void KeyPressedHandler(KeyPressedArgs args);
+
+public record KeyPressedArgs(ConsoleKeyInfo KeyInfo);
+
+public record KeyListenerOptions();
 
 // TODO make it non-static
-public static class KeyListener
+public class KeyListener
 {
-    private static KeyPressedHandler? _keyPressed;
+    private KeyPressedHandler? _keyPressed;
 
-    private static CancellationTokenSource _cancellation = new();
+    private readonly CancellationTokenSource _cancellation = new();
 
-    private static AutoResetEvent _waitEvent = new(false);
+    private readonly AutoResetEvent _waitEvent = new(false);
 
-    public static bool IsRunning { get; private set; } = false;
+    // It may be used in the future, so it's important to get such parameter in constructor
+    private readonly KeyListenerOptions _options; 
 
-    public static bool IsListening { get; private set; } = false;
+    public bool IsRunning { get; private set; } = false;
+
+    public bool IsListening { get; private set; } = false;
     
-    public static void Start(KeyListenerOptions options)
+    public void Start()
     {
         if (IsRunning)
         {
@@ -30,8 +38,10 @@ public static class KeyListener
         IsRunning = IsListening = true;
     }
 
-    private static void StartWithCancellation(CancellationToken cancellationToken)
+    private void StartWithCancellation(CancellationToken cancellationToken)
     {
+        Console.CursorVisible = false;
+        
         while (!_cancellation.IsCancellationRequested)
         {
             if (Console.KeyAvailable)
@@ -48,7 +58,7 @@ public static class KeyListener
         }
     }
 
-    public static void Stop()
+    public void Stop()
     {
         if (!IsRunning)
         {
@@ -62,7 +72,7 @@ public static class KeyListener
         }
     }
 
-    public static void ForceWait()
+    public void ForceWait()
     {
         if (IsListening)
         {
@@ -71,7 +81,7 @@ public static class KeyListener
         }
     }
     
-    public static void ForceRestore()
+    public void ForceRestore()
     {
         if (!IsListening)
         {
@@ -80,7 +90,7 @@ public static class KeyListener
         }
     }
 
-    public static event KeyPressedHandler? KeyPressed
+    public event KeyPressedHandler? KeyPressed
     {
         add
         {
@@ -110,9 +120,14 @@ public static class KeyListener
         }
     }
     
-    private static void OnKeyPressed(ConsoleKeyInfo keyInfo)
+    private void OnKeyPressed(ConsoleKeyInfo keyInfo)
     {
         KeyPressedArgs args = new(keyInfo);
         _keyPressed?.Invoke(args);
+    }
+
+    public KeyListener(KeyListenerOptions options)
+    {
+        _options = options;
     }
 }

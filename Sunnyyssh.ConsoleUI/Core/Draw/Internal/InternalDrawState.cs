@@ -13,10 +13,7 @@ internal sealed class InternalDrawState
 
     public InternalDrawState(PixelLine[] lines)
     {
-        if (lines is null)
-            throw new ArgumentNullException(nameof(lines));
-        
-        Lines = lines;
+        Lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }
 
     public bool TryGetPixel(int left, int top, [NotNullWhen(true)] out PixelInfo? resultPixel)
@@ -46,7 +43,7 @@ internal sealed class InternalDrawState
     {
         var cropped = Lines
             .Where(line => line.Top < height)
-            .Select(line => line.Crop(width))
+            .Select(line => line.Crop(width - line.Left))
             .ToArray();
         return new InternalDrawState(cropped);
     }
@@ -67,7 +64,17 @@ internal sealed class InternalDrawState
     [Pure]
     public InternalDrawState SubtractWith(InternalDrawState deductible)
     {
-        throw new NotImplementedException();
+        var newLines = new PixelLine[Lines.Length];
+        Array.Copy(Lines, newLines, Lines.Length);
+        for (int i = 0; i < newLines.Length; i++)
+        {
+            foreach (var deductibleLine in deductible.Lines)
+            {
+                newLines[i] = newLines[i].Subtract(deductibleLine);
+            }
+        }
+
+        return new InternalDrawState(newLines);
     }
     
     public static InternalDrawState Combine(params InternalDrawState[] orderedDrawStates)

@@ -2,16 +2,16 @@
 
 public sealed class DrawOptions
 {
-    public int Height { get; private init; }
     public int Width { get; private init; }
+    public int Height { get; private init; }
 
-    public DrawOptions(int height, int width)
+    public DrawOptions(int width, int height)
     {
-        if (height <= 0)
-            throw new ArgumentException("Height must be more than 0.");
         if (width <= 0)
             throw new ArgumentException("width must be more than 0.");
-        Height = height;
+        if (height <= 0)
+            throw new ArgumentException("Height must be more than 0.");
         Width = width;
+        Height = height;
     }
 }

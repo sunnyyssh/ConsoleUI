@@ -27,6 +27,16 @@ public sealed class PixelInfo
         IsVisible = true;
     }
 
+    /// <summary>
+    /// Creates a pixel filled by one speicific color.
+    /// </summary>
+    /// <param name="color">Color to fill pixel with.</param>
+    public PixelInfo(Color color) : this(' ', color, Color.Transparent)
+    { }
+
+    /// <summary>
+    /// Creates a non-visible pixel.
+    /// </summary>
     public PixelInfo() : this('\u0000', Color.Transparent, Color.Transparent)
     {
         IsVisible = false;

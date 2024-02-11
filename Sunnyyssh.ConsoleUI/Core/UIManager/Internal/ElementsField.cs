@@ -3,10 +3,10 @@ using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
 
-// TODO make it internal
-public class ElementsField
+internal class ElementsField
 {
-    // TODO it seems overlapping logic should be implemented mostly here.
+    private readonly object _childrenCollectionLock = new();
+    
     public int Width { get; private init; }
     
     public int Height { get; private init; }
@@ -15,14 +15,45 @@ public class ElementsField
 
     private readonly Dictionary<UIElement, ChildInfo> _children = new();
 
-    public int ChildrenCount => _children.Count;
+    public int ChildrenCount
+    {
+        get
+        {
+            lock (_childrenCollectionLock)
+            {
+                return _children.Count;
+            }
+        }
+    }
 
-    public bool IsEmpty => !_children.Any();
 
-    public ChildInfo[] GetChildInfos() => _children.Values.ToArray();
+    public bool IsEmpty 
+    {
+        get
+        {
+            lock (_childrenCollectionLock)
+            {
+                return !_children.Any();
+            }
+        }
+    }
 
-    public UIElement[] GetChildren() => _children.Keys.ToArray();
-    
+    public ChildInfo[] GetChildInfos()
+    {
+        lock (_childrenCollectionLock)
+        {
+            return _children.Values.ToArray();
+        }
+    }
+
+    public UIElement[] GetChildren()
+    {
+        lock (_childrenCollectionLock)
+        {
+            return _children.Keys.ToArray();
+        }
+    }
+
     public ElementsField(int width, int height, bool allowOverlapping)
     {
         Height = height;
@@ -32,37 +63,79 @@ public class ElementsField
 
     public bool TryRemoveChild(UIElement child)
     {
-        return _children.Remove(child);
+        lock (_childrenCollectionLock)
+        {
+            if (!_children.TryGetValue(child, out var childInfo))
+                return false;
+            foreach (var (_, item) in _children)
+            {
+                childInfo.RemoveIfOverlapping(item);
+                item.RemoveIfOverlapping(childInfo);
+            }
+            return _children.Remove(child);
+        }
+    }
+
+    public bool TryGetChild(UIElement element, [NotNullWhen(true)] out ChildInfo? result)
+    {
+        lock (_childrenCollectionLock)
+        {
+            return _children.TryGetValue(element, out result);
+        }
     }
 
     public bool TryPlaceChild(UIElement child, Position position, [NotNullWhen(true)] out ChildInfo? childInfo)
     {
-        if (_children.ContainsKey(child))
+        lock (_childrenCollectionLock)
         {
-            childInfo = null;
-            return false;
-        }
-        if (!TryFindMostSuitablePlace(child, position, out bool intersected, out childInfo))
-            return false;
-        
-        if (intersected)
-        {
-            if (!_allowOverlapping)
+            if (_children.ContainsKey(child) || IsChildContained(child))
             {
                 childInfo = null;
                 return false;
             }
-
-            throw new NotImplementedException("How to overlap it?"); // NotImplementedException
+            if (!TryFindMostSuitablePlace(child, position, out bool intersected, out childInfo))
+                return false;
+        
+            if (intersected && !_allowOverlapping)
+            {
+                childInfo = null;
+                return false;
+            }
+        
+            bool addedSuccessfully = _children.TryAdd(child, childInfo);
+        
+            if (addedSuccessfully)
+            {
+                foreach (var (_, item) in _children)
+                {
+                    childInfo.AddIfOverlapping(item, false);
+                    item.AddIfOverlapping(childInfo, true);
+                }
+            }
+            else
+            {
+                childInfo = null;
+            }
             
+            return addedSuccessfully;
         }
-        
-        bool addedSuccessfully = _children.TryAdd(child, childInfo);
-        
-        if (!addedSuccessfully)
-            childInfo = null;
-        return addedSuccessfully;
     }
+
+    private bool IsChildContained(UIElement element)
+    {
+        // ReSharper disable once InconsistentlySynchronizedField
+        foreach (var (child, _) in _children)
+        {
+            if (child is IElementContainer container)
+            {
+                if (container.Contains(element))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+        
 
     private bool TryFindMostSuitablePlace(UIElement child, Position position, out bool intersected, [NotNullWhen(true)] out ChildInfo? result)
     {
