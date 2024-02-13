@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-
+﻿
 namespace Sunnyyssh.ConsoleUI;
 
 internal delegate void RedrawElementEventHandler(UIElement sender, RedrawElementEventArgs args);
@@ -35,12 +34,12 @@ public abstract class UIElement
 
     protected abstract DrawState GetDrawState(int width, int height);
 
-    internal void OnDraw() // Looks a bit weird but... TODO don't forget to invoke them in UIManager
+    internal void OnDraw()
     {
         IsDrawn = true;
     }
 
-    internal void OnRemove() // Looks a bit weird but... TODO don't forget to invoke them in UIManager
+    internal void OnRemove()
     {
         IsDrawn = false;
     }

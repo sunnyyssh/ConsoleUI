@@ -7,7 +7,8 @@ namespace Sunnyyssh.ConsoleUI;
 
 internal record DrawerOptions(Color DefaultBackground, Color DefaultForeground, bool ThrowOnBorderConflicts, 
     // Width and Height will be fully ignored if it's not Windows. (Actually is it's not Windows they mustn't have values).
-    int? Width, int? Height);
+    int? Width, int? Height,
+    bool ThrowOnRequestWhileNotRunning = false);
 
 internal class Drawer
 {
@@ -30,7 +31,7 @@ internal class Drawer
     
     public void EnqueueRequest(InternalDrawState drawState)
     {
-        if (!IsRunning)
+        if (!IsRunning && _options.ThrowOnRequestWhileNotRunning)
         {
             throw new DrawingException("Drawer is not running.");
         }
@@ -107,7 +108,7 @@ internal class Drawer
         {
             throw new DrawingException("It's not running.");
         }
-        
+
         // It's necessary to cancel before exiting waiting
         // because otherwise it goes to the another iteration and waits again before it canceles 
         _cancellation.Cancel();
@@ -116,6 +117,8 @@ internal class Drawer
         // and make the drawing thread finish its work.
         // Look void RunWithCancellation(CancellationToken)
         _drawRequestsQueue.ForceStopWaiting();
+        
+        IsRunning = false;
     }
     
     private void DrawRequests(CancellationToken cancellationToken)

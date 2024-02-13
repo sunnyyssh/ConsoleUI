@@ -22,10 +22,10 @@ public sealed class PixelLine
     public PixelInfo this[int n] => Pixels[n];
 
     [Pure]
-    public PixelLine Crop(int length)
+    public PixelLine Crop(int startIndex, int length)
     {
-        var cropped = Pixels.Take(length).ToArray();
-        return new PixelLine(Left, Top, cropped);
+        var cropped = Pixels.Skip(startIndex).Take(length).ToArray();
+        return new PixelLine(Left + Math.Max(startIndex, 0), Top, cropped);
     }
 
     [Pure]
@@ -37,15 +37,28 @@ public sealed class PixelLine
         var newPixels = new PixelInfo[Pixels.Length];
         Array.Copy(Pixels, newPixels, Pixels.Length);
         int leftSubtractionBound = Math.Max(0, deductible.Left - Left);
-        int deductibleOffset = deductible.Left - Left;
+        int deductibleOffset = Left - deductible.Left;
         int rightSubtractionBound = Math.Min(Length, deductible.Left + deductible.Length - Left);
         
         for (int i = leftSubtractionBound; i < rightSubtractionBound; i++)
         {
-            if (deductible[i + deductibleOffset].IsVisible)
+            var currentPixel = newPixels[i];
+            var deductiblePixel = deductible[i + deductibleOffset];
+            if (!deductiblePixel.IsVisible)
+            {
+                continue;
+            }
+
+            if (deductiblePixel.Background != Color.Transparent)
             {
                 newPixels[i] = new PixelInfo();
+                continue;
             }
+
+            newPixels[i] = new PixelInfo(
+                deductiblePixel.Char, 
+                currentPixel.Background, 
+                deductiblePixel.Foreground);
         }
 
         return new PixelLine(Left, Top, newPixels);
@@ -91,6 +104,8 @@ public sealed class PixelLine
     public static PixelLine Overlap(params PixelLine[] orderedLines)
     {
         ArgumentNullException.ThrowIfNull(orderedLines, nameof(orderedLines));
+        if (orderedLines.Length == 0)
+            return new PixelLine(0, 0, Array.Empty<PixelInfo>());
         CheckLinesTopEquality(orderedLines);
 
         int top = orderedLines.First().Top;
@@ -117,8 +132,10 @@ public sealed class PixelLine
                 if (line[i].Background == Color.Transparent)
                 {
                     // If background is transparent then background should be taken from the lower line.
-                    pixels[offset] = new PixelInfo(line[i].Char, line[i].Foreground,
-                        pixels[offset]!.Background);
+                    pixels[offset] = new PixelInfo(
+                        line[i].Char, 
+                        pixels[offset]!.Background,
+                        line[i].Foreground);
                     continue;
                 }
                 

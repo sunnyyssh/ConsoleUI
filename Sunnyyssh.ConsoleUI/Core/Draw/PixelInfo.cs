@@ -42,11 +42,11 @@ public sealed class PixelInfo
         IsVisible = false;
     }
 
-    private static readonly char[] _prohibitedChars = { '\n', '\t', '\r', '\b', '\f', '\v', '\a', };
+    private static readonly char[] ProhibitedChars = { '\n', '\t', '\r', '\b', '\f', '\v', '\a', };
     private static bool IsCharSpecial(char c)
     {
-        for (int i = 0; i < _prohibitedChars.Length; i++)
-            if (_prohibitedChars[i] == c)
+        for (int i = 0; i < ProhibitedChars.Length; i++)
+            if (ProhibitedChars[i] == c)
                 return true;
         return false;
     }

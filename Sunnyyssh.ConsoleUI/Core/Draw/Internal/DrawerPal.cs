@@ -35,7 +35,7 @@ internal class DrawerPal
         ValidateBorderConflicts(drawState);
         // If exception on border violation is not thrown 
         // I should crop the DrawState instance to the actual buffer size.
-        drawState = drawState.Crop(BufferWidth, BufferHeight);
+        drawState = drawState.Crop(0, 0, BufferWidth, BufferHeight);
 
         foreach (PixelLine line in drawState.Lines)
         {
@@ -99,7 +99,7 @@ internal class DrawerPal
         }
         
         result = new PartLine(
-            sourceLine.Left + endIndex - subParts.Sum(p => p.Length), // here is bug.
+            sourceLine.Left + endIndex - subParts.Sum(p => p.Length),
             sourceLine.Top,
             lastBackground ?? ToConsoleBackgroundColor(Color.Transparent),
             lastForeground ?? ToConsoleForegroundColor(Color.Transparent),
