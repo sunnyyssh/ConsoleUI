@@ -6,9 +6,8 @@ public delegate void KeyPressedHandler(KeyPressedArgs args);
 
 public record KeyPressedArgs(ConsoleKeyInfo KeyInfo);
 
-public record KeyListenerOptions();
+public record KeyListenerOptions;
 
-// TODO make it non-static
 public class KeyListener
 {
     private KeyPressedHandler? _keyPressed;
@@ -20,9 +19,9 @@ public class KeyListener
     // It may be used in the future, so it's important to get such parameter in constructor
     private readonly KeyListenerOptions _options; 
 
-    public bool IsRunning { get; private set; } = false;
+    public bool IsRunning { get; private set; } 
 
-    public bool IsListening { get; private set; } = false;
+    public bool IsListening { get; private set; }
     
     public void Start()
     {
@@ -42,7 +41,7 @@ public class KeyListener
     {
         Console.CursorVisible = false;
         
-        while (!_cancellation.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             if (Console.KeyAvailable)
             {
@@ -70,6 +69,8 @@ public class KeyListener
         {
             _waitEvent.Set();
         }
+
+        IsRunning = false;
     }
 
     public void ForceWait()

@@ -1,9 +1,7 @@
 ﻿using System.Collections;
-using System.Diagnostics;
 
 namespace Sunnyyssh.ConsoleUI;
 
-[DebuggerStepThrough]
 public sealed class ConcurrentChain<T> : IEnumerable<T>
     where T : class
 {
@@ -79,10 +77,17 @@ public sealed class ConcurrentChain<T> : IEnumerable<T>
         lock (_lockObject)
         {
             int index = _items.IndexOf(item);
+            if (index < 0)
+                return false;
             if (index < _current)
                 _current--;
-            if (index < _current)
-                _current--;
+            if (index < _cycleRootIndex)
+                _cycleRootIndex--;
+            // If we remove the last element then we should set _current and _cycleRootIndex to the next one (at 0 position) 
+            if (_items.Count - 1 == _current)
+                _current = 0;
+            if (_items.Count - 1 == _cycleRootIndex)
+                _cycleRootIndex = 0;
             return _items.Remove(item);
         }
     }

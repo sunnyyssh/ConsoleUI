@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -157,7 +156,7 @@ internal class ElementsField
         // 2. max size
         // 3. max touches
         // 4. The leftmost and topmost position.
-        var ((left, top, width, height), (intersections, touches)) = placementModel
+        var ((left, top, width, height), (intersections, _)) = placementModel
             .OrderBy(placement => placement.Value.intersections)
             .ThenByDescending(placement => placement.Key.height + placement.Key.width)
             .ThenByDescending(placement => placement.Value.positiveTouches)
@@ -170,11 +169,9 @@ internal class ElementsField
     }
 
     // Returning dictionary description:
-    // The each absolute value of (left, top, width, height) is coded by 0 or 1.
-    // 0 if the value is minimal possible, 1 if the value is maximum possible.
-    // Different values are possible because of rounding Relational * Absolute multiplication.
+    // Different placements are possible because of ambigious rounding Relational * Absolute multiplication.
     // And we can round Relational * Absolute either up or down.
-    // The dictionary's keys are placemenets coded by {0, 1}^4 ~ (left, top, width, height)
+    // The dictionary's keys are placemenets (left, top, width, height)
     // The dictionary's values are the count of the intersections with the other children by specific position
     // and the count of the touches with the other children 
     private Dictionary<(int left, int top, int width, int height), (int intersections, int positiveTouches)> 
@@ -208,6 +205,8 @@ internal class ElementsField
                     left, top, width, height
                 };
             })
+            // Removing placement that are not inside the field.
+            .Where(placement => IsPlacementInsideField(placement.left, placement.top, placement.width, placement.height))
             // Turning combinations into the resulting dictionary 
             .ToDictionary(
                 // ectracting Code of placement (it's {0, 1}^4 as described higher)

@@ -1,14 +1,14 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Emit;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
-public abstract partial class UIManager
+public abstract class UIManager
 {
     protected readonly UIManagerSettings Settings;
 
     protected readonly FocusFlowManager HeadFocusFlowManager;
+
+    private bool _hasStartedOnce = false;
 
     private protected readonly Drawer Drawer;
 
@@ -32,8 +32,12 @@ public abstract partial class UIManager
     [MemberNotNull(nameof(Instance))]
     public static UIManager Initialize(UIManagerSettings settings)
     {
-        // Depending on settings different UIManager implementaions should be instantiated.
+        if (IsRunning)
+        {
+            throw new UIManagerException("Cannot initialize new instance of UIManager while current one is running. ");
+        }
         
+        // Depending on settings different UIManager implementaions should be instantiated.
         // At this moment no specific implemenations are required .
         Instance = new DefaultUIManager(settings);
         
@@ -42,18 +46,20 @@ public abstract partial class UIManager
 
     public void Run()
     {
+        if (_hasStartedOnce)
+        {
+            throw new UIManagerException(
+                "The application cannot be started multiple times. Once started it can only stop but not restart. ");
+        }
         if (IsRunning)
         {
             throw new UIManagerException("The application is already running.");
         }
         IsRunning = true;
+        _hasStartedOnce = true;
         
         Drawer.Start();
-        
         KeyListener.Start();
-        // FocusFlowManager should handle pressed keys.
-        KeyListener.KeyPressed += HeadFocusFlowManager.HandlePressedKey; 
-        
         HeadFocusFlowManager.TakeFocus();
         
         Draw();
@@ -65,15 +71,12 @@ public abstract partial class UIManager
         {
             throw new UIManagerException("The application is not running.");
         }
-        IsRunning = false;
         
         HeadFocusFlowManager.LoseFocus();
-        
         Drawer.Stop();
-        
-        // FocusFlowManager shouldn't handle pressed keys anymore.
-        KeyListener.KeyPressed -= HeadFocusFlowManager.HandlePressedKey;
         KeyListener.Stop();
+        
+        IsRunning = false;
     }
 
     public bool TryAddChild(UIElement child, Position position)
@@ -84,34 +87,46 @@ public abstract partial class UIManager
         child.RedrawElement += RedrawChild;
         if (child is IFocusable focusableChild)
         {
-            HeadFocusFlowManager.Add(focusableChild);
+            HeadFocusFlowManager.Add(focusableChild); // TODO Here should be another way to order focusables then in order of adding.
         }
         
         if (IsRunning)
         {
             DrawChild(childInfo);
         }
-
         return true;
+    }
+
+    public bool RemoveChild(UIElement child)
+    {
+        child.RedrawElement -= RedrawChild;
+        if (child is IFocusable focusableChild)
+        {
+            _ = HeadFocusFlowManager.TryRemove(focusableChild);
+        }
+
+        if (!ElementsField.TryGetChild(child, out var childInfo))
+            return false;
+        if (IsRunning)
+        {
+            EraseChild(childInfo);
+        }
+
+        return ElementsField.TryRemoveChild(child);
     }
 
     private protected abstract void Draw();
 
     private protected abstract void DrawChild(ChildInfo child);
 
-    private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args); // handle overlapping !!!
+    private protected abstract void EraseChild(ChildInfo child);
+
+    private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args);
     
     protected UIManager(UIManagerSettings settings)
     {
         Settings = settings;
-        FocusManagerOptions focusManagerOptions = new (
-            Settings.FocusChangeKeys,
-            // Focus Flow should be looped.
-            true,
-            // If there are only one IFocusable nothing should happen when focus change is ought to occur.
-            false);
-        HeadFocusFlowManager = new FocusFlowManager(focusManagerOptions);
-        
+
         DrawerOptions drawerOptions = new(
             Settings.DefaultBackground,
             Settings.DefaultForeground,
@@ -122,6 +137,20 @@ public abstract partial class UIManager
 
         KeyListenerOptions keyListenerOptions = new();
         KeyListener = new KeyListener(keyListenerOptions);
+        
+        FocusManagerOptions focusManagerOptions = new (
+            Settings.FocusChangeKeys,
+            // Focus Flow should be looped.
+            true,
+            // If there are only one IFocusable nothing should happen when focus change is ought to occur.
+            false,
+            true,
+            Settings.KillUIKey);
+        HeadFocusFlowManager = new FocusFlowManager(focusManagerOptions);
+        // FocusFlowManager should handle pressed keys.
+        KeyListener.KeyPressed += HeadFocusFlowManager.HandlePressedKey;
+        // When the Settings.KillUIKey is pressed UI should be killed.
+        HeadFocusFlowManager.SpecialKeyPressed += _ => Stop();
 
         BufferWidth = Drawer.BufferWidth;
         BufferHeight = Drawer.BufferHeight;

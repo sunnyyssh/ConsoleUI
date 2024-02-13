@@ -33,17 +33,20 @@ internal sealed class InternalDrawState
     }
 
     [Pure]
-    public InternalDrawState IntersectWith(InternalDrawState state)
+    public InternalDrawState OverlapWith(InternalDrawState state)
     {
-        throw new NotImplementedException();
+        return Combine(this, state);
     }
 
     [Pure]
-    public InternalDrawState Crop(int width, int height)
+    public InternalDrawState Crop(int left, int top, int width, int height)
     {
-        var cropped = Lines
-            .Where(line => line.Top < height)
-            .Select(line => line.Crop(width - line.Left))
+        var cropped = Lines 
+            // Removing lines not matching vertical bounds 
+            .Where(line => line.Top >= top && line.Top < top + height)
+            // Removing lines not matching horizntal bounds.
+            .Where(line => line.Left + line.Length > left && line.Left < left + width)
+            .Select(line => line.Crop(left - line.Left, left + width - line.Left))
             .ToArray();
         return new InternalDrawState(cropped);
     }
@@ -70,6 +73,8 @@ internal sealed class InternalDrawState
         {
             foreach (var deductibleLine in deductible.Lines)
             {
+                if (deductibleLine.Top != newLines[i].Top)
+                    continue;
                 newLines[i] = newLines[i].Subtract(deductibleLine);
             }
         }
@@ -94,7 +99,7 @@ internal sealed class InternalDrawState
                 (_, lines) => PixelLine.Overlap(lines.ToArray()))
             .ToArray();
 
-        InternalDrawState result = new InternalDrawState(lines);
+        InternalDrawState result = new(lines);
         return result;
     }
 

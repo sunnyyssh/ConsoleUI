@@ -18,9 +18,9 @@ public sealed class DrawState
     }
 
     [Pure]
-    public DrawState IntersectWith(DrawState state)
+    public DrawState OverlapWith(DrawState state)
     {
-        return new DrawState(_internalState.IntersectWith(state._internalState));
+        return new DrawState(_internalState.OverlapWith(state._internalState));
     }
 
     [Pure]
@@ -36,9 +36,9 @@ public sealed class DrawState
     }
 
     [Pure]
-    public DrawState Crop(int width, int height)
+    public DrawState Crop(int left, int top, int width, int height)
     {
-        return new DrawState(_internalState.Crop(width, height));
+        return new DrawState(_internalState.Crop(left, top, width, height));
     }
     
     [Pure]

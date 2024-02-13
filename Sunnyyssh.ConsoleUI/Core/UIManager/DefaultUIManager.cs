@@ -19,11 +19,17 @@ internal class DefaultUIManager : UIManager
 
     private protected override void DrawChild(ChildInfo child)
     {
+        child.Child.OnDraw();
         DrawOptions drawOptions = new(child.Width, child.Height);
         var drawState = child.Child.RequestDrawState(drawOptions);
-        child.Child.OnDraw();
-        
         HandleStateDrawing(child, drawState);
+    }
+
+    private protected override void EraseChild(ChildInfo child)
+    {
+        var erasingState = child.CreateErasingState();
+        Drawer.EnqueueRequest(erasingState);
+        child.Child.OnRemove();
     }
 
     private protected override void RedrawChild(UIElement child, RedrawElementEventArgs args)
@@ -40,7 +46,9 @@ internal class DefaultUIManager : UIManager
         var rowDrawState = drawState.ToInternal(childInfo.Left, childInfo.Top);
         
         // If some elements overlap current we should handle it.
-        var resultDrawState = childInfo.SubtractStateWithOverlapping(rowDrawState);
+        var resultDrawState = childInfo.OverlapUnderlyingWithState(rowDrawState);
+        // If current one overlaps others state we also should handle it.
+        resultDrawState = childInfo.SubtractStateWithOverlapping(resultDrawState);
         
         Drawer.EnqueueRequest(resultDrawState);
         

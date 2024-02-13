@@ -1,11 +1,8 @@
-﻿// TODO make it thread-safe
+﻿namespace Sunnyyssh.ConsoleUI;
 
-namespace Sunnyyssh.ConsoleUI;
+public record FocusManagerOptions(ConsoleKey[] FocusChangeKeys, bool FocusFlowLoop, bool ChangeFocusWhenSingle,  bool ThrowOnNotFocusedHandling = false, ConsoleKey? SpecialKey = null);
 
-// TODO ChangeFocusWhenSingle: If there is only one IFocusable in chain nothing should happen (only when looped). It's better to implement it in ConcurrentChain<T>
-public record FocusManagerOptions(ConsoleKey[] FocusChangeKeys, bool FocusFlowLoop, bool ChangeFocusWhenSingle,  bool ThrowOnNotFocusedHandling = false);
-
-public record FocusFlowEndedArgs();
+public record FocusFlowEndedArgs;
 
 public delegate void FocusFlowEndedHandler(FocusFlowManager lostManager, FocusFlowEndedArgs args);
 
@@ -25,7 +22,7 @@ public sealed class FocusFlowManager
 
     public IFocusable[] Children => _chain.ToArray();
 
-    public bool IsFocused { get; private set; } = false;
+    public bool IsFocused { get; private set; }
 
     public void Add(IFocusable focusable)
     {
@@ -35,9 +32,16 @@ public sealed class FocusFlowManager
 
     public bool TryRemove(IFocusable focusable)
     {
+        var past = _chain.Current;
         bool removeResult = _chain.TryRemove(focusable);
         if (removeResult)
         {
+            if (past == focusable)
+            {
+                RemoveFocusFrom(past);
+                if (_chain.Current is {} newOne) 
+                    GiveFocusTo(newOne);
+            }
             UnsubscribeChildEvents(focusable);
         }
 
@@ -69,7 +73,7 @@ public sealed class FocusFlowManager
             SubscribeChildEvents(newFocusable);
         }
 
-        return insertResult;
+        return insertResult;    
     }
     
 
@@ -81,6 +85,11 @@ public sealed class FocusFlowManager
                 throw new FocusFlowException("It's not focused.");
             return;
         }
+
+        if (_options.SpecialKey == args.KeyInfo.Key)
+        {
+            SpecialKeyPressed?.Invoke(args);
+        }
         
         if (_successor is {} successor)
         {
@@ -88,9 +97,10 @@ public sealed class FocusFlowManager
             return;
         }
 
-        if (IsNeededToChangeFocus(args)) // TODO check if it is correct.
+        if (IsNeededToChangeFocus(args)) 
         {
             MoveNext();
+            return;
         }
 
         if (_chain.Current is {} current)
@@ -108,16 +118,24 @@ public sealed class FocusFlowManager
         return _options.FocusChangeKeys.Any(k => k == args.KeyInfo.Key);
     }
 
-    private bool MoveNext()
+    private void MoveNext()
     {
         IFocusable? past = _chain.Current;
         
         bool chainEnded = !_chain.MoveNext();
         
-        if (chainEnded && !_options.FocusFlowLoop)
+        if (chainEnded)
         {
-            LoseFocus();
-            return false;
+            if (!_options.FocusFlowLoop)
+            {
+                LoseFocus();
+                return;
+            }
+
+            if (!_options.ChangeFocusWhenSingle)
+            {
+                return;
+            }
         }
         
         IFocusable? newFocusable = _chain.Current;
@@ -129,7 +147,6 @@ public sealed class FocusFlowManager
         {
             GiveFocusTo(newFocusable);
         }
-        return true;
     }
 
     public event FocusFlowEndedHandler? FocusFlowEnded;
@@ -250,6 +267,8 @@ public sealed class FocusFlowManager
             _chain.MoveNext();
         }
     }
+
+    public event KeyPressedHandler? SpecialKeyPressed;
 
     public FocusFlowManager(FocusManagerOptions options)
     {
