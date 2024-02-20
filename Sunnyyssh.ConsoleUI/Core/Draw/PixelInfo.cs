@@ -9,13 +9,33 @@ public sealed class PixelInfo
 
     public static PixelInfo VisibleEmpty => new(' ', Color.Transparent, Color.Transparent);
     
-    public bool IsVisible { get; private set; }
+    public bool IsVisible { get; }
     
-    public Color Foreground { get; private init; }
+    public Color Foreground { get; }
     
-    public Color Background { get; private init; }
+    public Color Background { get; }
     
-    public char Char { get; private init; }
+    public char Char { get; }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not PixelInfo pixel)
+            return false;
+        return Equals(pixel);
+    }
+
+    private bool Equals(PixelInfo pixel)
+    {
+        return Char == pixel.Char
+               && Foreground == pixel.Foreground
+               && Background == pixel.Background
+               && IsVisible == pixel.IsVisible;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(IsVisible, (int)Foreground, (int)Background, Char);
+    }
 
     public PixelInfo(char c, Color background = Color.Default, Color foreground = Color.Default)
     {
@@ -49,5 +69,12 @@ public sealed class PixelInfo
             if (ProhibitedChars[i] == c)
                 return true;
         return false;
+    }
+
+    public static bool operator ==(PixelInfo left, PixelInfo right) => left.Equals(right);
+
+    public static bool operator !=(PixelInfo left, PixelInfo right)
+    {
+        return !(left == right);
     }
 }

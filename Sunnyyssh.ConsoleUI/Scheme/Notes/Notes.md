@@ -2,7 +2,7 @@
 2. You can make manager have different drawing options: redraw the whole console or only changed element.
 3. Maybe it's better to make manager draw all than draw them separately.
 4. It's faster to rewrite the whole string ^-^
-5. To set cursor position is not so slow.
+5. To set cursor position is not so slow. (No, actually it is).
 6. How to optimize colorized text.
 7. Container must not contain itself.
 
@@ -60,3 +60,4 @@
 
 - Разбить код большого класса на несколько файлов?
 - Надо подчищать состояние после завершения работы 
+- ОБЯЗАТЕЛЬНО ОПТИМИЗИРУЙ ОТРИСОВКУ

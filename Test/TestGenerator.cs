@@ -8,7 +8,7 @@ public static class TestGenerator
 {
     private static Random random = new Random();
 
-    public static Color GenColor() => (Color)random.Next(5);
+    public static Color GenColor() => (Color)random.Next(18);
 
     public static char GenChar() => (char)random.Next((int)'a', (int)'z');
     

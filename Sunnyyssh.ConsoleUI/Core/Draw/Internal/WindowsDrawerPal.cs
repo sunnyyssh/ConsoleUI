@@ -7,9 +7,9 @@ internal sealed class WindowsDrawerPal : DrawerPal
 {
     private readonly int? _initializedWidth;
     private readonly int? _initializedHeight;
-    public WindowsDrawerPal(Color defaultBackground, Color defaultForeground, bool throwOnBorderConflict, 
+    public WindowsDrawerPal(Color defaultBackground, Color defaultForeground, bool borderConflictsAllowed, 
         int? width, int? height) : 
-        base(defaultBackground, defaultForeground, throwOnBorderConflict)
+        base(defaultBackground, defaultForeground, borderConflictsAllowed)
     {
         _initializedWidth = width;
         _initializedHeight = height;
@@ -24,7 +24,7 @@ internal sealed class WindowsDrawerPal : DrawerPal
         }
         if (_initializedHeight.HasValue)
         {
-            Console.WindowWidth = _initializedHeight.Value;
+            Console.WindowHeight = _initializedHeight.Value;
         }
     }
 }

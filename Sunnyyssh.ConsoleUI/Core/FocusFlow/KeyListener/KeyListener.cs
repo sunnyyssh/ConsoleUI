@@ -29,8 +29,9 @@ public class KeyListener
         {
             throw new KeyListeningException("It's already running.");
         }
-        
-        Thread runningThread = new Thread(() => StartWithCancellation(_cancellation.Token)) 
+
+        Thread runningThread = new(
+                () => StartWithCancellation(_cancellation.Token))
             { IsBackground = false };
         runningThread.Start();
         

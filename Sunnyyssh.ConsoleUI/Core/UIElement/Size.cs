@@ -31,7 +31,23 @@ public sealed class Size
     [MemberNotNullWhen(false, nameof(Width))]
     public bool IsWidthRelational => Sizing.HasFlag(Sizing.RelationalWidth);
 
-    public Size(Sizing sizing, int? width, int? height, double? heightRelation, double? widthRelation)
+    public Size(int width, int height)
+        : this(Sizing.Absolute, width, height, null, null)
+    { }
+
+    public Size(int width, double heightRelational)
+        : this(Sizing.RelationalHeight, width, null, null, heightRelational)
+    { }
+
+    public Size(double widthRelational, int height)
+        : this(Sizing.RelationalWidth, null, height, widthRelational, null)
+    { }
+
+    public Size(double widthRelational, double heightRelational)
+        : this(Sizing.Relational, null, null, widthRelational, heightRelational)
+    { }
+    
+    public Size(Sizing sizing, int? width, int? height, double? widthRelation, double? heightRelation)
     {
         if (sizing.HasFlag(Sizing.RelationalHeight))
             ArgumentNullException.ThrowIfNull(heightRelation, nameof(heightRelation));

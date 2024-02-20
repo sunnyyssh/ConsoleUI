@@ -37,6 +37,14 @@ internal class ElementsField
         }
     }
 
+    public bool Contains(UIElement child)
+    {
+        lock (_childrenCollectionLock)
+        {
+            return _children.ContainsKey(child);
+        }
+    }
+
     public ChildInfo[] GetChildInfos()
     {
         lock (_childrenCollectionLock)

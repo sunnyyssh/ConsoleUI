@@ -1,21 +1,39 @@
-﻿// Tested type.
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Represents the draw state.
+/// </summary>
 internal sealed class InternalDrawState
 {
+    /// <summary>
+    /// The empty draw state.
+    /// </summary>
     public static InternalDrawState Empty => new InternalDrawState(Array.Empty<PixelLine>());
     
-    public PixelLine[] Lines { get; private init; }
+    /// <summary>
+    /// Lines of the draw state. The state actually consists of them.
+    /// </summary>
+    public PixelLine[] Lines { get; }
 
+    /// <summary>
+    /// Creates the instance of <see cref="InternalDrawState"/> with given lines.
+    /// </summary>
+    /// <param name="lines">Lines that draw state'll consist of.</param>
     public InternalDrawState(PixelLine[] lines)
     {
         Lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }
 
+    /// <summary>
+    /// Tries to get pixel
+    /// </summary>
+    /// <param name="left">Left coordinate.</param>
+    /// <param name="top">Top coordinate.</param>
+    /// <param name="resultPixel">Result pixel if it's found. null otherwise.</param>
+    /// <returns>True if pixel was found. False otherwise.</returns>
     public bool TryGetPixel(int left, int top, [NotNullWhen(true)] out PixelInfo? resultPixel)
     {
         foreach (PixelLine line in Lines)
@@ -32,6 +50,7 @@ internal sealed class InternalDrawState
         return false;
     }
 
+    // 
     [Pure]
     public InternalDrawState OverlapWith(InternalDrawState state)
     {

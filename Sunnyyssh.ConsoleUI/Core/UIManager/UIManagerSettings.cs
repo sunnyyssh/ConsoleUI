@@ -36,8 +36,8 @@ public sealed class UIManagerSettings
     public int? Height { get; [SupportedOSPlatform("Windows")] init; } = null;
     
     public int? Width { get; [SupportedOSPlatform("Windows")] init; } = null;
-    
-    public bool ThrowOnBorderConflicts { get; init; } = false;
+
+    public bool BorderConflictsAllowed { get; init; } = true;
 
     public ConsoleKey[] FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab };
 

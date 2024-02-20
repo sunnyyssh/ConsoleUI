@@ -6,7 +6,7 @@ public abstract class UIManager
 {
     protected readonly UIManagerSettings Settings;
 
-    protected readonly FocusFlowManager HeadFocusFlowManager;
+    private protected readonly FocusFlowManager HeadFocusFlowManager;
 
     private bool _hasStartedOnce = false;
 
@@ -99,14 +99,15 @@ public abstract class UIManager
 
     public bool RemoveChild(UIElement child)
     {
+        if (!ElementsField.TryGetChild(child, out var childInfo))
+            return false;
+        
         child.RedrawElement -= RedrawChild;
         if (child is IFocusable focusableChild)
         {
             _ = HeadFocusFlowManager.TryRemove(focusableChild);
         }
-
-        if (!ElementsField.TryGetChild(child, out var childInfo))
-            return false;
+        
         if (IsRunning)
         {
             EraseChild(childInfo);
@@ -130,9 +131,11 @@ public abstract class UIManager
         DrawerOptions drawerOptions = new(
             Settings.DefaultBackground,
             Settings.DefaultForeground,
-            Settings.ThrowOnBorderConflicts,
-            Settings.Width,
-            Settings.Height);
+            Settings.BorderConflictsAllowed) 
+        {
+            Width = Settings.Width,
+            Height = Settings.Height
+        };
         Drawer = new Drawer(drawerOptions);
 
         KeyListenerOptions keyListenerOptions = new();

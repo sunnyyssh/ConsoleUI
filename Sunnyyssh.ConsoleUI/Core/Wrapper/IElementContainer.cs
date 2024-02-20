@@ -2,5 +2,5 @@
 
 public interface IElementContainer
 {
-    bool Contains(UIElement element);
+    bool Contains(UIElement child);
 }

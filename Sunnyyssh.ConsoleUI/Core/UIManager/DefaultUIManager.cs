@@ -44,11 +44,8 @@ internal class DefaultUIManager : UIManager
     private void HandleStateDrawing(ChildInfo childInfo, DrawState drawState)
     {
         var rowDrawState = drawState.ToInternal(childInfo.Left, childInfo.Top);
-        
-        // If some elements overlap current we should handle it.
-        var resultDrawState = childInfo.OverlapUnderlyingWithState(rowDrawState);
-        // If current one overlaps others state we also should handle it.
-        resultDrawState = childInfo.SubtractStateWithOverlapping(resultDrawState);
+
+        var resultDrawState = childInfo.TransformState(rowDrawState);
         
         Drawer.EnqueueRequest(resultDrawState);
         

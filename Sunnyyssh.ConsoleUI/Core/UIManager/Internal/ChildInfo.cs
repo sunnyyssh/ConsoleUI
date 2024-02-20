@@ -83,15 +83,32 @@ internal sealed class ChildInfo
         return false;
     }
 
-    public InternalDrawState SubtractStateWithOverlapping(InternalDrawState bareState)
+    internal InternalDrawState TransformState(InternalDrawState rowDrawState)
+    {
+        // If some elements overlap current we should handle it.
+        var resultDrawState = OverlapUnderlyingWithState(rowDrawState);
+        // If current one overlaps others state we also should handle it.
+        resultDrawState = SubtractStateWithOverlapping(resultDrawState);
+        return resultDrawState;
+    }
+
+    public DrawState TransformState(DrawState rowDrawState)
+    {
+        return new DrawState(
+            TransformState(
+                rowDrawState
+                    .ToInternal(0, 0)));
+    }
+
+    private InternalDrawState SubtractStateWithOverlapping(InternalDrawState bareState)
     {
         return _overlapping.Aggregate(bareState,
             (accumulatedState, nextOverlapping) =>
                 accumulatedState.SubtractWith(nextOverlapping.PreviousState ?? InternalDrawState.Empty)
         );
     }
-
-    public InternalDrawState OverlapUnderlyingWithState(InternalDrawState bareState)
+    
+    private InternalDrawState OverlapUnderlyingWithState(InternalDrawState bareState)
     {
         return InternalDrawState.Combine(_underlying
             .Where(ch => ch.PreviousState is not null)

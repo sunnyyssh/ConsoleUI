@@ -1,37 +1,54 @@
-﻿// This type is not thread-safe. But it's used only in thread-safe context.
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Sunnyyssh.ConsoleUI;
     
-// The type is not sealed because it's possible that different platforms should have different console drawing.
+// The type is expected to be inherited
+// because it's possible that different platforms should have different console drawing.
+// This type is not thread-safe. But it's used only in thread-safe context.
 internal class DrawerPal
 {
+    /// <summary>
+    /// Stores the previous (latest) state that is drawn in console.
+    /// </summary>
     protected InternalDrawState PreviousState = InternalDrawState.Empty;
     
-    private bool _throwOnBorderConflict;
+    // Indicates if it's expected to throw an exception on trying to draw outside the buffer.
+    private readonly bool _borderConflictsAllowed;
 
+    // The default background color
     protected readonly Color DefaultBackground;
 
+    // The default foreground color
     protected readonly Color DefaultForeground;
-
-    public virtual int BufferWidth => Console.WindowWidth;
-
-    public virtual int BufferHeight => Console.WindowHeight;
-
-    public virtual void Clear() => Console.Clear();
     
+    public int BufferWidth => Console.WindowWidth;
+
+    public int BufferHeight => Console.WindowHeight;
+
+    public void Clear() => Console.Clear();
+    
+    // Handles start of drawing. 
+    // It may be implemented by platfrom-specific DrawerPal inheritors.
     public virtual void OnStart() { }
     
+    /// <summary>
+    /// Redraws the latest state of console.
+    /// </summary>
     public void Redraw(CancellationToken cancellationToken) => DrawSingleRequest(PreviousState, cancellationToken);
     
+    /// <summary>
+    /// Draws the request directly in console.
+    /// </summary>
+    /// <param name="drawState">The state to draw.</param>
+    /// <param name="cancellationToken"></param>
     public virtual void DrawSingleRequest(InternalDrawState drawState, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             return;
         ArgumentNullException.ThrowIfNull(drawState, nameof(drawState));
         
+        // Checking if state is outside of buffer size.
         ValidateBorderConflicts(drawState);
         // If exception on border violation is not thrown 
         // I should crop the DrawState instance to the actual buffer size.
@@ -41,15 +58,19 @@ internal class DrawerPal
         {
             DrawLine(line, cancellationToken);
         }
-        
+        // Reseting cursor position to (0, 0) point.
+        Console.SetCursorPosition(0, 0);
+        // Storing actual state as latest.
         RenewPreviousState(drawState);
     }
 
+    // Draws the single line.
     protected virtual void DrawLine(PixelLine line, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             return;
         
+        // Trying to optimize drawing by minimizing Console.Write method invocations.
         var parts = LineToParts(line);
         
         foreach (PartLine partLine in parts)
@@ -58,6 +79,7 @@ internal class DrawerPal
         }
     }
 
+    // Splits single line to same-colored parts. 
     protected PartLine[] LineToParts(PixelLine line)
     {
         // Optimizing the drawing is mainly in minimizing the count of Console methods invocations.
@@ -66,6 +88,7 @@ internal class DrawerPal
         
         for (int startIndex = 0; startIndex < line.Length;)
         {
+            // If part can be extracted it's added to the result collection.
             if (TryExtractPart(line, ref startIndex, out var newPart))
             {
                 resultParts.Add(newPart);
@@ -75,6 +98,7 @@ internal class DrawerPal
         return resultParts.ToArray();
     }
     
+    // Tries to extract part starting at given index. 
     private bool TryExtractPart(PixelLine sourceLine, ref int startIndex, [NotNullWhen((true))] out PartLine? result)
     {
         int endIndex = startIndex;
@@ -209,7 +233,7 @@ internal class DrawerPal
         if (row.Length == 0)
         {
             result = null;
-            if (lastBackground.HasValue || lastForeground.HasValue) // Dangerous
+            if (lastBackground.HasValue || lastForeground.HasValue)
                 return false;
             lastBackground = lastForeground = null; 
         }
@@ -258,7 +282,7 @@ internal class DrawerPal
 
     protected void ValidateBorderConflicts(InternalDrawState drawState)
     {
-        if (!_throwOnBorderConflict)
+        if (_borderConflictsAllowed)
             return;
         
         foreach (PixelLine line in drawState.Lines)
@@ -275,11 +299,11 @@ internal class DrawerPal
         }
     }
     
-    public DrawerPal(Color defaultBackground, Color defaultForeground,  bool throwOnBorderConflict)
+    public DrawerPal(Color defaultBackground, Color defaultForeground,  bool borderConflictsAllowed)
     {
         DefaultBackground = defaultBackground;
         DefaultForeground = defaultForeground;
-        _throwOnBorderConflict = throwOnBorderConflict;
+        _borderConflictsAllowed = borderConflictsAllowed;
     }
 
     protected record PartLine(int Left, int Top, ConsoleColor Background, ConsoleColor Foreground, string Part);

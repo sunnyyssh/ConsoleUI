@@ -1,0 +1,24 @@
+﻿@startuml
+
+abstract UIElement
+interface IElementContainer
+interface IFocusable
+interface IFocusManagerHandler
+IFocusable <|- IFocusManagerHolder
+
+abstract Wrapper 
+
+UIElement <|.. Wrapper 
+IFocusManagerHandler <|.. Wrapper
+IElementContainer <|.. Wrapper
+
+Wrapper <|.. Canvas
+Wrapper <|.. Grid
+Wrapper <|.. Stack
+
+UIElement <|.. Button
+IFocusable <|.. Button
+
+
+
+@enduml

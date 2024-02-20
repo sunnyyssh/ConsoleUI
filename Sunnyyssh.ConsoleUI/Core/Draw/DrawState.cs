@@ -12,7 +12,7 @@ public sealed class DrawState
     public DrawState(PixelLine[] lines) : this(new InternalDrawState(lines))
     { }
 
-    private DrawState(InternalDrawState internalState)
+    internal DrawState(InternalDrawState internalState)
     {
         _internalState = internalState;
     }
@@ -52,6 +52,8 @@ public sealed class DrawState
     {
         return _internalState.TryGetPixel(left, top, out resultPixel);
     }
+
+    public static DrawState Empty => new DrawState(InternalDrawState.Empty);
     
     public static DrawState Combine(params DrawState[] states)
     {

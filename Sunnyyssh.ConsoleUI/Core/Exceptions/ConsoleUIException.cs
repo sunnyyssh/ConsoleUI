@@ -6,4 +6,9 @@ public abstract class ConsoleUIException : Exception
     {
         
     }
+
+    public ConsoleUIException()
+    {
+        
+    }
 }
