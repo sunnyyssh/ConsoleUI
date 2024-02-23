@@ -7,11 +7,11 @@ namespace Sunnyyssh.ConsoleUI;
 // because it's possible that different platforms should have different console drawing.
 // This type is not thread-safe. But it's used only in thread-safe context.
 internal class DrawerPal
-{
+{ 
     /// <summary>
     /// Stores the previous (latest) state that is drawn in console.
     /// </summary>
-    protected InternalDrawState PreviousState = InternalDrawState.Empty;
+    protected DrawState PreviousState = DrawState.Empty;
     
     // Indicates if it's expected to throw an exception on trying to draw outside the buffer.
     private readonly bool _borderConflictsAllowed;
@@ -32,17 +32,17 @@ internal class DrawerPal
     // It may be implemented by platfrom-specific DrawerPal inheritors.
     public virtual void OnStart() { }
     
-    /// <summary>
-    /// Redraws the latest state of console.
-    /// </summary>
-    public void Redraw(CancellationToken cancellationToken) => DrawSingleRequest(PreviousState, cancellationToken);
+    // /// <summary>
+    // /// Redraws the latest state of console.
+    // /// </summary>
+    //public void Redraw(CancellationToken cancellationToken) => DrawSingleRequest(PreviousState, cancellationToken);
     
     /// <summary>
     /// Draws the request directly in console.
     /// </summary>
     /// <param name="drawState">The state to draw.</param>
     /// <param name="cancellationToken"></param>
-    public virtual void DrawSingleRequest(InternalDrawState drawState, CancellationToken cancellationToken)
+    public virtual void DrawSingleRequest(DrawState drawState, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             return;
@@ -275,12 +275,12 @@ internal class DrawerPal
 
     private static ConsoleColor ToConsoleColor(Color color) => (ConsoleColor)(color - 2);
 
-    protected void RenewPreviousState(InternalDrawState newState)
+    protected void RenewPreviousState(DrawState newState)
     {
-        PreviousState = InternalDrawState.Combine(PreviousState, newState);
+        PreviousState = DrawState.Combine(PreviousState, newState);
     }
 
-    protected void ValidateBorderConflicts(InternalDrawState drawState)
+    protected void ValidateBorderConflicts(DrawState drawState)
     {
         if (_borderConflictsAllowed)
             return;

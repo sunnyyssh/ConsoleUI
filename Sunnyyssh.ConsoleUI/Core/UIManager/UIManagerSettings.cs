@@ -41,7 +41,8 @@ public sealed class UIManagerSettings
 
     public ConsoleKey[] FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab };
 
-    public bool EnableOverlapping { get; init; } = true;
+    // Now there is no need in overlapping disabled.
+    public bool EnableOverlapping { get; private init; } = true;
 
     public ConsoleKey? KillUIKey { get; init; } = null;
 }

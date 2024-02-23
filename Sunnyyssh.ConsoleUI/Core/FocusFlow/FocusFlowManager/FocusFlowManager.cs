@@ -117,7 +117,6 @@ internal sealed class FocusFlowManager
         }
     }
     
-
     public void HandlePressedKey(KeyPressedArgs args)
     {
         lock (_lockObject)

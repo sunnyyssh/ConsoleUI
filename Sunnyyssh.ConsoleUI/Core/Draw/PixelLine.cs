@@ -149,6 +149,35 @@ public sealed class PixelLine
 
         return new PixelLine(leftInclusive, top, pixels!);
     }
+    
+    public static PixelLine HideOverlap(PixelLine[] orderedLines)
+    {
+        ArgumentNullException.ThrowIfNull(orderedLines, nameof(orderedLines));
+        if (orderedLines.Length == 0)
+            return new PixelLine(0, 0, Array.Empty<PixelInfo>());
+        CheckLinesTopEquality(orderedLines);
+
+        int top = orderedLines.First().Top;
+        int leftInclusive = orderedLines.Select(l => l.Left).Min();
+        int rightExclusive = orderedLines.Select(l => l.Left + l.Length).Max();
+        int length = rightExclusive - leftInclusive;
+
+        PixelInfo?[] pixels = new PixelInfo[length];
+
+        foreach (PixelLine line in orderedLines)
+        {
+            for (int i = 0, offset = line.Left - leftInclusive; i < line.Length; i++, offset++)
+            {
+                pixels[offset] = line[i];
+            }
+        }
+
+        // null pixels must be PixelInfo with IsVisible = false.
+        for (int i = 0; i < pixels.Length; i++)
+            pixels[i] ??= new PixelInfo();
+
+        return new PixelLine(leftInclusive, top, pixels!);
+    }
 
     private static void CheckLinesTopEquality(PixelLine[] lines)
     {

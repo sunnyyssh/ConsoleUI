@@ -3,11 +3,11 @@ namespace Sunnyyssh.ConsoleUI;
 
 internal delegate void RedrawElementEventHandler(UIElement sender, RedrawElementEventArgs args);
 
-internal record RedrawElementEventArgs(DrawState State);
+internal record RedrawElementEventArgs;
 
 public abstract class UIElement
 {
-    public bool IsDrawn { get; private set; } = false; // I don't know how to do it. It's kinda cringe.
+    public bool IsDrawn { get; private set; }
     
     public Size Size { get; }
 
@@ -15,7 +15,7 @@ public abstract class UIElement
     
     protected int ActualHeight { get; private set; }
 
-    protected DrawState? PreviousState;
+    protected internal DrawState? CurrentState { get; private set; }
 
     public OverlappingPriority OverlappingPriority { get; }
     
@@ -24,15 +24,15 @@ public abstract class UIElement
     protected void Redraw(DrawState state)
     {
         ArgumentNullException.ThrowIfNull(state);
-        PreviousState = PreviousState?.OverlapWith(state) ?? state;
-        RedrawElement?.Invoke(this, new RedrawElementEventArgs(state));
+        CurrentState = CurrentState?.HideOverlapWith(state) ?? state;
+        RedrawElement?.Invoke(this, new RedrawElementEventArgs());
     }
 
     internal DrawState RequestDrawState(DrawOptions options)
     {
         ActualWidth = options.Width;
         ActualHeight = options.Height;
-        return PreviousState ??= GetDrawState(ActualWidth, ActualHeight);
+        return CurrentState ??= GetDrawState(ActualWidth, ActualHeight);
     }
 
     protected abstract DrawState GetDrawState(int width, int height);

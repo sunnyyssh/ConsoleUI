@@ -1,67 +1,153 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Net.Http.Headers;
 
 namespace Sunnyyssh.ConsoleUI;
 
-public sealed class DrawState
+/// <summary>
+/// Represents the draw state.
+/// </summary>
+public sealed class 
+    DrawState
 {
-    private readonly InternalDrawState _internalState;
+    /// <summary>
+    /// The empty draw state.
+    /// </summary>
+    public static DrawState Empty => new DrawState(Array.Empty<PixelLine>());
     
-    public PixelLine[] Lines => _internalState.Lines;
-    
-    public DrawState(PixelLine[] lines) : this(new InternalDrawState(lines))
-    { }
+    /// <summary>
+    /// Lines of the draw state. The state actually consists of them.
+    /// </summary>
+    public PixelLine[] Lines { get; }
 
-    internal DrawState(InternalDrawState internalState)
+    /// <summary>
+    /// Creates the instance of <see cref="DrawState"/> with given lines.
+    /// </summary>
+    /// <param name="lines">Lines that draw state'll consist of.</param>
+    public DrawState(PixelLine[] lines)
     {
-        _internalState = internalState;
+        Lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }
 
+    /// <summary>
+    /// Tries to get pixel
+    /// </summary>
+    /// <param name="left">Left coordinate.</param>
+    /// <param name="top">Top coordinate.</param>
+    /// <param name="resultPixel">Result pixel if it's found. null otherwise.</param>
+    /// <returns>True if pixel was found. False otherwise.</returns>
+    public bool TryGetPixel(int left, int top, [NotNullWhen(true)] out PixelInfo? resultPixel)
+    {
+        foreach (PixelLine line in Lines)
+        {
+            if (line.Top != top)
+                continue;
+            if (left < line.Left || left >= line.Left + line.Left)
+                continue;
+            resultPixel = line[left - line.Left];
+            return true;
+        }
+
+        resultPixel = null;
+        return false;
+    }
+
+    // 
     [Pure]
     public DrawState OverlapWith(DrawState state)
     {
-        return new DrawState(_internalState.OverlapWith(state._internalState));
+        return Combine(this, state);
     }
 
     [Pure]
-    public DrawState SubtractWith(DrawState state)
+    public DrawState HideOverlapWith(DrawState state)
     {
-        return new DrawState(_internalState.SubtractWith(state._internalState));
-    }
-
-    [Pure]
-    public DrawState Shift(int left, int top)
-    {
-        return new DrawState(_internalState.Shift(left, top));
+        return HideOverlap(this, state);
     }
 
     [Pure]
     public DrawState Crop(int left, int top, int width, int height)
     {
-        return new DrawState(_internalState.Crop(left, top, width, height));
+        var cropped = Lines 
+            // Removing lines not matching vertical bounds 
+            .Where(line => line.Top >= top && line.Top < top + height)
+            // Removing lines not matching horizntal bounds.
+            .Where(line => line.Left + line.Length > left && line.Left < left + width)
+            .Select(line => line.Crop(left - line.Left, left + width - line.Left))
+            .ToArray();
+        return new DrawState(cropped);
     }
     
     [Pure]
-    internal InternalDrawState ToInternal(int left, int top)
+    public DrawState Shift(int leftShift, int topShift)
     {
-        return _internalState.Shift(left, top);
+        return new DrawState(
+            Lines
+            .Select(l => 
+                new PixelLine(
+                    l.Left + leftShift, 
+                    l.Top + topShift, 
+                    l.Pixels))
+            .ToArray());
     }
 
     [Pure]
-    internal bool TryGetPixel(int left, int top, [NotNullWhen(true)] out PixelInfo? resultPixel)
+    public DrawState SubtractWith(DrawState deductible)
     {
-        return _internalState.TryGetPixel(left, top, out resultPixel);
+        var newLines = new PixelLine[Lines.Length];
+        Array.Copy(Lines, newLines, Lines.Length);
+        for (int i = 0; i < newLines.Length; i++)
+        {
+            foreach (var deductibleLine in deductible.Lines)
+            {
+                if (deductibleLine.Top != newLines[i].Top)
+                    continue;
+                newLines[i] = newLines[i].Subtract(deductibleLine);
+            }
+        }
+
+        return new DrawState(newLines);
+    }
+    
+    public static DrawState Combine(params DrawState[] orderedDrawStates)
+    {
+        ArgumentNullException.ThrowIfNull(orderedDrawStates, nameof(orderedDrawStates));
+
+        var lines = orderedDrawStates
+            // making one sequence of lines from sequence of sequences of lines.
+            .SelectMany(
+                state => state.Lines,
+                (_, line) => line)
+            // Grouping lines by their Top value
+            // and making one line from each group using overlapping
+            .GroupBy(
+                line => line.Top,
+                line => line,
+                (_, lines) => PixelLine.Overlap(lines.ToArray()))
+            .ToArray();
+
+        DrawState result = new(lines);
+        return result;
     }
 
-    public static DrawState Empty => new DrawState(InternalDrawState.Empty);
-    
-    public static DrawState Combine(params DrawState[] states)
+    public static DrawState HideOverlap(params DrawState[] orderedDrawStates)
     {
-        var combined = InternalDrawState.Combine(
-            states
-                .Select(st => st._internalState)
-                .ToArray()
-        );
-        return new DrawState(combined);
+        ArgumentNullException.ThrowIfNull(orderedDrawStates, nameof(orderedDrawStates));
+        
+        var lines = orderedDrawStates
+            // making one sequence of lines from sequence of sequences of lines.
+            .SelectMany(
+                state => state.Lines,
+                (_, line) => line)
+            // Grouping lines by their Top value
+            // and making one line from each group using hide overlapping
+            .GroupBy(
+                line => line.Top,
+                line => line,
+                (_, lines) => PixelLine.HideOverlap(lines.ToArray()))
+            .ToArray();
+
+        DrawState result = new(lines);
+        return result;
     }
 }

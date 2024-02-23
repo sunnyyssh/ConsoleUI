@@ -124,7 +124,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
 
     private void EraseChild(ChildInfo childInfo)
     {
-        var erasingState = new DrawState(childInfo.CreateErasingState())
+        var erasingState = childInfo.CreateErasingState()
             .Shift(childInfo.Left, childInfo.Top);
         
         Redraw(erasingState);
@@ -158,16 +158,14 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
 
     private DrawState GetChildState(ChildInfo child)
     {
-        var result = child.TransformState(
-            child.Child.RequestDrawState(
-                    new DrawOptions(child.Width, child.Height))
-                .Shift(child.Left, child.Top));
-        
+        child.Child.RequestDrawState(new DrawOptions(child.Width, child.Height));
+        var result = child.TransformState();
+
         child.Child.OnDraw();
         
         return result;
     }
-
+    
     private void RedrawChild(UIElement child, RedrawElementEventArgs args)
     {
         if (!_lazyElementsField.IsInitialized)
@@ -175,8 +173,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         if (!_lazyElementsField.Field.TryGetChild(child, out var childInfo))
             return;
 
-        var resultState = childInfo.TransformState(
-            args.State.Shift(childInfo.Left, childInfo.Top));
+        var resultState = childInfo.TransformState();
         
         Redraw(resultState);
     }
@@ -189,7 +186,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         FocusManagerOptions focusManagerOptions = new(
             focusChangeKeys,
             // It's not provided to loop focus flow
-            // because the wrapper must lose focus when all wrapper's IFocusable went throw focus
+            // because the wrapper must lose focus when all wrapper's IFocusable went throgh focus
             false,
             false,
             true);

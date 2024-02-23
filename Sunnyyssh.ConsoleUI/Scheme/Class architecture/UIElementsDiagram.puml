@@ -3,14 +3,26 @@
 abstract UIElement
 interface IElementContainer
 interface IFocusable
-interface IFocusManagerHandler
+interface IFocusManagerHolder
+abstract Wrapper
+class Button
+class Canvas
+class Grid
+class Stack
+class TextBlock
+class TextBox
+class Table
+class OptionChooser
+abstract Border
+class SingleLineBorder
+class DoubleLineBorder
+class DenseLineBorder
+
 IFocusable <|- IFocusManagerHolder
 
-abstract Wrapper 
-
 UIElement <|.. Wrapper 
-IFocusManagerHandler <|.. Wrapper
-IElementContainer <|.. Wrapper
+IFocusManagerHolder <|. Wrapper
+IElementContainer <|. Wrapper
 
 Wrapper <|.. Canvas
 Wrapper <|.. Grid
@@ -18,6 +30,21 @@ Wrapper <|.. Stack
 
 UIElement <|.. Button
 IFocusable <|.. Button
+
+UIElement <|.. TextBlock 
+UIElement <|.. TextBox
+IFocusable <|... TextBox
+
+UIElement <|... Table
+IFocusable <|... Table
+
+UIElement <|... OptionChooser
+IFocusable <|... OptionChooser
+
+UIElement <|... Border
+Border <|.. SingleLineBorder
+Border <|.. DoubleLineBorder
+Border <|.. DenseLineBorder
 
 
 

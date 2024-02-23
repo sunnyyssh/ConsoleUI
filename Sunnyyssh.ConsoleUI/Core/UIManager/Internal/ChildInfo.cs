@@ -41,10 +41,8 @@ internal sealed class ChildInfo
     public int Width { get; private init; }
     public int Height { get; private init; }
     public bool IsFocusable { get; private init; }
-
-    // It's very important to set this Property only after handling the state
-    // because it will be ambigious if somebody is intersected with state which has not even been handled.
-    public InternalDrawState? PreviousState { get; set; }
+    
+    public DrawState? CurrentState => Child.CurrentState?.Shift(Left, Top);
 
     private readonly OrderedOverlappingCollection _overlapping = new();
     private readonly OrderedOverlappingCollection _underlying = new();
@@ -82,40 +80,21 @@ internal sealed class ChildInfo
 
         return false;
     }
-
-    internal InternalDrawState TransformState(InternalDrawState rowDrawState)
-    {
-        // If some elements overlap current we should handle it.
-        var resultDrawState = OverlapUnderlyingWithState(rowDrawState);
-        // If current one overlaps others state we also should handle it.
-        resultDrawState = SubtractStateWithOverlapping(resultDrawState);
-        return resultDrawState;
-    }
-
-    public DrawState TransformState(DrawState rowDrawState)
-    {
-        return new DrawState(
-            TransformState(
-                rowDrawState
-                    .ToInternal(0, 0)));
-    }
-
-    private InternalDrawState SubtractStateWithOverlapping(InternalDrawState bareState)
-    {
-        return _overlapping.Aggregate(bareState,
-            (accumulatedState, nextOverlapping) =>
-                accumulatedState.SubtractWith(nextOverlapping.PreviousState ?? InternalDrawState.Empty)
-        );
-    }
     
-    private InternalDrawState OverlapUnderlyingWithState(InternalDrawState bareState)
+    internal DrawState TransformState()
     {
-        return InternalDrawState.Combine(_underlying
-            .Where(ch => ch.PreviousState is not null)
-            .Select(ch => ch.PreviousState!)
-            .Append(bareState)
-            .ToArray()
-        ).Crop(Left, Top, Width, Height);
+        var ordered = _underlying
+            .Where(ch => ch.CurrentState is not null)
+            .Select(ch => ch.CurrentState!)
+            .Append(CurrentState!)
+            .Concat(
+                _overlapping
+                    .Where(ch => ch.CurrentState is not null)
+                    .Select(ch => ch.CurrentState!))
+            .ToArray();
+        
+        return DrawState.Combine(ordered)
+            .Crop(Left, Top, Width, Height);
     }
     
     public bool RemoveIfOverlapping(ChildInfo childInfo)
@@ -124,31 +103,30 @@ internal sealed class ChildInfo
                childInfo._overlapping.Remove(this) && _underlying.Remove(childInfo);
     }
 
-    public InternalDrawState CreateErasingState()
+    public DrawState CreateErasingState()
     {
-        // All underlying states combined.
-        var combinedUnderlying = InternalDrawState.Combine(_underlying
-            .Where(ch => ch.PreviousState is not null)
-            .Select(ch => ch.PreviousState!)
-            .ToArray()
-        ).Crop(Left, Top, Width, Height);
-        
         // Creating state of all pixels just default-backgrounded.
-        InternalDrawState defaultBackgroundedState = new(
+        DrawState notVisibleState = new(
             Enumerable.Range(0, Height)
                 .Select(i => new PixelLine(Left, Top + i,
                     Enumerable.Range(0, Width)
-                        .Select(_ => new PixelInfo(Color.Default))
+                        .Select(_ => new PixelInfo())
                         .ToArray()))
                 .ToArray()
         );
-        // filling non-visible pixels by overlapping over defaultBackgroundedState
-        var filledUnderlying = defaultBackgroundedState.OverlapWith(combinedUnderlying);
         
-        // Removing pixels that are overlapped.
-        var resultState = SubtractStateWithOverlapping(filledUnderlying);
+        var ordered = _underlying
+            .Where(ch => ch.CurrentState is not null)
+            .Select(ch => ch.CurrentState!)
+            .Append(notVisibleState)
+            .Concat(
+                _overlapping
+                    .Where(ch => ch.CurrentState is not null)
+                    .Select(ch => ch.CurrentState!))
+            .ToArray();
         
-        return resultState;
+        return DrawState.Combine(ordered)
+            .Crop(Left, Top, Width, Height);
     }
 
     public bool IsIntersectedWith(ChildInfo child)

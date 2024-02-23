@@ -37,19 +37,15 @@ internal class DefaultUIManager : UIManager
         if (!ElementsField.TryGetChild(child, out var childInfo))
             return;
         
-        var drawState = args.State;
-        HandleStateDrawing(childInfo, drawState);
+        HandleStateDrawing(childInfo, child.CurrentState!); // TODO it's bad.
     }
 
     private void HandleStateDrawing(ChildInfo childInfo, DrawState drawState)
     {
-        var rowDrawState = drawState.ToInternal(childInfo.Left, childInfo.Top);
+        var rowDrawState = drawState.Shift(childInfo.Left, childInfo.Top);
 
-        var resultDrawState = childInfo.TransformState(rowDrawState);
+        var resultDrawState = childInfo.TransformState();
         
         Drawer.EnqueueRequest(resultDrawState);
-        
-        // We should renew previous state.
-        childInfo.PreviousState = rowDrawState;
     }
 }

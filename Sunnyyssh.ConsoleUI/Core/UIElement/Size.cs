@@ -35,16 +35,16 @@ public sealed class Size
         : this(Sizing.Absolute, width, height, null, null)
     { }
 
-    public Size(int width, double heightRelational)
-        : this(Sizing.RelationalHeight, width, null, null, heightRelational)
+    public Size(int width, double heightRelation)
+        : this(Sizing.RelationalHeight, width, null, null, heightRelation)
     { }
 
-    public Size(double widthRelational, int height)
-        : this(Sizing.RelationalWidth, null, height, widthRelational, null)
+    public Size(double widthRelation, int height)
+        : this(Sizing.RelationalWidth, null, height, widthRelation, null)
     { }
 
-    public Size(double widthRelational, double heightRelational)
-        : this(Sizing.Relational, null, null, widthRelational, heightRelational)
+    public Size(double widthRelation, double heightRelation)
+        : this(Sizing.Relational, null, null, widthRelation, heightRelation)
     { }
     
     public Size(Sizing sizing, int? width, int? height, double? widthRelation, double? heightRelation)

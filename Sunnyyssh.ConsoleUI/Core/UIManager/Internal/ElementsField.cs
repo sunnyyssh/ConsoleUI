@@ -24,8 +24,7 @@ internal class ElementsField
             }
         }
     }
-
-
+    
     public bool IsEmpty 
     {
         get
@@ -142,8 +141,7 @@ internal class ElementsField
 
         return false;
     }
-        
-
+    
     private bool TryFindMostSuitablePlace(UIElement child, Position position, out bool intersected, [NotNullWhen(true)] out ChildInfo? result)
     {
         // It should place children greedy.
