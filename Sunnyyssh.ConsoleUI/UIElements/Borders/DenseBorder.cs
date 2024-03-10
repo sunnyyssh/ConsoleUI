@@ -13,13 +13,33 @@ public sealed class DenseBorder : Border
         LeftBottomCorner = '\u2588',
         RightBottomCorner = '\u2588'
     };
-    
-    public DenseBorder(Size size, OverlappingPriority priority, Color color) 
-        : base(size, priority, DenseCharSet, color)
-    { }
 
     public static void PlaceAt(int left, int top, int width, int height, Color background, Color foreground, DrawStateBuilder builder)
     {
         PlaceAt(left, top, width, height, background, foreground, DenseCharSet, builder);
     }
+    
+    #region Constructors.
+    
+    public DenseBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+        : this(new Size(width, height), color, priority)
+    { }
+    
+    public DenseBorder(int width, double heightRelation, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+        : this(new Size(width, heightRelation), color, priority)
+    { }
+    
+    public DenseBorder(double widthRelation, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+        : this(new Size(widthRelation, height), color, priority)
+    { }
+    
+    public DenseBorder(double widthRelation, double heightRelation, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+        : this(new Size(widthRelation, heightRelation), color, priority)
+    { }
+
+    public DenseBorder(Size size, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+        : base(size, priority, DenseCharSet, color)
+    { }
+
+    #endregion
 }
