@@ -65,7 +65,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
                 s => s is IElementContainer container && container.Contains(child));
     }
 
-    protected bool TryAddChildProtected(UIElement child, Position position)
+    protected bool AddChildProtected(UIElement child, Position position)
     {
         if (child == this)
         {

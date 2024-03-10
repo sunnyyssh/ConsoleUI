@@ -1,5 +1,4 @@
-﻿
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 internal delegate void RedrawElementEventHandler(UIElement sender, RedrawElementEventArgs args);
 
@@ -17,7 +16,7 @@ public abstract class UIElement
 
     protected internal DrawState? CurrentState { get; private set; }
 
-    public OverlappingPriority OverlappingPriority { get; }
+    public OverlappingPriority Priority { get; }
     
     internal event RedrawElementEventHandler? RedrawElement;
 
@@ -47,9 +46,25 @@ public abstract class UIElement
         IsDrawn = false;
     }
 
-    protected UIElement(Size size, OverlappingPriority overlappingPriority)
+    protected UIElement(int width, int height, OverlappingPriority priority)
+        : this(new Size(width, height), priority)
+    {}
+
+    protected UIElement(int width, double heightRelation, OverlappingPriority priority)
+        : this(new Size(width, heightRelation), priority)
+    {}
+
+    protected UIElement(double widthRelation, int height, OverlappingPriority priority)
+        : this(new Size(widthRelation, height), priority)
+    {}
+
+    protected UIElement(double widthRelation, double heightRelation, OverlappingPriority priority)
+        : this(new Size(widthRelation, heightRelation), priority)
+    {}
+
+    protected UIElement(Size size, OverlappingPriority priority)
     {
         Size = size;
-        OverlappingPriority = overlappingPriority;
+        Priority = priority;
     }
 }

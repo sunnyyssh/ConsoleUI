@@ -14,7 +14,7 @@ internal sealed class OrderedOverlappingCollection : IEnumerable<ChildInfo>
         if (Contains(childInfo))
             return false;
         int lastLowerPriorityIndex = _children
-            .FindLastIndex(ch => ch.Child.OverlappingPriority <= childInfo.Child.OverlappingPriority);
+            .FindLastIndex(ch => ch.Child.Priority <= childInfo.Child.Priority);
         // Inserting after all children with lower or equal priority.
         // If there are no such children index will be -1 so it will be inserted at 0 position as expected.
         _children.Insert(lastLowerPriorityIndex + 1, childInfo);
@@ -62,8 +62,8 @@ internal sealed class ChildInfo
             return false;
         if (IsIntersectedWith(possibleOverlapping))
         {
-            if (Child.OverlappingPriority < possibleOverlapping.Child.OverlappingPriority
-                || equalPriorityOverlapping && Child.OverlappingPriority == possibleOverlapping.Child.OverlappingPriority)
+            if (Child.Priority < possibleOverlapping.Child.Priority
+                || equalPriorityOverlapping && Child.Priority == possibleOverlapping.Child.Priority)
             {
                 // Adding new ChildInfo instance that overlaps this.
                 _overlapping.Add(possibleOverlapping);

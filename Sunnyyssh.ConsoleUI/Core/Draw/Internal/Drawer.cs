@@ -32,7 +32,7 @@ internal record DrawerOptions(Color DefaultBackground, Color DefaultForeground, 
 internal class Drawer
 {
     // All drawing directly in console is incapsulated in DrawerPal class
-    private TempDrawerPal _drawerPal;
+    private DrawerPal _drawerPal;
 
     // When Drawer.Stop() method is invoked this should be cancelled
     // to cancel actual drawing operations and make incoming requests be not drawn.
@@ -105,21 +105,21 @@ internal class Drawer
     [MemberNotNull(nameof(_drawerPal))]
     private void InitializeDrawerPal(DrawerOptions options)
     {
-        // If application is running on windows then DrawerPal implementation is ought to be specified for windows.
-        // if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        // {
-        //     _drawerPal = new WindowsDrawerPal(
-        //         options.DefaultBackground,
-        //         options.DefaultForeground,
-        //         options.BorderConflictsAllowed,
-        //         options.Width,
-        //         options.Height);
-        //     return;
-        // }
+        //If application is running on windows then DrawerPal implementation is ought to be specified for windows.
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            _drawerPal = new WindowsDrawerPal(
+                options.DefaultBackground,
+                options.DefaultForeground,
+                options.BorderConflictsAllowed,
+                options.Width,
+                options.Height);
+            return;
+        }
         
-        // If there are no reason to use specific implementations of DrawerPal
-        // the default DrawerPal implementations should be used.  
-        _drawerPal = new TempDrawerPal(options.DefaultBackground, options.DefaultForeground, options.BorderConflictsAllowed); // Default DrawerPal.
+        //If there are no reason to use specific implementations of DrawerPal
+        //the default DrawerPal implementations should be used.  
+        _drawerPal = new DrawerPal(options.DefaultBackground, options.DefaultForeground, options.BorderConflictsAllowed); // Default DrawerPal.
     }
     
     // Method invoked in the drawing thread. 
@@ -153,20 +153,16 @@ internal class Drawer
         int width = _drawerPal.BufferWidth;
         
         // Creating the state of the whole console one-colored
-        DrawState drawState = new (
-            Enumerable.Range(0, height).Select(top => new PixelLine(0, top,
-                Enumerable.Range(0, width)
-                    .Select(_ => new PixelInfo(color))
-                    .ToArray())
-            ).ToArray()
-        );
+        var fillingState = new DrawStateBuilder(width, height)
+            .Fill(_options.DefaultBackground)
+            .ToDrawState();
         
         // It's important not to enqueue this request but directly draw it
         // because it can overlap already enqueued requests, what is fully unexpected.
-        DrawSingleRequest(drawState, cancellationToken);
+        DrawSingleRequest(fillingState, cancellationToken);
     }
     
-    public void Stop()
+    public void Stop() 
     {
         if (!IsRunning)
             throw new DrawingException("It's not running.");

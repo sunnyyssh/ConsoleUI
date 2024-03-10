@@ -79,7 +79,19 @@ public abstract class UIManager
         IsRunning = false;
     }
 
-    public bool TryAddChild(UIElement child, Position position)
+    public bool AddChild(UIElement child, int left, int top)
+        => AddChild(child, new Position(left, top));
+
+    public bool AddChild(UIElement child, int left, double topRelational)
+        => AddChild(child, new Position(left, topRelational));
+
+    public bool AddChild(UIElement child, double leftRelational, int top)
+        => AddChild(child, new Position(leftRelational, top));
+
+    public bool AddChild(UIElement child, double leftRelational, double topRelational)
+        => AddChild(child, new Position(leftRelational, topRelational));
+
+    public bool AddChild(UIElement child, Position position)
     {
         if (!ElementsField.TryPlaceChild(child, position, out ChildInfo? childInfo))
             return false;
