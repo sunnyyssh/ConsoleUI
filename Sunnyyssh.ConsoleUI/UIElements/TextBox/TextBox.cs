@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Xml.Xsl;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -41,6 +40,12 @@ public sealed class TextBox : UIElement, IFocusable
     private ForceTakeFocusHandler? _forceTakeFocusHandler;
 
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
+
+    // CharEntered event should be handled less than in 5 ms.
+    private readonly Handler<TextBox, CharEnteredEventArgs> _charEnteredHandler = new(5);
+
+    // CharEntered event should be handled less than in 5 ms.
+    private readonly Handler<TextBox, TextEnteredEventArgs> _textEnteredHandler = new(5);
 
     #region Colors.
 
@@ -298,14 +303,48 @@ public sealed class TextBox : UIElement, IFocusable
     #region Events.
     
     private void OnCharEntered(char c, bool backspace) =>
-        CharEntered?.Invoke(this, new CharEnteredEventArgs(c, backspace));
+        _charEnteredHandler.Invoke(this, new CharEnteredEventArgs(c, backspace));
 
     private void OnTextEntered(string text) => 
-        TextEntered?.Invoke(this, new TextEnteredEventArgs(text));
+        _textEnteredHandler.Invoke(this, new TextEnteredEventArgs(text));
 
-    public event CharEnteredEventHandler? CharEntered;
-
-    public event TextEnteredEventHandler? TextEntered;
+    public event CharEnteredEventHandler? CharEntered
+    {
+        add
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            
+            _charEnteredHandler.Add(
+                new Action<TextBox, CharEnteredEventArgs>(value), 
+                true);
+        }
+        remove
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            
+            _charEnteredHandler.Remove(
+                new Action<TextBox, CharEnteredEventArgs>(value));
+        }
+    }
+    
+    public event TextEnteredEventHandler? TextEntered
+    {
+        add
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            
+            _textEnteredHandler.Add(
+                new Action<TextBox, TextEnteredEventArgs>(value), 
+                true);
+        }
+        remove
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            
+            _textEnteredHandler.Remove(
+                new Action<TextBox, TextEnteredEventArgs>(value));
+        }
+    }
 
     event ForceTakeFocusHandler? IFocusable.ForceTakeFocus
     {
