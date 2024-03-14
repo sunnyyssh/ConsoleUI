@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public sealed class DrawOptions
+internal sealed class DrawOptions
 {
     public int Width { get; private init; }
     public int Height { get; private init; }

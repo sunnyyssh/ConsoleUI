@@ -10,6 +10,8 @@ public abstract class UIManager
 
     private bool _hasStartedOnce = false;
 
+    private readonly AutoResetEvent _waitForStopEvent = new (true);
+    
     private protected readonly Drawer Drawer;
 
     private protected readonly KeyListener KeyListener;
@@ -38,7 +40,7 @@ public abstract class UIManager
         }
         
         // Depending on settings different UIManager implementaions should be instantiated.
-        // At this moment no specific implemenations are required .
+        // At this moment no specific implemenations are required.
         Instance = new DefaultUIManager(settings);
         
         return Instance;
@@ -57,6 +59,9 @@ public abstract class UIManager
         }
         IsRunning = true;
         _hasStartedOnce = true;
+        
+        // Making threads that are waiting for stop block.
+        _waitForStopEvent.Reset();
         
         Drawer.Start();
         KeyListener.Start();
@@ -77,7 +82,12 @@ public abstract class UIManager
         KeyListener.Stop();
         
         IsRunning = false;
+        
+        // Allowing threads that are waiting for stop continue.
+        _waitForStopEvent.Set();
     }
+
+    public void Wait() => _waitForStopEvent.WaitOne();
 
     public bool AddChild(UIElement child, int left, int top)
         => AddChild(child, new Position(left, top));

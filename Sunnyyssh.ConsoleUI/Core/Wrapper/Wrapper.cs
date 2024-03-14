@@ -13,6 +13,14 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
 
     public virtual bool IsWaitingFocus => _focusFlowManager.HasWaitingFocusable;
+
+    protected bool IsInitialized => _lazyElementsField.IsInitialized;
+
+    protected KeyValuePair<UIElement, Position>[] GetChildInfos => _lazyElementsField.IsInitialized
+        ? _lazyElementsField.Field.GetChildInfos()
+            .Select(ch => new KeyValuePair<UIElement, Position>(ch.Child, new Position(ch.Left, ch.Top)))
+            .ToArray()
+        : _lazyElementsField.GetEnqueuedChildren();
     
     public bool IsFocused { get; private set; }
     
@@ -56,12 +64,11 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         {
             return _lazyElementsField.ContainsEnqueuedChild(child)
                    || _lazyElementsField.GetEnqueuedChildren().Any(
-                       s => s is IElementContainer container && container.Contains(child));
+                       s => s.Key is IElementContainer container && container.Contains(child));
         }
         
-
         return _lazyElementsField.Field.Contains(child)
-            && _lazyElementsField.Field.GetChildren().Any(
+            || _lazyElementsField.Field.GetChildren().Any(
                 s => s is IElementContainer container && container.Contains(child));
     }
 
@@ -168,6 +175,9 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
     
     private void RedrawChild(UIElement child, RedrawElementEventArgs args)
     {
+        ArgumentNullException.ThrowIfNull(child, nameof(child));
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+        
         if (!_lazyElementsField.IsInitialized)
             return;
         if (!_lazyElementsField.Field.TryGetChild(child, out var childInfo))
@@ -181,6 +191,9 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
     protected Wrapper(Size size, OverlappingPriority overlappingPriority, ConsoleKey[] focusChangeKeys, bool allowOverlapping) 
         : base(size, overlappingPriority)
     {
+        ArgumentNullException.ThrowIfNull(size, nameof(size));
+        ArgumentNullException.ThrowIfNull(focusChangeKeys, nameof(focusChangeKeys));
+        
         _lazyElementsField = new LazyElementsField(allowOverlapping);
         
         FocusManagerOptions focusManagerOptions = new(

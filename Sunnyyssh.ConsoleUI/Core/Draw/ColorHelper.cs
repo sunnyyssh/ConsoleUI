@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public static class ColorHelper
+internal static class ColorHelper
 {
-    public static ConsoleColor ToConsoleColor(Color color) => (ConsoleColor)(color - 2);
+    internal static ConsoleColor ToConsoleColor(Color color) => (ConsoleColor)(color - 2);
 }

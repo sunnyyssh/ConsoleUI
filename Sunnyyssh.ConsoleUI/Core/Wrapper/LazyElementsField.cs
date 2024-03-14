@@ -12,7 +12,7 @@ internal sealed class LazyElementsField
 
     private ConcurrentDictionary<UIElement, Position> _enqueuedChildren = new();
 
-    public UIElement[] GetEnqueuedChildren() => _enqueuedChildren.Keys.ToArray();
+    public KeyValuePair<UIElement, Position>[] GetEnqueuedChildren() => _enqueuedChildren.ToArray();
 
     [MemberNotNull(nameof(Field))]
     public void Initialize(int width, int height)
