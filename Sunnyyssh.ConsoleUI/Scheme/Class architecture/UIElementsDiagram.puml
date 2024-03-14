@@ -46,6 +46,4 @@ Border <|.. SingleLineBorder
 Border <|.. DoubleLineBorder
 Border <|.. DenseLineBorder
 
-
-
 @enduml
