@@ -32,20 +32,34 @@ internal sealed class OrderedOverlappingCollection : IEnumerable<ChildInfo>
 }
 
 [DebuggerDisplay("{DebuggerDisplay}")]
-internal sealed class ChildInfo
+public sealed class ChildInfo
 {
-    private string DebuggerDisplay => $"{Child}: Left={Left}; Top={Top}; Width={Width}; Height={Height}";
-    public UIElement Child { get; private init; }
-    public int Left { get; private init; }
-    public int Top { get; private init; }
-    public int Width { get; private init; }
-    public int Height { get; private init; }
-    public bool IsFocusable { get; private init; }
-    
-    public DrawState? CurrentState => Child.CurrentState?.Shift(Left, Top);
-
     private readonly OrderedOverlappingCollection _overlapping = new();
+    
     private readonly OrderedOverlappingCollection _underlying = new();
+    
+    private string DebuggerDisplay => $"{Child}: Left={Left}; Top={Top}; Width={Width}; Height={Height}";
+    
+    public UIElement Child { get; private init; }
+
+    internal DrawState? CurrentState => Child.CurrentState?.Shift(Left, Top);
+    
+    public int Left { get; private init; }
+
+    public int Top { get; private init; }
+
+    public int Width => Child.Width;
+
+    public int Height => Child.Height;
+
+    public bool IsFocusable { get; private init; }
+
+    public bool IsIntersectedWith(ChildInfo child)
+    {
+        bool horizontalIntersected = child.Left < Left + Width && child.Left + child.Width > Left;
+        bool verticalIntersected = child.Top < Top + Height && child.Top + child.Height > Top;
+        return horizontalIntersected && verticalIntersected;
+    }
 
     /// <summary>
     /// 
@@ -54,7 +68,7 @@ internal sealed class ChildInfo
     /// If <see cref="equalPriorityOverlapping"/> is true then this instance is overlapping.</param>
     /// <param name="equalPriorityOverlapping"></param>
     /// <returns>True if successfully added. False otherwise</returns>
-    public bool AddIfOverlapping(ChildInfo possibleOverlapping, bool equalPriorityOverlapping)
+    internal bool AddIfOverlapping(ChildInfo possibleOverlapping, bool equalPriorityOverlapping)
     {
         if (possibleOverlapping == this)
             return false;
@@ -80,7 +94,7 @@ internal sealed class ChildInfo
 
         return false;
     }
-    
+
     internal DrawState TransformState()
     {
         var ordered = _underlying
@@ -96,14 +110,14 @@ internal sealed class ChildInfo
         return DrawState.Combine(ordered)
             .Crop(Left, Top, Width, Height);
     }
-    
-    public bool RemoveIfOverlapping(ChildInfo childInfo)
+
+    internal bool RemoveIfOverlapping(ChildInfo childInfo)
     {
         return _overlapping.Remove(childInfo) && childInfo._underlying.Remove(this) || 
                childInfo._overlapping.Remove(this) && _underlying.Remove(childInfo);
     }
 
-    public DrawState CreateErasingState()
+    internal DrawState CreateErasingState()
     {
         // Creating state of all pixels just default-backgrounded.
         DrawState notVisibleState = new(
@@ -129,21 +143,12 @@ internal sealed class ChildInfo
             .Crop(Left, Top, Width, Height);
     }
 
-    public bool IsIntersectedWith(ChildInfo child)
-    {
-        bool horizontalIntersected = child.Left < Left + Width && child.Left + child.Width > Left;
-        bool verticalIntersected = child.Top < Top + Height && child.Top + child.Height > Top;
-        return horizontalIntersected && verticalIntersected;
-    }
-    
-    public ChildInfo(UIElement child, int left, int top, int width, int height)
+    public ChildInfo(UIElement child, int left, int top)
     {
         ArgumentNullException.ThrowIfNull(child, nameof(child));
         Child = child;
         Left = left;
         Top = top;
-        Width = width;
-        Height = height;
         IsFocusable = child is IFocusable;
     }
 }

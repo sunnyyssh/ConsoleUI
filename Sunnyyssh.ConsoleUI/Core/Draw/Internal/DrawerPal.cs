@@ -26,6 +26,10 @@ internal class DrawerPal
 
     public int BufferHeight => Console.WindowHeight;
 
+    public static int WindowWidth => Console.WindowWidth;
+
+    public static int WindowHeight => Console.WindowHeight;
+
     public void Clear() => Console.Clear();
     
     // Handles start of drawing. 

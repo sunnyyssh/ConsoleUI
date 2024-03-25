@@ -8,11 +8,9 @@ public abstract class UIElement
 {
     public bool IsDrawn { get; private set; }
     
-    public Size Size { get; }
-
-    protected int ActualWidth { get; private set; }
+    public int Width { get; private set; }
     
-    protected int ActualHeight { get; private set; }
+    public int Height { get; private set; }
 
     protected internal DrawState? CurrentState { get; private set; }
 
@@ -29,12 +27,10 @@ public abstract class UIElement
 
     internal DrawState RequestDrawState(DrawOptions options)
     {
-        ActualWidth = options.Width;
-        ActualHeight = options.Height;
-        return CurrentState ??= GetDrawState(ActualWidth, ActualHeight);
+        return CurrentState ??= CreateDrawState(Width, Height);
     }
 
-    protected abstract DrawState GetDrawState(int width, int height);
+    protected abstract DrawState CreateDrawState(int width, int height);
 
     internal void OnDraw()
     {
@@ -47,24 +43,9 @@ public abstract class UIElement
     }
 
     protected UIElement(int width, int height, OverlappingPriority priority)
-        : this(new Size(width, height), priority)
-    {}
-
-    protected UIElement(int width, double heightRelation, OverlappingPriority priority)
-        : this(new Size(width, heightRelation), priority)
-    {}
-
-    protected UIElement(double widthRelation, int height, OverlappingPriority priority)
-        : this(new Size(widthRelation, height), priority)
-    {}
-
-    protected UIElement(double widthRelation, double heightRelation, OverlappingPriority priority)
-        : this(new Size(widthRelation, heightRelation), priority)
-    {}
-
-    protected UIElement(Size size, OverlappingPriority priority)
     {
-        Size = size;
+        Width = width;
+        Height = height;
         Priority = priority;
     }
 }

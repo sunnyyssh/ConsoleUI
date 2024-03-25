@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -139,7 +140,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         childInfo.Child.OnRemove();
     }
 
-    protected override DrawState GetDrawState(int width, int height)
+    protected override DrawState CreateDrawState(int width, int height)
     {
         if (!_lazyElementsField.IsInitialized)
         {
@@ -165,7 +166,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
 
     private DrawState GetChildState(ChildInfo child)
     {
-        child.Child.RequestDrawState(new DrawOptions(child.Width, child.Height));
+        child.Child.RequestDrawState(new DrawOptions());
         var result = child.TransformState();
 
         child.Child.OnDraw();
@@ -188,10 +189,9 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         Redraw(resultState);
     }
     
-    protected Wrapper(Size size, OverlappingPriority overlappingPriority, ConsoleKey[] focusChangeKeys, bool allowOverlapping) 
-        : base(size, overlappingPriority)
+    protected Wrapper(int width, int height, OverlappingPriority overlappingPriority, ConsoleKey[] focusChangeKeys, bool allowOverlapping) 
+        : base(width, height, overlappingPriority)
     {
-        ArgumentNullException.ThrowIfNull(size, nameof(size));
         ArgumentNullException.ThrowIfNull(focusChangeKeys, nameof(focusChangeKeys));
         
         _lazyElementsField = new LazyElementsField(allowOverlapping);

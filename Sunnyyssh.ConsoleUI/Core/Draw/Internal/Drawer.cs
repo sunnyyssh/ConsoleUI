@@ -58,6 +58,10 @@ internal class Drawer
     /// The height of buffer where drawer can actually draw. 
     /// </summary>
     public int BufferHeight => _drawerPal.BufferHeight;
+
+    public static int WindowWidth => DrawerPal.WindowWidth;
+
+    public static int WindowHeight => DrawerPal.WindowHeight;
     
     /// <summary>
     /// Enqueues a request to draw the state.
@@ -119,7 +123,10 @@ internal class Drawer
         
         //If there are no reason to use specific implementations of DrawerPal
         //the default DrawerPal implementations should be used.  
-        _drawerPal = new DrawerPal(options.DefaultBackground, options.DefaultForeground, options.BorderConflictsAllowed); // Default DrawerPal.
+        _drawerPal = new DrawerPal(
+            options.DefaultBackground, 
+            options.DefaultForeground, 
+            options.BorderConflictsAllowed); // Default DrawerPal.
     }
     
     // Method invoked in the drawing thread. 
