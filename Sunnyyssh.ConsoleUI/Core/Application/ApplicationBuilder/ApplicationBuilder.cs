@@ -7,6 +7,13 @@ public sealed class ApplicationBuilder
     private readonly ApplicationSettings _settings;
 
     private readonly List<QueuedChild> _orderedQueuedChildren = new();
+
+    public ApplicationBuilder Add(UIElement element, Position position)
+    {
+        _orderedQueuedChildren.Add(new QueuedChild(element, position));
+
+        return this;
+    }
     
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, Position position)
     {
@@ -49,32 +56,5 @@ public sealed class ApplicationBuilder
     public ApplicationBuilder(ApplicationSettings settings)
     {
         _settings = settings;
-    }
-    
-    private readonly struct QueuedChild
-    {
-        public IUIElementBuilder? Builder { get; } = null;
-
-        public UIElement? Element { get; } = null;
-
-        public Position Position { get; }
-        
-        [MemberNotNullWhen(true, nameof(Element))]
-        [MemberNotNullWhen(false, nameof(Builder))]
-        public bool IsInstance { get; }
-        
-        public QueuedChild(IUIElementBuilder builder, Position position)
-        {
-            Builder = builder;
-            IsInstance = false;
-            Position = position;
-        }
-        
-        public QueuedChild(UIElement element, Position position)
-        {
-            Element = element;
-            IsInstance = true;
-            Position = position;
-        }
     }
 }

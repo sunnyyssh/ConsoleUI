@@ -12,6 +12,11 @@ internal class DefaultApplication : Application
                         child.Child.RequestDrawState(new DrawOptions()))
                     .ToArray()
             );
+
+        foreach (var child in Children)
+        {
+            child.Child.OnDraw();
+        }
         
         Drawer.EnqueueRequest(combinedState);
     }

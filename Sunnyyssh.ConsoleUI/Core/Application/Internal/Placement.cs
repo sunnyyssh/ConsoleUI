@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-record Placement(int Left, int Top, int Width, int Height)
+internal record Placement(int Left, int Top, int Width, int Height)
 {
     public static bool AreTouched(Placement box1, Placement box2)
     {

@@ -20,7 +20,7 @@ public sealed class ElementsFieldBuilder
         {
             throw new ChildPlacementException("Cannot place child at this position.");
         }
-
+        
         return this;
     }
     
