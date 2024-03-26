@@ -2,7 +2,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-public sealed class UIManagerSettings
+public sealed class ApplicationSettings
 {
     private readonly Color _defaultBackground = Color.Black;
     private readonly Color _defaultForeground = Color.White;
@@ -33,7 +33,7 @@ public sealed class UIManagerSettings
         }
     }
     
-    public int? Height { get; [SupportedOSPlatform("Windows")] init; } = null;
+    public int? Height { get; [SupportedOSPlatform("Windows")] init; } = null; // TODO
     
     public int? Width { get; [SupportedOSPlatform("Windows")] init; } = null;
 

@@ -115,7 +115,7 @@ public sealed class TextBox : UIElement, IFocusable
             
             if (IsDrawn)
             {
-                Redraw(GetDrawState(ActualWidth, ActualHeight));
+                Redraw(CreateDrawState(Width, Height));
             }
         }
     }
@@ -136,7 +136,7 @@ public sealed class TextBox : UIElement, IFocusable
 
     public bool IsFocused { get; private set; }
 
-    protected override DrawState GetDrawState(int width, int height)
+    protected override DrawState CreateDrawState(int width, int height)
     {
         var builder = new DrawStateBuilder(width, height);
         
@@ -277,7 +277,7 @@ public sealed class TextBox : UIElement, IFocusable
 
         if (IsDrawn)
         {
-            Redraw(GetDrawState(ActualWidth, ActualHeight));
+            Redraw(CreateDrawState(Width, Height));
         }
     }
 
@@ -291,7 +291,7 @@ public sealed class TextBox : UIElement, IFocusable
 
         if (IsDrawn)
         {
-            Redraw(GetDrawState(ActualWidth, ActualHeight));
+            Redraw(CreateDrawState(Width, Height));
         }
     }
 
@@ -307,13 +307,13 @@ public sealed class TextBox : UIElement, IFocusable
 
     public event TextEnteredEventHandler? TextEntered;
 
-    event ForceTakeFocusHandler? IFocusable.ForceTakeFocus
+    event ForceTakeFocusHandler IFocusable.ForceTakeFocus
     {
         add => _forceTakeFocusHandler += value ?? throw new ArgumentNullException(nameof(value));
         remove => _forceTakeFocusHandler += value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    event ForceLoseFocusHandler? IFocusable.ForceLoseFocus
+    event ForceLoseFocusHandler IFocusable.ForceLoseFocus
     {
         add => _forceLoseFocusHandler += value ?? throw new ArgumentNullException(nameof(value));
         remove => _forceLoseFocusHandler -= value ?? throw new ArgumentNullException(nameof(value));
@@ -321,27 +321,7 @@ public sealed class TextBox : UIElement, IFocusable
     
     #endregion
 
-    #region Constructors.
-        
-    public TextBox(int width, int height, OverlappingPriority priority = OverlappingPriority.Medium)
-        : this(new Size(width, height), priority)
+    public TextBox(int width, int height, OverlappingPriority priority = OverlappingPriority.Medium) 
+        : base(width, height, priority)
     { }
-        
-    public TextBox(int width, double heightRelation, OverlappingPriority priority = OverlappingPriority.Medium)
-        : this(new Size(width, heightRelation), priority)
-    { }
-
-    public TextBox(double widthRelation, int height, OverlappingPriority priority = OverlappingPriority.Medium)
-        : this(new Size(widthRelation, height), priority)
-    { }
-
-    public TextBox(double widthRelation, double heightRelation, OverlappingPriority priority = OverlappingPriority.Medium) 
-        : this(new Size(widthRelation, heightRelation), priority)
-    { }
-
-    public TextBox(Size size, OverlappingPriority priority = OverlappingPriority.Medium) 
-        : base(size, priority)
-    { }
-        
-    #endregion
 }

@@ -18,28 +18,8 @@ public sealed class DenseBorder : Border
     {
         PlaceAt(left, top, width, height, background, foreground, DenseCharSet, builder);
     }
-    
-    #region Constructors.
-    
+
     public DenseBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(width, height), color, priority)
+        : base(width, height, DenseCharSet, color, priority)
     { }
-    
-    public DenseBorder(int width, double heightRelation, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(width, heightRelation), color, priority)
-    { }
-    
-    public DenseBorder(double widthRelation, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(widthRelation, height), color, priority)
-    { }
-    
-    public DenseBorder(double widthRelation, double heightRelation, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(widthRelation, heightRelation), color, priority)
-    { }
-
-    public DenseBorder(Size size, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : base(size, priority, DenseCharSet, color)
-    { }
-
-    #endregion
 }

@@ -10,10 +10,10 @@ public sealed class TextBlock : UIElement
     private string? _text;
 
     private IObservable<string>? _bound;
-    
-    public Color Background { get; init; }
-    
-    public Color Foreground { get; init; }
+
+    public Color Background { get; init; } = Color.Default;
+
+    public Color Foreground { get; init; } = Color.Default;
 
     public VerticalAligning TextVerticalAligning { get; init; } = VerticalAligning.Center;
 
@@ -31,7 +31,7 @@ public sealed class TextBlock : UIElement
             
             if (IsDrawn)
             {
-                Redraw(GetDrawState(ActualWidth, ActualHeight));
+                Redraw(CreateDrawState(Width, Height));
             }
         }
     }
@@ -55,7 +55,7 @@ public sealed class TextBlock : UIElement
 
     #region Draw state handling.
     
-    protected override DrawState GetDrawState(int width, int height)
+    protected override DrawState CreateDrawState(int width, int height)
     {
         var builder = new DrawStateBuilder(width, height);
         
@@ -94,32 +94,8 @@ public sealed class TextBlock : UIElement
     }
     
     #endregion
-
-    #region Constructors
-
-    public TextBlock(int width, int height, OverlappingPriority overlappingPriority = OverlappingPriority.Medium)
-        : this(new Size(width, height))
-    { }
-
-    public TextBlock(int width, double heightRelation, OverlappingPriority priority = OverlappingPriority.Medium)
-        : this(new Size(width, heightRelation), priority)
-    { }
-
-    public TextBlock(double widthRelation, int height, OverlappingPriority priority = OverlappingPriority.Medium)
-        : this(new Size(widthRelation, height), priority)
-    { }
-
-    public TextBlock(double widthRelation, double heightRelation, OverlappingPriority priority = OverlappingPriority.Medium)
-        : this(new Size(widthRelation, heightRelation), priority)
-    { }
     
-    public TextBlock(Size size, OverlappingPriority priority = OverlappingPriority.Medium) 
-        : base(size, priority)
-    {
-        _text = DefaultText;
-        Background = Color.Default;
-        Foreground = Color.Default;
-    }
-
-    #endregion
+    public TextBlock(int width, int height, OverlappingPriority priority = OverlappingPriority.Medium) 
+        : base(width, height, priority)
+    { }
 }

@@ -221,9 +221,8 @@ public abstract class OptionChooser : UIElement, IFocusable
         remove => _forceLoseFocusHandler -= value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    protected OptionChooser(OptionElement[] orderedOptions, OptionChooserKeySet keySet, bool onlyOneChosen,
-        Size size, OverlappingPriority priority) 
-        : base(size, priority)
+    protected OptionChooser(int width, int height, OptionElement[] orderedOptions, OptionChooserKeySet keySet, bool onlyOneChosen, OverlappingPriority priority) 
+        : base(width, height, priority)
     {
         _keySet = keySet;
         _onlyOneChosen = onlyOneChosen;

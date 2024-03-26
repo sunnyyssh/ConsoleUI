@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-internal sealed class DrawOptions
+public class RowChooser //: OptionChooser
 {
     
 }
