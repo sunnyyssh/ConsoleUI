@@ -107,10 +107,6 @@ public abstract class Application
 
     private protected Application(ApplicationSettings settings, ChildInfo[] orderedChildren)
     {
-        ValidateChildren(orderedChildren);
-        Children = orderedChildren;
-        SubscribeChildren(Children);
-        
         Settings = settings;
 
         DrawerOptions drawerOptions = new(
@@ -142,5 +138,9 @@ public abstract class Application
 
         BufferWidth = Drawer.BufferWidth;
         BufferHeight = Drawer.BufferHeight;
+        
+        ValidateChildren(orderedChildren);
+        Children = orderedChildren;
+        SubscribeChildren(Children);
     }
 }

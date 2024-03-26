@@ -9,7 +9,8 @@ internal class DefaultApplication : Application
             DrawState.Combine(
                 Children
                     .Select(child =>
-                        child.Child.RequestDrawState(new DrawOptions()))
+                        child.Child.RequestDrawState(new DrawOptions())
+                            .Shift(child.Left, child.Top))
                     .ToArray()
             );
 

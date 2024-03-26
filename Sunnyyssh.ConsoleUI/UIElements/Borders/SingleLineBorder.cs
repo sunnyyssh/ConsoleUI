@@ -18,28 +18,7 @@ public sealed class SingleLineBorder : Border
     {
         PlaceAt(left, top, width, height, background, foreground, SingleLineCharSet, builder);
     }
-
-    #region Constructors.
-    
     public SingleLineBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(width, height), color, priority)
+        : base(width ,height, SingleLineCharSet, color, priority)
     { }
-    
-    public SingleLineBorder(int width, double heightRelation, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(width, heightRelation), color, priority)
-    { }
-    
-    public SingleLineBorder(double widthRelation, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(widthRelation, height), color, priority)
-    { }
-    
-    public SingleLineBorder(double widthRelation, double heightRelation, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : this(new Size(widthRelation, heightRelation), color, priority)
-    { }
-
-    public SingleLineBorder(Size size, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
-        : base(size, priority, SingleLineCharSet, color)
-    { }
-
-    #endregion
 }

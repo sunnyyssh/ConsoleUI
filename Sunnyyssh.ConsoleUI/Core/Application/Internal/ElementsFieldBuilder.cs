@@ -33,6 +33,28 @@ public sealed class ElementsFieldBuilder
 
         return this;
     }
+    
+    public ElementsFieldBuilder Place(IUIElementBuilder childBuilder, Position position, out ChildInfo result)
+    {
+        if (!TryPlace(childBuilder, position, out var resultChild))
+        {
+            throw new ChildPlacementException("Cannot place child at this position.");
+        }
+
+        result = resultChild;
+        return this;
+    }
+    
+    public ElementsFieldBuilder Place(UIElement child, Position position, out ChildInfo result)
+    {
+        if (!TryPlace(child, position, out var resultChild))
+        {
+            throw new ChildPlacementException("Cannot place child at this position.");
+        }
+
+        result = resultChild;
+        return this;
+    }
 
     public bool TryPlace(IUIElementBuilder childBuilder, Position position, 
         [NotNullWhen(true)] out ChildInfo? result)
@@ -113,16 +135,9 @@ public sealed class ElementsFieldBuilder
 
     private bool IsChildContained(UIElement element)
     {
-        foreach (var child in _orderedChildren)
-        {
-            if (child.Child is IElementContainer container)
-            {
-                if (container.Contains(element))
-                    return true;
-            }
-        }
-
-        return false;
+        return _orderedChildren.Any(ch =>
+            ch.Child is IElementContainer container
+            && container.Contains(element));
     }
 
     // Finds most suitable placement if it's possible.

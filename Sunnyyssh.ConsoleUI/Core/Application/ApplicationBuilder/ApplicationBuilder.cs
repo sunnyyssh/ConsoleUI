@@ -6,18 +6,18 @@ public sealed class ApplicationBuilder
 {
     private readonly ApplicationSettings _settings;
 
-    private readonly List<QueuedChild> _orderedQueuedChildren = new();
+    private readonly List<QueuedPositionChild> _orderedQueuedChildren = new();
 
     public ApplicationBuilder Add(UIElement element, Position position)
     {
-        _orderedQueuedChildren.Add(new QueuedChild(element, position));
+        _orderedQueuedChildren.Add(new QueuedPositionChild(element, position));
 
         return this;
     }
     
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, Position position)
     {
-        _orderedQueuedChildren.Add(new QueuedChild(elementBuilder, position));
+        _orderedQueuedChildren.Add(new QueuedPositionChild(elementBuilder, position));
         
         return this;
     }

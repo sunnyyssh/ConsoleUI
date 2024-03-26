@@ -8,7 +8,7 @@ public abstract class Border : UIElement
     
     public Color Color { get; }
 
-    protected override DrawState GetDrawState(int width, int height)
+    protected override DrawState CreateDrawState(int width, int height)
     {
         var builder = new DrawStateBuilder(width, height);
         
@@ -19,7 +19,7 @@ public abstract class Border : UIElement
         return builder.ToDrawState();
     }
 
-    protected Border(Size size, OverlappingPriority priority, BorderCharSet charSet, Color color) : base(size, priority)
+    protected Border(int width, int height, BorderCharSet charSet, Color color, OverlappingPriority priority) : base(width, height, priority)
     {
         CharSet = charSet;
         Color = color;

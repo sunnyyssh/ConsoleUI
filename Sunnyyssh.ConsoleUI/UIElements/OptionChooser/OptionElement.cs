@@ -12,6 +12,6 @@ public abstract class OptionElement : UIElement
 
     public abstract bool IsChosen { get; }
     
-    protected OptionElement(Size size, OverlappingPriority priority) : base(size, priority)
+    protected OptionElement(int width, int height, OverlappingPriority priority) : base(width, height, priority)
     { }
 }

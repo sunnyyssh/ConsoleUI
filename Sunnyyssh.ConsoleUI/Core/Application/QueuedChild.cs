@@ -2,29 +2,40 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-internal readonly struct QueuedChild
+internal class QueuedChild
 {
     public IUIElementBuilder? Builder { get; } = null;
 
     public UIElement? Element { get; } = null;
 
-    public Position Position { get; }
-        
     [MemberNotNullWhen(true, nameof(Element))]
     [MemberNotNullWhen(false, nameof(Builder))]
     public bool IsInstance { get; }
-        
-    public QueuedChild(IUIElementBuilder builder, Position position)
+
+    public QueuedChild(IUIElementBuilder builder)
     {
         Builder = builder;
         IsInstance = false;
-        Position = position;
     }
-        
-    public QueuedChild(UIElement element, Position position)
+    
+    public QueuedChild(UIElement element)
     {
         Element = element;
         IsInstance = true;
+    }
+}
+
+internal class QueuedPositionChild : QueuedChild
+{
+    public Position Position { get; }
+    
+    public QueuedPositionChild(IUIElementBuilder builder, Position position) : base(builder)
+    {
+        Position = position;
+    }
+        
+    public QueuedPositionChild(UIElement element, Position position) : base(element)
+    {
         Position = position;
     }
 }
