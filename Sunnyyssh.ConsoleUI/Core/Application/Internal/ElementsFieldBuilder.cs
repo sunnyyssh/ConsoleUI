@@ -16,6 +16,9 @@ public sealed class ElementsFieldBuilder
     
     public ElementsFieldBuilder Place(IUIElementBuilder childBuilder, Position position)
     {
+        ArgumentNullException.ThrowIfNull(childBuilder, nameof(childBuilder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+
         if (!TryPlace(childBuilder, position, out _))
         {
             throw new ChildPlacementException("Cannot place child at this position.");
@@ -24,30 +27,12 @@ public sealed class ElementsFieldBuilder
         return this;
     }
     
-    public ElementsFieldBuilder Place(UIElement child, Position position)
-    {
-        if (!TryPlace(child, position, out _))
-        {
-            throw new ChildPlacementException("Cannot place child at this position.");
-        }
-
-        return this;
-    }
-    
     public ElementsFieldBuilder Place(IUIElementBuilder childBuilder, Position position, out ChildInfo result)
     {
+        ArgumentNullException.ThrowIfNull(childBuilder, nameof(childBuilder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+        
         if (!TryPlace(childBuilder, position, out var resultChild))
-        {
-            throw new ChildPlacementException("Cannot place child at this position.");
-        }
-
-        result = resultChild;
-        return this;
-    }
-    
-    public ElementsFieldBuilder Place(UIElement child, Position position, out ChildInfo result)
-    {
-        if (!TryPlace(child, position, out var resultChild))
         {
             throw new ChildPlacementException("Cannot place child at this position.");
         }
@@ -59,6 +44,9 @@ public sealed class ElementsFieldBuilder
     public bool TryPlace(IUIElementBuilder childBuilder, Position position, 
         [NotNullWhen(true)] out ChildInfo? result)
     {
+        ArgumentNullException.ThrowIfNull(childBuilder, nameof(childBuilder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+        
         result = null;
         
         if (!TryFindPlace(childBuilder.Size, position, out bool intersected, out var placement))
@@ -91,53 +79,6 @@ public sealed class ElementsFieldBuilder
 
         result = created;
         return true;
-    }
-    
-    public bool TryPlace(UIElement child, Position position, 
-        [NotNullWhen(true)] out ChildInfo? result)
-    {
-        result = null;
-        
-        if (_orderedChildren.Any(ch => ch.Child == child) || IsChildContained(child))
-        {
-            return false;
-        }
-
-        var childSize = new Size(child.Width, child.Height);
-
-        if (!TryFindPlace(childSize, position, out bool intersected, out var placement))
-        {
-            return false;
-        }
-        
-        if (intersected && !_enableOverlapping)
-        {
-            return false;
-        }
-
-        var created = new ChildInfo(child, placement.Left, placement.Top);
-
-        if (_orderedChildren.Any(ch => ch.Child == created.Child))
-        {
-            return false;
-        }
-        _orderedChildren.Add(created);
-        
-        foreach (var item in _orderedChildren)
-        {
-            created.AddIfOverlapping(item, false);
-            item.AddIfOverlapping(created, true);
-        }
-
-        result = created;
-        return true;
-    }
-
-    private bool IsChildContained(UIElement element)
-    {
-        return _orderedChildren.Any(ch =>
-            ch.Child is IElementContainer container
-            && container.Contains(element));
     }
 
     // Finds most suitable placement if it's possible.
@@ -285,6 +226,11 @@ public sealed class ElementsFieldBuilder
 
     public ElementsFieldBuilder(int width, int height, bool enableOverlapping)
     {
+        if (width <= 0)
+            throw new ArgumentOutOfRangeException(nameof(width), width, null);
+        if (height <= 0)
+            throw new ArgumentOutOfRangeException(nameof(height), height, null);
+        
         Width = width;
         Height = height;
         _enableOverlapping = enableOverlapping;

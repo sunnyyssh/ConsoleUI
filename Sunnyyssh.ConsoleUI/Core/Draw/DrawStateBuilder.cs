@@ -173,6 +173,8 @@ public sealed class DrawStateBuilder // TODO replace much-allocating DrawState o
 
     public static DrawStateBuilder CreateFrom(DrawState drawState)
     {
+        ArgumentNullException.ThrowIfNull(drawState, nameof(drawState));
+        
         var builder = new DrawStateBuilder(
             drawState.Lines.Max(l => l.Left + l.Length),
             drawState.Lines.Max(l => l.Top + 1));

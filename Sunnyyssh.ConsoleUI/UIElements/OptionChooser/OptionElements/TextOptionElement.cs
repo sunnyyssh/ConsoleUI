@@ -57,6 +57,8 @@ public sealed class TextOptionElement : StateOptionElement
 
     internal TextOptionElement(int width, int height, TextOptionColorSet colorSet, string? text) : base(width, height)
     {
+        ArgumentNullException.ThrowIfNull(colorSet, nameof(colorSet));
+
         ColorSet = colorSet;
         Text = text ?? string.Empty;
     }

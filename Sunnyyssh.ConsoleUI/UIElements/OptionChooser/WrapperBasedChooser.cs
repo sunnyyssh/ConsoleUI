@@ -15,7 +15,7 @@ public abstract class WrapperBasedChooser<TWrapper> : OptionChooser
         Redraw(CreateDrawState(Width, Height));
     }
 
-    public void SubscribeWrapper(TWrapper wrapper)
+    private void SubscribeWrapper(TWrapper wrapper)
     {
         wrapper.RedrawElement += RedrawWrapper;
     }
@@ -24,6 +24,10 @@ public abstract class WrapperBasedChooser<TWrapper> : OptionChooser
         OptionElement[] orderedOptions, OptionChooserKeySet keySet, bool canChooseOnlyOne, OverlappingPriority priority) 
         : base(width, height, orderedOptions, keySet, canChooseOnlyOne, priority)
     {
+        ArgumentNullException.ThrowIfNull(optionsWrapper, nameof(optionsWrapper));
+        ArgumentNullException.ThrowIfNull(orderedOptions, nameof(orderedOptions));
+        ArgumentNullException.ThrowIfNull(keySet, nameof(keySet));
+        
         OptionsWrapper = optionsWrapper;
 
         SubscribeWrapper(optionsWrapper);

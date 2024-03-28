@@ -7,16 +7,12 @@ public sealed class ApplicationBuilder
     private readonly ApplicationSettings _settings;
 
     private readonly List<QueuedPositionChild> _orderedQueuedChildren = new();
-
-    public ApplicationBuilder Add(UIElement element, Position position)
-    {
-        _orderedQueuedChildren.Add(new QueuedPositionChild(element, position));
-
-        return this;
-    }
     
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, Position position)
     {
+        ArgumentNullException.ThrowIfNull(elementBuilder, nameof(elementBuilder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+
         _orderedQueuedChildren.Add(new QueuedPositionChild(elementBuilder, position));
         
         return this;
@@ -31,12 +27,6 @@ public sealed class ApplicationBuilder
         
         foreach (var queuedChild in _orderedQueuedChildren)
         {
-            if (queuedChild.IsInstance)
-            {
-                placementBuilder.Place(queuedChild.Element, queuedChild.Position);
-                continue;
-            }
-
             placementBuilder.Place(queuedChild.Builder, queuedChild.Position);
         }
 
@@ -55,6 +45,8 @@ public sealed class ApplicationBuilder
     
     public ApplicationBuilder(ApplicationSettings settings)
     {
+        ArgumentNullException.ThrowIfNull(settings, nameof(settings));
+        
         _settings = settings;
     }
 }

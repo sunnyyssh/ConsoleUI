@@ -59,6 +59,15 @@ public sealed class Size
         else
             ArgumentNullException.ThrowIfNull(width, nameof(width));
 
+        if (width <= 0)
+            throw new ArgumentOutOfRangeException(nameof(width), width, null);
+        if (height <= 0)
+            throw new ArgumentOutOfRangeException(nameof(height), height, null);
+        if (widthRelation <= 0.0 || widthRelation > 1.0)
+            throw new ArgumentOutOfRangeException(nameof(widthRelation), widthRelation, null);
+        if (heightRelation <= 0.0 || heightRelation > 1.0)
+            throw new ArgumentOutOfRangeException(nameof(heightRelation), heightRelation, null);            
+        
         Sizing = sizing;
         HeightRelation = heightRelation;
         WidthRelation = widthRelation;

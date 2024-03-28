@@ -21,6 +21,7 @@ public sealed class PixelInfo
     {
         if (obj is not PixelInfo pixel)
             return false;
+        
         return Equals(pixel);
     }
 
@@ -41,6 +42,7 @@ public sealed class PixelInfo
     {
         if (CharHelper.IsCharSpecial(c))
             throw new ArgumentException(@"The char must not be one of { \n \r \t \b \f \v \a }.", nameof(c));
+        
         Char = c;
         Foreground = foreground;
         Background = background;

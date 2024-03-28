@@ -28,13 +28,6 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
 
     public bool CanChooseOnlyOne { get; init; } = true;
 
-    public RowChooserBuilder Add(OptionElement element, int offset = 0)
-    {
-        _stackPanelBuilder.Add(element, offset);
-
-        return this;
-    }
-
     public RowChooserBuilder Add(IUIElementBuilder<OptionElement> builder, int offset = 0)
     {
         _stackPanelBuilder.Add(builder, offset);
@@ -44,6 +37,8 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
     
     public RowChooser Build(UIElementBuildArgs args)
     {
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+        
         int width = args.Width;
         int height = args.Height;
 
@@ -67,6 +62,8 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
 
     public RowChooserBuilder(Size size, Orientation orientation)
     {
+        ArgumentNullException.ThrowIfNull(size, nameof(size));
+        
         Size = size;
         Orientation = orientation;
         _stackPanelBuilder = new StackPanelBuilder(size, orientation);

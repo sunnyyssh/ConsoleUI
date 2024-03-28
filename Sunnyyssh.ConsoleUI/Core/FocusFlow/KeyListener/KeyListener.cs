@@ -130,6 +130,8 @@ public class KeyListener
 
     public KeyListener(KeyListenerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options, nameof(options));
+        
         _options = options;
     }
 }

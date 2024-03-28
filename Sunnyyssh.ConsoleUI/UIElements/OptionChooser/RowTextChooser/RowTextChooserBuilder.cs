@@ -37,11 +37,15 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
 
     public void Add(string option)
     {
+        ArgumentNullException.ThrowIfNull(option, nameof(option));
+
         _options.Add(option);
     }
 
     public RowTextChooser Build(UIElementBuildArgs args)
     {
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+
         int width = args.Width;
         int height = args.Height;
 

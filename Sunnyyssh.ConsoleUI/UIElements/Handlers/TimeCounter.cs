@@ -12,6 +12,9 @@ internal class TimeCounter : IDisposable
 
     public TimeCounter(int maxMilliseconds)
     {
+        if (maxMilliseconds < 0)
+            throw new ArgumentOutOfRangeException(nameof(maxMilliseconds), maxMilliseconds, null);
+        
         _maxMilliseconds = maxMilliseconds;
     }
 

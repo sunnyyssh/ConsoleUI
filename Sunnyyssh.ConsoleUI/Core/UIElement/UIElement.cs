@@ -20,13 +20,16 @@ public abstract class UIElement
 
     protected void Redraw(DrawState state)
     {
-        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(state, nameof(state));
+        
         CurrentState = CurrentState?.HideOverlapWith(state) ?? state;
         RedrawElement?.Invoke(this, new RedrawElementEventArgs());
     }
 
-    internal DrawState RequestDrawState(DrawOptions options)
+    protected internal DrawState RequestDrawState(DrawOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options, nameof(options));
+        
         return CurrentState ??= CreateDrawState(Width, Height);
     }
 
@@ -44,6 +47,11 @@ public abstract class UIElement
 
     protected UIElement(int width, int height, OverlappingPriority priority)
     {
+        if (width <= 0)
+            throw new ArgumentOutOfRangeException(nameof(width), width, null);
+        if (height <= 0)
+            throw new ArgumentOutOfRangeException(nameof(height), height, null);
+        
         Width = width;
         Height = height;
         Priority = priority;

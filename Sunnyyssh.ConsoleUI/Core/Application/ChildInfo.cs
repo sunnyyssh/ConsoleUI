@@ -40,22 +40,24 @@ public sealed class ChildInfo
     
     private string DebuggerDisplay => $"{Child}: Left={Left}; Top={Top}; Width={Width}; Height={Height}";
     
-    public UIElement Child { get; private init; }
+    public UIElement Child { get; }
 
     internal DrawState? CurrentState => Child.CurrentState?.Shift(Left, Top);
     
-    public int Left { get; private init; }
+    public int Left { get; }
 
-    public int Top { get; private init; }
+    public int Top { get; }
 
     public int Width => Child.Width;
 
     public int Height => Child.Height;
 
-    public bool IsFocusable { get; private init; }
+    public bool IsFocusable { get; }
 
     public bool IsIntersectedWith(ChildInfo child)
     {
+        ArgumentNullException.ThrowIfNull(child, nameof(child));
+        
         bool horizontalIntersected = child.Left < Left + Width && child.Left + child.Width > Left;
         bool verticalIntersected = child.Top < Top + Height && child.Top + child.Height > Top;
         return horizontalIntersected && verticalIntersected;
@@ -146,6 +148,12 @@ public sealed class ChildInfo
     public ChildInfo(UIElement child, int left, int top)
     {
         ArgumentNullException.ThrowIfNull(child, nameof(child));
+
+        if (left < 0)
+            throw new ArgumentOutOfRangeException(nameof(left), left, null);
+        if (top < 0)
+            throw new ArgumentOutOfRangeException(nameof(top), top, null);
+        
         Child = child;
         Left = left;
         Top = top;

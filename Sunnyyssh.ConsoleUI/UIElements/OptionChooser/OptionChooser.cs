@@ -227,6 +227,9 @@ public abstract class OptionChooser : UIElement, IFocusable
         OptionChooserKeySet keySet, bool canChooseOnlyOne, OverlappingPriority priority) 
         : base(width, height, priority)
     {
+        ArgumentNullException.ThrowIfNull(orderedOptions, nameof(orderedOptions));
+        ArgumentNullException.ThrowIfNull(keySet, nameof(keySet));
+        
         _keySet = keySet;
         OrderedOptions = orderedOptions;
         CanChooseOnlyOne = canChooseOnlyOne;

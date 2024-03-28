@@ -36,6 +36,8 @@ internal sealed class FocusFlowManager
 
     public void Add(IFocusable focusable)
     {
+        ArgumentNullException.ThrowIfNull(focusable, nameof(focusable));
+        
         lock (_lockObject)
         {
             _focusableChain.Add(focusable);
@@ -49,6 +51,8 @@ internal sealed class FocusFlowManager
 
     public bool TryRemove(IFocusable focusable)
     {
+        ArgumentNullException.ThrowIfNull(focusable, nameof(focusable));
+
         lock (_lockObject)
         {
             var past = _focusableChain.FocusedItem ?? _focusableChain.Current;
@@ -69,6 +73,8 @@ internal sealed class FocusFlowManager
 
     public void InsertAt(int index, IFocusable focusable)
     {
+        ArgumentNullException.ThrowIfNull(focusable, nameof(focusable));
+
         lock (_lockObject)
         {
             _focusableChain.InsertAt(index, focusable);
@@ -83,6 +89,9 @@ internal sealed class FocusFlowManager
 
     public bool TryInsertAfter(IFocusable afterThis, IFocusable newFocusable) 
     {
+        ArgumentNullException.ThrowIfNull(afterThis, nameof(afterThis));
+        ArgumentNullException.ThrowIfNull(newFocusable, nameof(newFocusable));
+
         lock (_lockObject)
         {
             if (!_focusableChain.TryInsertAfter(afterThis, newFocusable))
@@ -101,6 +110,9 @@ internal sealed class FocusFlowManager
     
     public bool TryInsertBefore(IFocusable beforeThis, IFocusable newFocusable) 
     {
+        ArgumentNullException.ThrowIfNull(beforeThis, nameof(beforeThis));
+        ArgumentNullException.ThrowIfNull(newFocusable, nameof(newFocusable));
+        
         lock (_lockObject)
         {
             if (!_focusableChain.TryInsertBefore(beforeThis, newFocusable))
@@ -320,6 +332,8 @@ internal sealed class FocusFlowManager
 
     public FocusFlowManager(FocusManagerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options, nameof(options));
+        
         _options = options;
         _focusableChain = new FocusableChain(_options.FocusFlowLoop);
     }

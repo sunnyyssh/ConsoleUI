@@ -16,6 +16,8 @@ public sealed class TextOptionElementBuilder : IUIElementBuilder<TextOptionEleme
     
     public TextOptionElement Build(UIElementBuildArgs args)
     {
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+        
         int width = args.Width;
         int height = args.Height;
 
@@ -33,6 +35,8 @@ public sealed class TextOptionElementBuilder : IUIElementBuilder<TextOptionEleme
 
     public TextOptionElementBuilder(Size size, string text, TextOptionColorSet colorSet)
     {
+        ArgumentNullException.ThrowIfNull(colorSet, nameof(colorSet));
+
         Size = size;
         Text = text;
         ColorSet = colorSet;

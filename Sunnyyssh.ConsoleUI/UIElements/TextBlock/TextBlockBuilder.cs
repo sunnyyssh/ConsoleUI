@@ -22,6 +22,8 @@ public sealed class TextBlockBuilder : IUIElementBuilder<TextBlock>
 
     public TextBlock Build(UIElementBuildArgs args)
     {
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+   
         int width = args.Width;
         int height = args.Height;
 
@@ -43,13 +45,12 @@ public sealed class TextBlockBuilder : IUIElementBuilder<TextBlock>
         return resultTextBlock;
     }
 
-    UIElement IUIElementBuilder.Build(UIElementBuildArgs args)
-    {
-        return Build(args);
-    }
+    UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
     public TextBlockBuilder(Size size)
     {
+        ArgumentNullException.ThrowIfNull(size, nameof(size));
+
         Size = size;
     }
 }

@@ -86,6 +86,8 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
     
     public TextBox Build(UIElementBuildArgs args)
     {
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+        
         int width = args.Width;
         int height = args.Height;
         
@@ -124,13 +126,12 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
         return resultTextBox;
     }
 
-    UIElement IUIElementBuilder.Build(UIElementBuildArgs args)
-    {
-        return Build(args);
-    }
+    UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
     public TextBoxBuilder(Size size)
     {
+        ArgumentNullException.ThrowIfNull(size, nameof(size));
+        
         Size = size;
     }
 }

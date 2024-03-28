@@ -6,6 +6,10 @@ public sealed class ApplicationSettings
 {
     private readonly Color _defaultBackground = Color.Black;
     private readonly Color _defaultForeground = Color.White;
+    private readonly ConsoleKey[] _focusChangeKeys = new[] { ConsoleKey.Tab };
+    private readonly int? _height = null;
+    private readonly int? _width = null;
+
     public Color DefaultForeground
     {
         get => _defaultForeground;
@@ -32,14 +36,40 @@ public sealed class ApplicationSettings
             _defaultBackground = value;
         }
     }
-    
-    public int? Height { get; [SupportedOSPlatform("Windows")] init; } = null; // TODO
-    
-    public int? Width { get; [SupportedOSPlatform("Windows")] init; } = null;
+
+    public int? Height
+    {
+        get => _height;
+        [SupportedOSPlatform("Windows")]
+        init
+        {
+            if (value <= 0)
+                throw new ArgumentOutOfRangeException(nameof(value), value, null);
+            
+            _height = value;
+        }
+    } // TODO
+
+    public int? Width
+    {
+        get => _width;
+        [SupportedOSPlatform("Windows")]
+        init
+        {
+            if (value <= 0)
+                throw new ArgumentOutOfRangeException(nameof(value), value, null);
+                
+            _width = value;
+        }
+    }
 
     public bool BorderConflictsAllowed { get; init; } = true;
 
-    public ConsoleKey[] FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab };
+    public ConsoleKey[] FocusChangeKeys
+    {
+        get => _focusChangeKeys;
+        init => _focusChangeKeys = value ?? throw new ArgumentNullException(nameof(value));
+    }
 
     // Now there is no need in overlapping disabled.
     public bool EnableOverlapping { get; private init; } = true;

@@ -55,11 +55,15 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
 
     public bool Contains(UIElement child)
     {
+        ArgumentNullException.ThrowIfNull(child, nameof(child));
+        
         return Children.Any(ch => ch.Child == child);
     }
 
     private void EraseChild(ChildInfo childInfo)
     {
+        ArgumentNullException.ThrowIfNull(childInfo, nameof(childInfo));
+
         var erasingState = childInfo.CreateErasingState()
             .Shift(childInfo.Left, childInfo.Top);
         

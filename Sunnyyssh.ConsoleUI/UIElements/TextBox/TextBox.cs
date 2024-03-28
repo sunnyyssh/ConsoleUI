@@ -24,6 +24,8 @@ public class TextEnteredEventArgs : EventArgs
 
     public TextEnteredEventArgs(string text)
     {
+        ArgumentNullException.ThrowIfNull(text, nameof(text));
+
         Text = text;
     }
 }
@@ -166,6 +168,8 @@ public sealed class TextBox : UIElement, IFocusable
 
     public void Bind(IObservable<string> textObservable)
     {
+        ArgumentNullException.ThrowIfNull(textObservable, nameof(textObservable));
+        
         if (_bound is not null)
         {
             _bound.Updated -= HandleObservableTextUpdate;

@@ -118,6 +118,9 @@ public abstract class Application
     
     private protected Application(ApplicationSettings settings, ChildInfo[] orderedChildren)
     {
+        ArgumentNullException.ThrowIfNull(settings, nameof(settings));
+        ArgumentNullException.ThrowIfNull(orderedChildren, nameof(orderedChildren));
+        
         Settings = settings;
 
         DrawerOptions drawerOptions = new(

@@ -11,19 +11,22 @@ public sealed class PixelLine
     private string DebuggerDisplay =>
         $"({Left}; {Top}) - {Length} : \"{string.Concat(Pixels.Select(p => p.IsVisible ? p.Char : ' '))}\"";
     
-    public PixelInfo[] Pixels { get; private init; }
+    public PixelInfo[] Pixels { get; }
 
     public int Length => Pixels.Length;
     
-    public int Left { get; private init; }
+    public int Left { get; }
     
-    public int Top { get; private init; }
+    public int Top { get; }
 
     public PixelInfo this[int n] => Pixels[n];
 
     [Pure]
     public PixelLine Crop(int startIndex, int length)
     {
+        if (startIndex < 0)
+            throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, null);
+        
         var cropped = Pixels.Skip(startIndex).Take(length).ToArray();
         return new PixelLine(Left + Math.Max(startIndex, 0), Top, cropped);
     }
@@ -31,6 +34,8 @@ public sealed class PixelLine
     [Pure]
     public PixelLine Subtract(PixelLine deductible)
     {
+        ArgumentNullException.ThrowIfNull(deductible, nameof(deductible));
+        
         if (Top != deductible.Top || !IsIntersectedWith(deductible))
             return Copy();
 
@@ -66,6 +71,8 @@ public sealed class PixelLine
 
     public bool IsIntersectedWith(PixelLine line)
     {
+        ArgumentNullException.ThrowIfNull(line, nameof(line));
+
         return line.Left < Left + Length && Left < line.Left + line.Length;
     }
     
@@ -80,9 +87,11 @@ public sealed class PixelLine
     public PixelLine(int left, int top, Color background, Color foreground, string line)
     {
         ArgumentNullException.ThrowIfNull(line, nameof(line));
+        
         var pixels = Enumerable.Range(0, line.Length)
             .Select(i => new PixelInfo(line[i], background, foreground))
             .ToArray();
+        
         Left = left;
         Top = top;
         Pixels = pixels;
@@ -91,6 +100,7 @@ public sealed class PixelLine
     public PixelLine(int left, int top, PixelInfo[] pixels)
     {
         ArgumentNullException.ThrowIfNull(pixels, nameof(pixels));
+        
         Left = left;
         Top = top;
         Pixels = pixels;
@@ -104,8 +114,10 @@ public sealed class PixelLine
     public static PixelLine Overlap(params PixelLine[] orderedLines)
     {
         ArgumentNullException.ThrowIfNull(orderedLines, nameof(orderedLines));
+        
         if (orderedLines.Length == 0)
             return new PixelLine(0, 0, Array.Empty<PixelInfo>());
+        
         CheckLinesTopEquality(orderedLines);
 
         int top = orderedLines.First().Top;
@@ -153,8 +165,10 @@ public sealed class PixelLine
     public static PixelLine HideOverlap(PixelLine[] orderedLines)
     {
         ArgumentNullException.ThrowIfNull(orderedLines, nameof(orderedLines));
+        
         if (orderedLines.Length == 0)
             return new PixelLine(0, 0, Array.Empty<PixelInfo>());
+        
         CheckLinesTopEquality(orderedLines);
 
         int top = orderedLines.First().Top;

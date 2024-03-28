@@ -7,8 +7,7 @@ namespace Sunnyyssh.ConsoleUI;
 /// <summary>
 /// Represents the draw state.
 /// </summary>
-public sealed class 
-    DrawState
+public sealed class DrawState
 {
     /// <summary>
     /// The empty draw state.
@@ -52,16 +51,19 @@ public sealed class
         return false;
     }
 
-    // 
     [Pure]
     public DrawState OverlapWith(DrawState state)
     {
+        ArgumentNullException.ThrowIfNull(state, nameof(state));
+
         return Combine(this, state);
     }
 
     [Pure]
     public DrawState HideOverlapWith(DrawState state)
     {
+        ArgumentNullException.ThrowIfNull(state, nameof(state));
+
         return HideOverlap(this, state);
     }
 
@@ -94,6 +96,8 @@ public sealed class
     [Pure]
     public DrawState SubtractWith(DrawState deductible)
     {
+        ArgumentNullException.ThrowIfNull(deductible, nameof(deductible));
+        
         var newLines = new PixelLine[Lines.Length];
         Array.Copy(Lines, newLines, Lines.Length);
         for (int i = 0; i < newLines.Length; i++)

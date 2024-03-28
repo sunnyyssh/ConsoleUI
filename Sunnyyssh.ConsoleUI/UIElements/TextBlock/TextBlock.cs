@@ -38,6 +38,8 @@ public sealed class TextBlock : UIElement
 
     public void Bind(IObservable<string> textObservable)
     {
+        ArgumentNullException.ThrowIfNull(textObservable, nameof(textObservable));
+        
         if (_bound is not null)
         {
             _bound.Updated -= HandleTextUpdate;

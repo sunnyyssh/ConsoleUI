@@ -12,20 +12,10 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
 
     public OverlappingPriority OverlappingPriority { get; init; } = OverlappingPriority.Medium;
 
-    public StackPanelBuilder Add(UIElement element, int offset = 0)
-    {
-        ArgumentNullException.ThrowIfNull(element, nameof(element));
-        if (offset < 0)
-            throw new ArgumentOutOfRangeException(nameof(offset));
-        
-        _orderedQueuedChildren.Add(new QueuedChildWithOffset(element, offset));
-
-        return this;
-    }
-
     public StackPanelBuilder Add(IUIElementBuilder builder, int offset = 0)
     {
         ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        
         if (offset < 0)
             throw new ArgumentOutOfRangeException(nameof(offset));
         
@@ -76,14 +66,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
             
             ChildInfo childInfo;
             
-            if (queuedChild.IsInstance)
-            {
-                placer.Place(queuedChild.Element, position, out childInfo);
-            }
-            else
-            {
-                placer.Place(queuedChild.Builder, position, out childInfo);
-            }
+            placer.Place(queuedChild.Builder, position, out childInfo);
 
             accumulatedLeft += childInfo.Width;
         }
@@ -107,14 +90,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
             
             ChildInfo childInfo;
             
-            if (queuedChild.IsInstance)
-            {
-                placer.Place(queuedChild.Element, position, out childInfo);
-            }
-            else
-            {
-                placer.Place(queuedChild.Builder, position, out childInfo);
-            }
+            placer.Place(queuedChild.Builder, position, out childInfo);
             
             accumulatedTop += childInfo.Height;
         }
@@ -135,11 +111,6 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         public int Offset { get; }
 
         public QueuedChildWithOffset(IUIElementBuilder builder, int offset) : base(builder)
-        {
-            Offset = offset;
-        }
-
-        public QueuedChildWithOffset(UIElement element, int offset) : base(element)
         {
             Offset = offset;
         }

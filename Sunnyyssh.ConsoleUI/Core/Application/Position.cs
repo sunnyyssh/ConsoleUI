@@ -43,7 +43,7 @@ public class Position // TODO implememnt an ability to take absolute offset to r
         : this(Positioning.Relational, null, null, leftRelational, topRelational)
     { }
 
-    public Position(Positioning positioning, int? left, int? top, double? leftRelational, double? topRelational)
+    private Position(Positioning positioning, int? left, int? top, double? leftRelational, double? topRelational)
     {
         if (positioning.HasFlag(Positioning.RelationalLeft))
             ArgumentNullException.ThrowIfNull(leftRelational, nameof(leftRelational));
@@ -54,6 +54,15 @@ public class Position // TODO implememnt an ability to take absolute offset to r
             ArgumentNullException.ThrowIfNull(topRelational, nameof(topRelational));
         else
             ArgumentNullException.ThrowIfNull(top, nameof(top));
+
+        if (left < 0)
+            throw new ArgumentOutOfRangeException(nameof(left), left, null);
+        if (top < 0)
+            throw new ArgumentOutOfRangeException(nameof(left), left, null);
+        if (leftRelational < 0.0 || leftRelational > 1.0)
+            throw new ArgumentOutOfRangeException(nameof(leftRelational), leftRelational, null);
+        if (topRelational < 0.0 || topRelational > 1.0)
+            throw new ArgumentOutOfRangeException(nameof(topRelational), topRelational, null);
 
         Positioning = positioning;
         Left = left;

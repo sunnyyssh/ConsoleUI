@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Threading.Tasks.Sources;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -12,6 +13,8 @@ public sealed class Handler<TArg>
     
     public void Invoke(TArg arg)
     {
+        ArgumentNullException.ThrowIfNull(arg, nameof(arg));
+        
         if (_maxCostMilliseconds is null)
         {
             InvokeNaive(arg);
@@ -74,6 +77,9 @@ public sealed class Handler<TArg>
 
     public Handler(int maxCostMilliseconds)
     {
+        if (maxCostMilliseconds < 0)
+            throw new ArgumentOutOfRangeException(nameof(maxCostMilliseconds), maxCostMilliseconds, null);
+        
         _maxCostMilliseconds = maxCostMilliseconds;
     }
     
@@ -106,6 +112,9 @@ public sealed class Handler<TArg1, TArg2>
     
     public void Invoke(TArg1 arg1, TArg2 arg2)
     {
+        ArgumentNullException.ThrowIfNull(arg1, nameof(arg1));
+        ArgumentNullException.ThrowIfNull(arg2, nameof(arg2));
+        
         if (_maxCostMilliseconds is null)
         {
             InvokeNaive(arg1, arg2);

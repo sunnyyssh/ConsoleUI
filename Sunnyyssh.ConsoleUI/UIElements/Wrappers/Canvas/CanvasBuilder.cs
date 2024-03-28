@@ -10,15 +10,11 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
 
     public ConsoleKey[] FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab };
     
-    public CanvasBuilder Add(UIElement element, Position position)
-    {
-        _orderedQueuedChildren.Add(new QueuedPositionChild(element, position));
-
-        return this;
-    }
-    
     public CanvasBuilder Add(IUIElementBuilder elementBuilder, Position position)
     {
+        ArgumentNullException.ThrowIfNull(elementBuilder, nameof(elementBuilder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+        
         _orderedQueuedChildren.Add(new QueuedPositionChild(elementBuilder, position));
         
         return this;
@@ -26,16 +22,12 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
         
     public Canvas Build(UIElementBuildArgs args)
     {
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+
         var placementBuilder = new ElementsFieldBuilder(args.Width, args.Height, EnableOverlapping);
         
         foreach (var queuedChild in _orderedQueuedChildren)
         {
-            if (queuedChild.IsInstance)
-            {
-                placementBuilder.Place(queuedChild.Element, queuedChild.Position);
-                continue;
-            }
-
             placementBuilder.Place(queuedChild.Builder, queuedChild.Position);
         }
 
@@ -46,13 +38,12 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
         return resultCanvas;
     }
 
-    UIElement IUIElementBuilder.Build(UIElementBuildArgs args)
-    {
-        return Build(args);
-    }
+    UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
     public CanvasBuilder(Size size)
     {
+        ArgumentNullException.ThrowIfNull(size, nameof(size));
+
         Size = size;
     }
 }

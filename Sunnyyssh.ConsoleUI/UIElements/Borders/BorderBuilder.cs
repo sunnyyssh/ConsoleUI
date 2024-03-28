@@ -2,7 +2,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-public class BorderBuilder : IUIElementBuilder<Border>
+public sealed class BorderBuilder : IUIElementBuilder<Border>
 {
     public Size Size { get; }
     
@@ -20,42 +20,29 @@ public class BorderBuilder : IUIElementBuilder<Border>
 
     public Border Build(UIElementBuildArgs args)
     {
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
+        
         int width = args.Width;
         int height = args.Height;
 
-        BorderCharSet charSet;
-        
-        if (IsOneOfKinds)
-        {
-            charSet = BorderKind switch
-            {
-                ConsoleUI.BorderKind.SingleLine => SingleLineBorder.SingleLineCharSet,
-                ConsoleUI.BorderKind.DoubleLine => DoubleLineBorder.DoubleLineCharSet,
-                ConsoleUI.BorderKind.Dense => DenseBorder.DenseCharSet,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        }
-        else
-        {
-            charSet = BorderCharSet;
-        }
+        var charSet = IsOneOfKinds ? BorderCharSets.Of(BorderKind.Value) : BorderCharSet;
 
         var resultBorder = new CharSetBorder(width, height, charSet, Color, OverlappingPriority);
 
         return resultBorder;
     }
 
-    UIElement IUIElementBuilder.Build(UIElementBuildArgs args)
-    {
-        return Build(args);
-    }
+    UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
     public BorderBuilder(Size size, BorderKind borderKind)
     {
+        ArgumentNullException.ThrowIfNull(size, nameof(size));
+        
         if (borderKind == ConsoleUI.BorderKind.None)
         {
             throw new ArgumentOutOfRangeException(nameof(borderKind), "Border kind can't be None.");
         }
+        
         Size = size;
         BorderKind = borderKind;
         IsOneOfKinds = true;

@@ -71,6 +71,8 @@ internal class Drawer
     /// <param name="drawState">The state to enqueue to draw.</param>
     public void EnqueueRequest(DrawState drawState)
     {
+        ArgumentNullException.ThrowIfNull(drawState, nameof(drawState));
+        
         if (!IsRunning && !_options.RequestsNotRunningAllowed)
         {
             throw new DrawingException("Drawer is not running."); // BUG: when program exits something goes wrong.
@@ -218,6 +220,8 @@ internal class Drawer
     /// <param name="options">Specific drawing options.</param>
     public Drawer(DrawerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options, nameof(options));
+        
         InitializeDrawerPal(options);
         _options = options;
     }
