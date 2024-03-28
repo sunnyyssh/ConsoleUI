@@ -21,6 +21,11 @@ internal class DrawerPal
 
     // The default foreground color
     protected readonly Color DefaultForeground;
+
+    private ConsoleColor? _lastBackground;
+    private ConsoleColor? _lastForeground;
+    private int? _currentCursorLeft;
+    private int? _currentCursorTop;
     
     public int BufferWidth => Console.WindowWidth;
 
@@ -158,11 +163,61 @@ internal class DrawerPal
         if (cancellationToken.IsCancellationRequested)
             return;
         
-        Console.SetCursorPosition(part.Left, part.Top);
-        Console.BackgroundColor = part.Background;
-        Console.ForegroundColor = part.Foreground;
+        SetCursorPosition(part.Left, part.Top, cancellationToken);
         
-        Console.Write(part.Part);
+        SetBackgroundColor(part.Background, cancellationToken);
+        
+        SetForegroundColor(part.Foreground, cancellationToken);
+        
+        Write(part.Part, cancellationToken);
+    }
+
+    private void SetCursorPosition(int left, int top, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return;
+        
+        if (left == _currentCursorLeft && top == _currentCursorTop)
+            return;
+
+        Console.SetCursorPosition(left, top);
+        
+        _currentCursorLeft = left;
+        _currentCursorTop = top;
+    }
+
+    private void SetBackgroundColor(ConsoleColor color, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return;
+        
+        if (_lastBackground == color)
+            return;
+
+        Console.BackgroundColor = color;
+
+        _lastBackground = color;
+    }
+
+    private void SetForegroundColor(ConsoleColor color, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return;
+        
+        if (_lastForeground == color)
+            return;
+
+        Console.ForegroundColor = color;
+
+        _lastForeground = color;
+    }
+
+    private void Write(string line, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return;
+        
+        Console.Write(line);
     }
 
     protected ConsoleColor ToConsoleBackgroundColor(Color color)
