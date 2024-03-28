@@ -48,13 +48,12 @@ public abstract class OptionChooser : UIElement, IFocusable
     private readonly Handler<OptionChooser, OptionChosenOffEventArgs> _chosenOffEventHandler = new(5);
     
     private readonly OptionChooserKeySet _keySet;
-    
-    private readonly bool _onlyOneChosen;
 
     private int _currentIndex = 0;
     
     protected OptionElement[] OrderedOptions { get; }
-    
+    public bool CanChooseOnlyOne { get; }
+
     private ForceTakeFocusHandler? _forceTakeFocusHandler;
 
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
@@ -120,10 +119,13 @@ public abstract class OptionChooser : UIElement, IFocusable
             return;
         }
         
-        if (_onlyOneChosen)
+        if (CanChooseOnlyOne)
         {
             foreach (var option in OrderedOptions)
             {
+                if (!option.IsChosen)
+                    continue;
+                
                 if (option == Current)
                     continue;
                 
@@ -133,7 +135,7 @@ public abstract class OptionChooser : UIElement, IFocusable
 
         Current.ChosenOn();
         
-        loseFocus = _onlyOneChosen;
+        loseFocus = CanChooseOnlyOne;
         
     }
 
@@ -143,7 +145,7 @@ public abstract class OptionChooser : UIElement, IFocusable
 
     private bool MoveOn(int offset)
     {
-        if (_currentIndex + offset <= 0 || _currentIndex + offset >= OrderedOptions.Length)
+        if (_currentIndex + offset < 0 || _currentIndex + offset >= OrderedOptions.Length)
             return false;
 
         var pastOption = OrderedOptions[_currentIndex];
@@ -221,11 +223,12 @@ public abstract class OptionChooser : UIElement, IFocusable
         remove => _forceLoseFocusHandler -= value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    protected OptionChooser(int width, int height, OptionElement[] orderedOptions, OptionChooserKeySet keySet, bool onlyOneChosen, OverlappingPriority priority) 
+    protected OptionChooser(int width, int height, OptionElement[] orderedOptions, 
+        OptionChooserKeySet keySet, bool canChooseOnlyOne, OverlappingPriority priority) 
         : base(width, height, priority)
     {
         _keySet = keySet;
-        _onlyOneChosen = onlyOneChosen;
         OrderedOptions = orderedOptions;
+        CanChooseOnlyOne = canChooseOnlyOne;
     }
 }

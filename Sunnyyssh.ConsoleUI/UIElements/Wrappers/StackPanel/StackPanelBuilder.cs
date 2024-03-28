@@ -79,10 +79,11 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
             if (queuedChild.IsInstance)
             {
                 placer.Place(queuedChild.Element, position, out childInfo);
-                continue;
             }
-
-            placer.Place(queuedChild.Builder, position, out childInfo);
+            else
+            {
+                placer.Place(queuedChild.Builder, position, out childInfo);
+            }
 
             accumulatedLeft += childInfo.Width;
         }
@@ -109,11 +110,12 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
             if (queuedChild.IsInstance)
             {
                 placer.Place(queuedChild.Element, position, out childInfo);
-                continue;
             }
-
-            placer.Place(queuedChild.Builder, position, out childInfo);
-
+            else
+            {
+                placer.Place(queuedChild.Builder, position, out childInfo);
+            }
+            
             accumulatedTop += childInfo.Height;
         }
 

@@ -18,6 +18,37 @@ internal static class TextHelper
 
         return WordsWrap(text, width).ToArray(); 
     }
+
+    public static void PlaceText(int left, int top, int width, int height, 
+        bool wordWrap, string text, Color background, Color foreground,
+        VerticalAligning textVerticalAligning, HorizontalAligning textHorizontalAligning, DrawStateBuilder builder)
+    {
+        var lines = TextHelper.SplitText(width, wordWrap, text);
+
+        int startingTop = lines.Length >= height || textVerticalAligning == VerticalAligning.Top 
+            ? 0
+            : textVerticalAligning == VerticalAligning.Center 
+                ? (height - lines.Length) / 2
+                : height - lines.Length;
+        
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (startingTop + i >= height)
+                break;
+
+            string line = lines[i].Length > width ? lines[i][..width] : lines[i];
+            int lineLeft = left + textHorizontalAligning switch
+            {
+                HorizontalAligning.Left => 0,
+                HorizontalAligning.Center => (width - line.Length) / 2,
+                HorizontalAligning.Right => width - line.Length,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            
+            builder.Place(lineLeft, startingTop + i, line, background, foreground);
+        }
+    }
+
     
     private static IEnumerable<string> WordsWrap(string str, int width) // TODO code your own algorythm.
     {

@@ -32,7 +32,7 @@ public delegate void TextEnteredEventHandler(TextBox sender, TextEnteredEventArg
 
 public sealed class TextBox : UIElement, IFocusable
 {
-    private static readonly string DefaultText = "";
+    private static readonly string DefaultText = string.Empty;
     
     private string? _text;
 
@@ -145,46 +145,21 @@ public sealed class TextBox : UIElement, IFocusable
         if (BorderKind == BorderKind.None)
         {
             // Placing text in full area.
-            PlaceText(0, 0, width, height, builder);
+            TextHelper.PlaceText(0, 0, width, height,
+                WordWrap, Text, Background, Foreground,
+                TextVerticalAligning, TextHorizontalAligning, builder);
             return builder.ToDrawState();
         }
         
-        Border.PlaceAt(0, 0, width, height, Background, BorderColor, BorderKind, builder);
+        Border.PlaceAt(0, 0, width, height, 
+            Background, BorderColor, BorderKind, builder);
         
         // Placing text in smaller area. (1 indent from each side).
-        PlaceText(1, 1, width - 2, height - 2, builder);
+        TextHelper.PlaceText(1, 1, width - 2, height - 2,
+            WordWrap, Text, Background, Foreground,
+            TextVerticalAligning, TextHorizontalAligning, builder);
 
         return builder.ToDrawState();
-    }
-
-    private void PlaceText(int left, int top, int width, int height, DrawStateBuilder builder)
-    {
-        var lines = TextHelper.SplitText(width, WordWrap, Text);
-
-        int startingTop = top +
-              (lines.Length >= height || TextVerticalAligning == VerticalAligning.Top
-                  ? 0
-                  : TextVerticalAligning == VerticalAligning.Center
-                      ? (height - lines.Length) / 2
-                      : height - lines.Length);
-        
-        int offset = Math.Max(lines.Length - height, 0);
-        
-        for (int i = 0; i < lines.Length - offset; i++)
-        {
-            string bareLine = lines[i + offset];
-            string line = bareLine.Length > width ? bareLine[^width..] : bareLine;
-            
-            int lineLeft = left + TextHorizontalAligning switch
-            {
-                HorizontalAligning.Left => 0,
-                HorizontalAligning.Center => (width - line.Length) / 2,
-                HorizontalAligning.Right => width - line.Length,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            
-            builder.Place(lineLeft, startingTop + i, line, Background, Foreground);
-        }
     }
 
     public void Clear() => Text = null;
