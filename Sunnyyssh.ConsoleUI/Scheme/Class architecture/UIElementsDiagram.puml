@@ -8,15 +8,19 @@ abstract Wrapper
 class Button
 class Canvas
 class Grid
-class Stack
+class StackPanel
 class TextBlock
 class TextBox
 class Table
-class OptionChooser
+abstract OptionChooser
 abstract Border
 class SingleLineBorder
 class DoubleLineBorder
 class DenseLineBorder
+abstract WrapperBasedChooser
+class RowChooser
+abstract OptionElement
+abstract StateOptionElement
 
 IFocusable <|- IFocusManagerHolder
 
@@ -26,7 +30,7 @@ IElementContainer <|. Wrapper
 
 Wrapper <|.. Canvas
 Wrapper <|.. Grid
-Wrapper <|.. Stack
+Wrapper <|.. StackPanel
 
 UIElement <|.. Button
 IFocusable <|.. Button
@@ -45,5 +49,11 @@ UIElement <|... Border
 Border <|.. SingleLineBorder
 Border <|.. DoubleLineBorder
 Border <|.. DenseLineBorder
+
+UIElement <|.... OptionChooser
+OptionChooser <|. WrapperBasedChooser
+UIElement <|..... OptionElement
+OptionChooser *- OptionElement
+WrapperBasedChooser *- Wrapper
 
 @enduml

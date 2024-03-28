@@ -4,6 +4,8 @@ namespace Sunnyyssh.ConsoleUI;
 
 public abstract class Application
 {
+    public static bool IsAnyAppRunning { get; private set; } 
+    
     public ChildInfo[] Children { get; }
     
     private protected readonly ApplicationSettings Settings;
@@ -28,14 +30,22 @@ public abstract class Application
     {
         if (_hasStartedOnce)
         {
-            throw new System.ApplicationException(
+            throw new ApplicationException(
                 "The application cannot be started multiple times. Once started it can only stop but not restart. ");
         }
+        
         if (IsRunning)
         {
-            throw new System.ApplicationException("The application is already running.");
+            throw new ApplicationException("The application is already running.");
         }
+
+        if (IsAnyAppRunning)
+        {
+            throw new ApplicationException("Another application is running now.");
+        }
+        
         IsRunning = true;
+        IsAnyAppRunning = true;
         _hasStartedOnce = true;
         
         // Making threads that are waiting for stop block.
@@ -60,6 +70,7 @@ public abstract class Application
         KeyListener.Stop();
         
         IsRunning = false;
+        IsAnyAppRunning = false;
         
         // Allowing threads that are waiting for stop continue.
         _waitForStopEvent.Set();
@@ -104,7 +115,7 @@ public abstract class Application
             }
         }
     }
-
+    
     private protected Application(ApplicationSettings settings, ChildInfo[] orderedChildren)
     {
         Settings = settings;
@@ -129,7 +140,7 @@ public abstract class Application
             // If there are only one IFocusable nothing should happen when focus change is ought to occur.
             false,
             true,
-            Settings.KillUIKey);
+            Settings.KillApplicationKey);
         HeadFocusFlowManager = new FocusFlowManager(focusManagerOptions);
         // FocusFlowManager should handle pressed keys.
         KeyListener.KeyPressed += HeadFocusFlowManager.HandlePressedKey;

@@ -183,7 +183,10 @@ internal sealed class FocusFlowManager
             }
 
             if (_focusableChain.Current == _focusableChain.FocusedItem 
-                && !_options.ChangeFocusWhenSingle)
+                && !_options.ChangeFocusWhenSingle
+                // If current IFocusable is IFocusManagerHolder then it should handle focus change.
+                // It's bad decision but it's not expensive.
+                && _focusableChain.Current is not IFocusManagerHolder)
                 return;
         }
         

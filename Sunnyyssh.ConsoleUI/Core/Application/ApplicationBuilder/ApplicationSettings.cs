@@ -44,5 +44,8 @@ public sealed class ApplicationSettings
     // Now there is no need in overlapping disabled.
     public bool EnableOverlapping { get; private init; } = true;
 
+    // TODO make DrawerPal draw with delay to get all requests to redraw.
+    public bool DrawingDelay { get; init; } = true; // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     public ConsoleKey? KillApplicationKey { get; init; } = null;
 }
