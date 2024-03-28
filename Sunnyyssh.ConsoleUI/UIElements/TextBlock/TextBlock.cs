@@ -66,7 +66,7 @@ public sealed class TextBlock : UIElement
         return builder.ToDrawState();
     }
     
-    public TextBlock(int width, int height, OverlappingPriority priority = OverlappingPriority.Medium) 
+    internal TextBlock(int width, int height, OverlappingPriority priority = OverlappingPriority.Medium) 
         : base(width, height, priority)
     { }
 }

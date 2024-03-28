@@ -19,7 +19,7 @@ public sealed class DoubleLineBorder : Border
         PlaceAt(left, top, width, height, background, foreground, DoubleLineCharSet, builder);
     }
 
-    public DoubleLineBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+    internal DoubleLineBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
         : base(width, height, DoubleLineCharSet, color, priority)
     { }
 }

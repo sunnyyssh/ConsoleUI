@@ -55,7 +55,7 @@ public sealed class TextOptionElement : StateOptionElement
         return state;
     }
 
-    public TextOptionElement(int width, int height, TextOptionColorSet colorSet, string? text) : base(width, height)
+    internal TextOptionElement(int width, int height, TextOptionColorSet colorSet, string? text) : base(width, height)
     {
         ColorSet = colorSet;
         Text = text ?? string.Empty;

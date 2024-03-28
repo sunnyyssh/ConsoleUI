@@ -296,7 +296,7 @@ public sealed class TextBox : UIElement, IFocusable
     
     #endregion
 
-    public TextBox(int width, int height, OverlappingPriority priority = OverlappingPriority.Medium) 
+    internal TextBox(int width, int height, OverlappingPriority priority = OverlappingPriority.Medium) 
         : base(width, height, priority)
     { }
 }

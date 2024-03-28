@@ -2,9 +2,9 @@
 
 public sealed class TextOptionColorSet
 {
-    private readonly Color? _focusedBackground;
+    private readonly Color? _focusedBackground = Color.Gray; // Default.
     private readonly Color? _focusedForeground;
-    private readonly Color? _chosenBackground = Color.Gray;
+    private readonly Color? _chosenBackground = Color.DarkGray; // Default.
     private readonly Color? _chosenForeground;
     private readonly Color? _chosenFocusedBackground;
     private readonly Color? _chosenFocusedForeground;

@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public sealed class Button //: UIElement, IFocusable
+public sealed class Button // : UIElement, IFocusable
 {
     
 }

@@ -18,7 +18,7 @@ public sealed class SingleLineBorder : Border
     {
         PlaceAt(left, top, width, height, background, foreground, SingleLineCharSet, builder);
     }
-    public SingleLineBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+    internal SingleLineBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
         : base(width ,height, SingleLineCharSet, color, priority)
     { }
 }

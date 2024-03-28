@@ -19,7 +19,7 @@ public sealed class DenseBorder : Border
         PlaceAt(left, top, width, height, background, foreground, DenseCharSet, builder);
     }
 
-    public DenseBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
+    internal DenseBorder(int width, int height, Color color, OverlappingPriority priority = OverlappingPriority.Lowest) 
         : base(width, height, DenseCharSet, color, priority)
     { }
 }
