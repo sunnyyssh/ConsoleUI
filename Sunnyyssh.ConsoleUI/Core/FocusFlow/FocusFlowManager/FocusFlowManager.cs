@@ -5,7 +5,7 @@ internal record FocusManagerOptions(
     ConsoleKey[] FocusChangeKeys, 
     bool FocusFlowLoop, 
     bool ChangeFocusWhenSingle,  
-    bool ThrowOnNotFocusedHandling = true, 
+    bool ThrowOnNotFocusedHandling, 
     ConsoleKey? SpecialKey = null);
 
 internal record FocusFlowEndedArgs;

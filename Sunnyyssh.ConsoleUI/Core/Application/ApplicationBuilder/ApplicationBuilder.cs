@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public sealed class ApplicationBuilder
 {
@@ -37,7 +35,7 @@ public sealed class ApplicationBuilder
         return resultApp;
     }
 
-    private Application InitializeApplication(ChildInfo[] orderedChildren)
+    private Application InitializeApplication(ChildrenCollection orderedChildren)
     {
         // Now no additional implementations of Application are needed.
         return new DefaultApplication(_settings, orderedChildren);

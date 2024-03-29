@@ -50,7 +50,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
-    private ChildInfo[] BuildHorizontal(int width, int height)
+    private ChildrenCollection BuildHorizontal(int width, int height)
     {
         var placer = new ElementsFieldBuilder(width, height, 
             // false because StackPanel should contain children sequentially.
@@ -74,7 +74,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         return placer.Build();
     }
 
-    private ChildInfo[] BuildVertical(int width, int height)
+    private ChildrenCollection BuildVertical(int width, int height)
     {
         var placer = new ElementsFieldBuilder(width, height, 
             // false because StackPanel should contain children sequentially.

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Net.Http.Headers;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -12,18 +11,18 @@ public sealed class DrawState
     /// <summary>
     /// The empty draw state.
     /// </summary>
-    public static DrawState Empty => new DrawState(Array.Empty<PixelLine>());
+    public static DrawState Empty => new DrawState(PixelLineCollection.Empty);
     
     /// <summary>
     /// Lines of the draw state. The state actually consists of them.
     /// </summary>
-    public PixelLine[] Lines { get; }
+    public PixelLineCollection Lines { get; }
 
     /// <summary>
     /// Creates the instance of <see cref="DrawState"/> with given lines.
     /// </summary>
     /// <param name="lines">Lines that draw state'll consist of.</param>
-    public DrawState(PixelLine[] lines)
+    public DrawState(PixelLineCollection lines)
     {
         Lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }
@@ -76,7 +75,7 @@ public sealed class DrawState
             // Removing lines not matching horizntal bounds.
             .Where(line => line.Left + line.Length > left && line.Left < left + width)
             .Select(line => line.Crop(left - line.Left, left + width - line.Left))
-            .ToArray();
+            .ToCollection();
         return new DrawState(cropped);
     }
     
@@ -90,16 +89,16 @@ public sealed class DrawState
                     l.Left + leftShift, 
                     l.Top + topShift, 
                     l.Pixels))
-            .ToArray());
+            .ToCollection());
     }
 
     [Pure]
     public DrawState SubtractWith(DrawState deductible)
     {
         ArgumentNullException.ThrowIfNull(deductible, nameof(deductible));
+
+        var newLines = Lines.ToArray();
         
-        var newLines = new PixelLine[Lines.Length];
-        Array.Copy(Lines, newLines, Lines.Length);
         for (int i = 0; i < newLines.Length; i++)
         {
             foreach (var deductibleLine in deductible.Lines)
@@ -110,7 +109,7 @@ public sealed class DrawState
             }
         }
 
-        return new DrawState(newLines);
+        return new DrawState(newLines.ToCollection());
     }
     
     public static DrawState Combine(params DrawState[] orderedDrawStates)
@@ -128,7 +127,7 @@ public sealed class DrawState
                 line => line.Top,
                 line => line,
                 (_, lines) => PixelLine.Overlap(lines.ToArray()))
-            .ToArray();
+            .ToCollection();
 
         DrawState result = new(lines);
         return result;
@@ -149,7 +148,7 @@ public sealed class DrawState
                 line => line.Top,
                 line => line,
                 (_, lines) => PixelLine.HideOverlap(lines.ToArray()))
-            .ToArray();
+            .ToCollection();
 
         DrawState result = new(lines);
         return result;

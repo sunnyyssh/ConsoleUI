@@ -48,7 +48,7 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
         var orderedOptions = aggregatedStackPanel.Children
             // Here can't be any children except OptionElement.
             .Select(child => (OptionElement)child.Child)
-            .ToArray();
+            .ToCollection();
 
         var keySet = KeySet ?? (Orientation == Orientation.Vertical ? VerticalDefaultKeySet : HorizontalDefaultKeySet);
 

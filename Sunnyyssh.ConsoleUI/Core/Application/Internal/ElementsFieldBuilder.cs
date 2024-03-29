@@ -12,7 +12,7 @@ public sealed class ElementsFieldBuilder
 
     private readonly List<ChildInfo> _orderedChildren = new();
 
-    public ChildInfo[] Build() => _orderedChildren.ToArray();
+    public ChildrenCollection Build() => _orderedChildren.ToCollection();
     
     public ElementsFieldBuilder Place(IUIElementBuilder childBuilder, Position position)
     {

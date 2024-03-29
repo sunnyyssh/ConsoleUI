@@ -17,6 +17,7 @@ public class KeyListener
     private readonly AutoResetEvent _waitEvent = new(false);
 
     // It may be used in the future, so it's important to get such parameter in constructor
+    // ReSharper disable once NotAccessedField.Local
     private readonly KeyListenerOptions _options; 
 
     public bool IsRunning { get; private set; } 

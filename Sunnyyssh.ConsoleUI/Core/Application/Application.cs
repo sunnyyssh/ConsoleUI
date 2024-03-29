@@ -1,12 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public abstract class Application
 {
     public static bool IsAnyAppRunning { get; private set; } 
     
-    public ChildInfo[] Children { get; }
+    public ChildrenCollection Children { get; }
     
     private protected readonly ApplicationSettings Settings;
 
@@ -62,7 +60,7 @@ public abstract class Application
     {
         if (!IsRunning)
         {
-            throw new System.ApplicationException("The application is not running.");
+            throw new ApplicationException("The application is not running.");
         }
         
         HeadFocusFlowManager.LoseFocus();
@@ -78,7 +76,7 @@ public abstract class Application
 
     public void Wait() => _waitForStopEvent.WaitOne();
 
-    private void SubscribeChildren(ChildInfo[] orderedChildren)
+    private void SubscribeChildren(ChildrenCollection orderedChildren)
     {
         foreach (var childInfo in orderedChildren)
         {
@@ -101,22 +99,8 @@ public abstract class Application
     private protected abstract void Draw();
 
     private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args);
-
-    private void ValidateChildren(ChildInfo[] orderedChildren)
-    {
-        for (int i = 0; i < orderedChildren.Length; i++)
-        {
-            for (int j = i + 1; j < orderedChildren.Length; j++)
-            {
-                if (orderedChildren[i].Child == orderedChildren[j].Child)
-                {
-                    throw new ApplicationInitException("Attempt to add equal children occured.");
-                }
-            }
-        }
-    }
     
-    private protected Application(ApplicationSettings settings, ChildInfo[] orderedChildren)
+    private protected Application(ApplicationSettings settings, ChildrenCollection orderedChildren)
     {
         ArgumentNullException.ThrowIfNull(settings, nameof(settings));
         ArgumentNullException.ThrowIfNull(orderedChildren, nameof(orderedChildren));
@@ -153,7 +137,6 @@ public abstract class Application
         BufferWidth = Drawer.BufferWidth;
         BufferHeight = Drawer.BufferHeight;
         
-        ValidateChildren(orderedChildren);
         Children = orderedChildren;
         SubscribeChildren(Children);
     }

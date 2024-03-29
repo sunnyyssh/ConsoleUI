@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContainer
 {
@@ -10,12 +7,10 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
     private ForceTakeFocusHandler? _forceTakeFocusHandler;
 
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
-    
-    private readonly ChildInfo[] _orderedChildren;
 
     public virtual bool IsWaitingFocus => _focusFlowManager.HasWaitingFocusable;
 
-    public ChildInfo[] Children => _orderedChildren.ToArray();
+    public ChildrenCollection Children { get; }
 
     public bool IsFocused { get; private set; }
     
@@ -60,6 +55,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         return Children.Any(ch => ch.Child == child);
     }
 
+    // ReSharper disable once UnusedMember.Local
     private void EraseChild(ChildInfo childInfo)
     {
         ArgumentNullException.ThrowIfNull(childInfo, nameof(childInfo));
@@ -122,20 +118,8 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         _forceLoseFocusHandler?.Invoke(this);
     }
 
-    private void ValidateChildren(ChildInfo[] orderedChildren)
-    {
-        for (int i = 0; i < orderedChildren.Length; i++)
-        {
-            for (int j = i + 1; j < orderedChildren.Length; j++)
-            {
-                if (orderedChildren[i].Child == orderedChildren[j].Child)
-                    throw new ChildPlacementException("Attempt to add two equal children occured.");
-            }
-        }
-    }
-
     protected Wrapper(int width, int height, 
-        ChildInfo[] orderedChildren, ConsoleKey[] focusChangeKeys, 
+        ChildrenCollection orderedChildren, ConsoleKey[] focusChangeKeys, 
         OverlappingPriority overlappingPriority)
         : base(width, height, overlappingPriority)
     {
@@ -154,11 +138,9 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         _focusFlowManager.FocusFlowEnded += OnManagerFocusFlowEnded;
         _focusFlowManager.ForceTakeFocus += OnManagerForceTakeFocus;
 
-        ValidateChildren(orderedChildren);
-        
-        _orderedChildren = orderedChildren;
+        Children = orderedChildren;
 
-        foreach (var child in _orderedChildren)
+        foreach (var child in Children)
         {
             child.Child.RedrawElement += RedrawChild;
         
