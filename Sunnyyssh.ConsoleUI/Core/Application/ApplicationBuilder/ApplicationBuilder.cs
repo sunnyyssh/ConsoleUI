@@ -5,6 +5,18 @@ public sealed class ApplicationBuilder
     private readonly ApplicationSettings _settings;
 
     private readonly List<QueuedPositionChild> _orderedQueuedChildren = new();
+
+    public ApplicationBuilder Add(IUIElementBuilder elementBuilder, int left, int top)
+        => Add(elementBuilder, new Position(left, top));
+    
+    public ApplicationBuilder Add(IUIElementBuilder elementBuilder, int left, double topRelation)
+        => Add(elementBuilder, new Position(left, topRelation));
+    
+    public ApplicationBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, int top)
+        => Add(elementBuilder, new Position(leftRelation, top));
+    
+    public ApplicationBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, double topRelation)
+        => Add(elementBuilder, new Position(leftRelation, topRelation));
     
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, Position position)
     {

@@ -34,6 +34,22 @@ public sealed class BorderBuilder : IUIElementBuilder<Border>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
+    public BorderBuilder(int width, int height, BorderKind borderKind)
+        : this(new Size(width, height), borderKind)
+    { }
+
+    public BorderBuilder(int width, double heightRelation, BorderKind borderKind)
+        : this(new Size(width, heightRelation), borderKind)
+    { }
+
+    public BorderBuilder(double widthRelation, int height, BorderKind borderKind)
+        : this(new Size(widthRelation, height), borderKind)
+    { }
+
+    public BorderBuilder(double widthRelation, double heightRelation, BorderKind borderKind)
+        : this(new Size(widthRelation, heightRelation), borderKind)
+    { }
+    
     public BorderBuilder(Size size, BorderKind borderKind)
     {
         ArgumentNullException.ThrowIfNull(size, nameof(size));
@@ -48,8 +64,26 @@ public sealed class BorderBuilder : IUIElementBuilder<Border>
         IsOneOfKinds = true;
     }
 
+    public BorderBuilder(int width, int height, BorderCharSet charSet)
+        : this(new Size(width, height), charSet)
+    { }
+
+    public BorderBuilder(int width, double heightRelation, BorderCharSet charSet)
+        : this(new Size(width, heightRelation), charSet)
+    { }
+
+    public BorderBuilder(double widthRelation, int height, BorderCharSet charSet)
+        : this(new Size(widthRelation, height), charSet)
+    { }
+
+    public BorderBuilder(double widthRelation, double heightRelation, BorderCharSet charSet)
+        : this(new Size(widthRelation, heightRelation), charSet)
+    { }
+    
     public BorderBuilder(Size size, BorderCharSet borderCharSet)
     {
+        ArgumentNullException.ThrowIfNull(borderCharSet, nameof(borderCharSet));
+        
         Size = size;
         BorderCharSet = borderCharSet;
         IsOneOfKinds = false;

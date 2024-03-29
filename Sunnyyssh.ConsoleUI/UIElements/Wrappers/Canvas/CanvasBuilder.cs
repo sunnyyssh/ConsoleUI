@@ -9,6 +9,18 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
     public bool EnableOverlapping { get; init; } = true;
 
     public ConsoleKeyCollection FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab }.ToCollection();
+
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, int left, int top)
+        => Add(elementBuilder, new Position(left, top));
+    
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, int left, double topRelation)
+        => Add(elementBuilder, new Position(left, topRelation));
+    
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, int top)
+        => Add(elementBuilder, new Position(leftRelation, top));
+    
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, double topRelation)
+        => Add(elementBuilder, new Position(leftRelation, topRelation));
     
     public CanvasBuilder Add(IUIElementBuilder elementBuilder, Position position)
     {
@@ -40,6 +52,22 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
+    public CanvasBuilder(int width, int height)
+        : this(new Size(width, height))
+    { }
+    
+    public CanvasBuilder(int width, double heightRelation)
+        : this(new Size(width, heightRelation))
+    { }
+    
+    public CanvasBuilder(double widthRelation, int height)
+        : this(new Size(widthRelation, height))
+    { }
+    
+    public CanvasBuilder(double widthRelation, double heightRelation)
+        : this(new Size(widthRelation, heightRelation))
+    { }
+    
     public CanvasBuilder(Size size)
     {
         ArgumentNullException.ThrowIfNull(size, nameof(size));

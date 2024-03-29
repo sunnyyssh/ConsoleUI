@@ -98,6 +98,22 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         return placer.Build();
     }
 
+    public StackPanelBuilder(int width, int height, Orientation orientation)
+        : this(new Size(width, height), orientation)
+    { }
+    
+    public StackPanelBuilder(int width, double heightRelation, Orientation orientation)
+        : this(new Size(width, heightRelation), orientation)
+    { }
+    
+    public StackPanelBuilder(double widthRelation, int height, Orientation orientation)
+        : this(new Size(widthRelation, height), orientation)
+    { }
+    
+    public StackPanelBuilder(double widthRelation, double heightRelation, Orientation orientation)
+        : this(new Size(widthRelation, heightRelation), orientation)
+    { }
+    
     public StackPanelBuilder(Size size, Orientation orientation)
     {
         ArgumentNullException.ThrowIfNull(size, nameof(size));

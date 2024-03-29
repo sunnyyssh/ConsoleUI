@@ -128,6 +128,22 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
+    public TextBoxBuilder(int width, int height)
+        : this(new Size(width, height))
+    { }
+    
+    public TextBoxBuilder(int width, double heightRelation)
+        : this(new Size(width, heightRelation))
+    { }
+    
+    public TextBoxBuilder(double widthRelation, int height)
+        : this(new Size(widthRelation, height))
+    { }
+    
+    public TextBoxBuilder(double widthRelation, double heightRelation)
+        : this(new Size(widthRelation, heightRelation))
+    { }
+    
     public TextBoxBuilder(Size size)
     {
         ArgumentNullException.ThrowIfNull(size, nameof(size));

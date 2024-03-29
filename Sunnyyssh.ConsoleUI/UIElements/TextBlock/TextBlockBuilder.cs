@@ -47,6 +47,22 @@ public sealed class TextBlockBuilder : IUIElementBuilder<TextBlock>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
+    public TextBlockBuilder(int width, int height)
+        : this(new Size(width, height))
+    { }
+
+    public TextBlockBuilder(int width, double heightRelation)
+        : this(new Size(width, heightRelation))
+    { }
+
+    public TextBlockBuilder(double widthRelation, int height)
+        : this(new Size(widthRelation, height))
+    { }
+
+    public TextBlockBuilder(double widthRelation, double heightRelation)
+        : this(new Size(widthRelation, heightRelation))
+    { }
+    
     public TextBlockBuilder(Size size)
     {
         ArgumentNullException.ThrowIfNull(size, nameof(size));

@@ -30,6 +30,8 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
 
     public RowChooserBuilder Add(IUIElementBuilder<OptionElement> builder, int offset = 0)
     {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
         _stackPanelBuilder.Add(builder, offset);
 
         return this;
@@ -60,6 +62,22 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
+    public RowChooserBuilder(int width, int height, Orientation orientation)
+        : this(new Size(width, height), orientation)
+    { }
+
+    public RowChooserBuilder(int width, double heightRelation, Orientation orientation)
+        : this(new Size(width, heightRelation), orientation)
+    { }
+
+    public RowChooserBuilder(double widthRelation, int height, Orientation orientation)
+        : this(new Size(widthRelation, height), orientation)
+    { }
+
+    public RowChooserBuilder(double widthRelation, double heightRelation, Orientation orientation)
+        : this(new Size(widthRelation, heightRelation), orientation)
+    { }
+    
     public RowChooserBuilder(Size size, Orientation orientation)
     {
         ArgumentNullException.ThrowIfNull(size, nameof(size));

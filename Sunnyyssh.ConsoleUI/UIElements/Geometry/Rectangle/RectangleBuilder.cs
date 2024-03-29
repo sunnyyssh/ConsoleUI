@@ -22,6 +22,22 @@ public sealed class RectangleBuilder : IUIElementBuilder<Rectangle>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
+    public RectangleBuilder(int width, int height, Color color)
+        : this(new Size(width, height), color)
+    { }
+    
+    public RectangleBuilder(int width, double heightRelation, Color color)
+        : this(new Size(width, heightRelation), color)
+    { }
+    
+    public RectangleBuilder(double widthRelation, int height, Color color)
+        : this(new Size(widthRelation, height), color)
+    { }
+    
+    public RectangleBuilder(double widthRelation, double heightRelation, Color color)
+        : this(new Size(widthRelation, heightRelation), color)
+    { }
+    
     public RectangleBuilder(Size size, Color color)
     {
         ArgumentNullException.ThrowIfNull(size, nameof(size));

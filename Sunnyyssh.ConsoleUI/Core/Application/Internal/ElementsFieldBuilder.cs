@@ -21,7 +21,6 @@ public sealed class ElementsFieldBuilder
 
         if (!TryPlace(childBuilder, position, out _))
         {
-            throw new ChildPlacementException("Cannot place child at this position.");
         }
         
         return this;
@@ -34,7 +33,7 @@ public sealed class ElementsFieldBuilder
         
         if (!TryPlace(childBuilder, position, out var resultChild))
         {
-            throw new ChildPlacementException("Cannot place child at this position.");
+            throw new ChildPlacementException($"Cannot place child at this position. Child's builder was {childBuilder}");
         }
 
         result = resultChild;
@@ -82,7 +81,7 @@ public sealed class ElementsFieldBuilder
     }
 
     // Finds most suitable placement if it's possible.
-    private bool TryFindPlace(Size size, Position position, out bool intersected, 
+    internal bool TryFindPlace(Size size, Position position, out bool intersected, 
         [NotNullWhen(true)] out Placement? result)
     {
         // It should place children greedy.

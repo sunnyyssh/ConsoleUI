@@ -24,8 +24,8 @@ public sealed class PixelLine
     [Pure]
     public PixelLine Crop(int startIndex, int length)
     {
-        if (startIndex < 0)
-            throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, null);
+        // if (startIndex < 0)
+        //     throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, null);
         
         var cropped = Pixels.Skip(startIndex).Take(length).ToCollection();
         

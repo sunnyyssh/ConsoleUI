@@ -126,8 +126,26 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         return result;
     }
 
+    public RowTextChooserBuilder(int width, int height, Orientation orientation, [Pure] IEnumerable<string>? initOptions = null)
+        : this(new Size(width, height), orientation, initOptions)
+    { }
+    
+    public RowTextChooserBuilder(int width, double heightRelation, Orientation orientation, [Pure] IEnumerable<string>? initOptions = null)
+        : this(new Size(width, heightRelation), orientation, initOptions)
+    { }
+    
+    public RowTextChooserBuilder(double widthRelation, int height, Orientation orientation, [Pure] IEnumerable<string>? initOptions = null)
+        : this(new Size(widthRelation, height), orientation, initOptions)
+    { }
+    
+    public RowTextChooserBuilder(double widthRelation, double heightRelation, Orientation orientation, [Pure] IEnumerable<string>? initOptions = null)
+        : this(new Size(widthRelation, heightRelation), orientation, initOptions)
+    { }
+    
     public RowTextChooserBuilder(Size size, Orientation orientation, [Pure] IEnumerable<string>? initOptions = null)
     {
+        ArgumentNullException.ThrowIfNull(size, nameof(size));
+
         Size = size;
         Orientation = orientation;
         _options = initOptions?.ToList() ?? new List<string>();

@@ -143,10 +143,10 @@ public sealed class DrawStateBuilder // TODO replace much-allocating DrawState o
     {
         ValidatePosition(left, top);
         
-        if (width <= 0 && left + width >= Width)
+        if (width <= 0 && left + width > Width)
             throw new ArgumentOutOfRangeException(nameof(width), width, "It is out of builder's Width");
 
-        if (height <= 0 && top + height >= Height)
+        if (height <= 0 && top + height > Height)
             throw new ArgumentOutOfRangeException(nameof(height), height, "It is out of builder's Height");
     }
 
