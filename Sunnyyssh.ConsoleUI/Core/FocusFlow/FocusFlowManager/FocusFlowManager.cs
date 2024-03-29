@@ -2,7 +2,7 @@
 namespace Sunnyyssh.ConsoleUI;
 
 internal record FocusManagerOptions(
-    ConsoleKey[] FocusChangeKeys, 
+    ConsoleKeyCollection FocusChangeKeys, 
     bool FocusFlowLoop, 
     bool ChangeFocusWhenSingle,  
     bool ThrowOnNotFocusedHandling, 

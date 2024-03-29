@@ -6,7 +6,7 @@ public sealed class ApplicationSettings
 {
     private readonly Color _defaultBackground = Color.Black;
     private readonly Color _defaultForeground = Color.White;
-    private readonly ConsoleKey[] _focusChangeKeys = new[] { ConsoleKey.Tab };
+    private readonly ConsoleKeyCollection _focusChangeKeys = new[] { ConsoleKey.Tab }.ToCollection();
     private readonly int? _height = null;
     private readonly int? _width = null;
 
@@ -65,7 +65,7 @@ public sealed class ApplicationSettings
 
     public bool BorderConflictsAllowed { get; init; } = true;
 
-    public ConsoleKey[] FocusChangeKeys
+    public ConsoleKeyCollection FocusChangeKeys
     {
         get => _focusChangeKeys;
         init => _focusChangeKeys = value ?? throw new ArgumentNullException(nameof(value));

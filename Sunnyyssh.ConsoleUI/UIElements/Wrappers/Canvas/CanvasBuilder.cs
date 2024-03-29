@@ -8,7 +8,7 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
 
     public bool EnableOverlapping { get; init; } = true;
 
-    public ConsoleKey[] FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab };
+    public ConsoleKeyCollection FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab }.ToCollection();
     
     public CanvasBuilder Add(IUIElementBuilder elementBuilder, Position position)
     {

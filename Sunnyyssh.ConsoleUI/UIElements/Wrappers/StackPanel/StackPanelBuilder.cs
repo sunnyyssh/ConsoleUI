@@ -6,7 +6,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
     
     public Size Size { get; }
 
-    public ConsoleKey[] FocusChangeKeys { get; init; } = new [] { ConsoleKey.Tab };
+    public ConsoleKeyCollection FocusChangeKeys { get; init; } = new [] { ConsoleKey.Tab }.ToCollection();
     
     public Orientation Orientation { get; }
 

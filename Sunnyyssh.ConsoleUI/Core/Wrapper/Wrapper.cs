@@ -119,7 +119,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
     }
 
     protected Wrapper(int width, int height, 
-        ChildrenCollection orderedChildren, ConsoleKey[] focusChangeKeys, 
+        ChildrenCollection orderedChildren, ConsoleKeyCollection focusChangeKeys, 
         OverlappingPriority overlappingPriority)
         : base(width, height, overlappingPriority)
     {
