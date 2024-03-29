@@ -21,7 +21,7 @@ public abstract class WrapperBasedChooser<TWrapper> : OptionChooser
     }
 
     protected WrapperBasedChooser(int width, int height, TWrapper optionsWrapper, 
-        OptionElement[] orderedOptions, OptionChooserKeySet keySet, bool canChooseOnlyOne, OverlappingPriority priority) 
+        IReadOnlyList<OptionElement> orderedOptions, OptionChooserKeySet keySet, bool canChooseOnlyOne, OverlappingPriority priority) 
         : base(width, height, orderedOptions, keySet, canChooseOnlyOne, priority)
     {
         ArgumentNullException.ThrowIfNull(optionsWrapper, nameof(optionsWrapper));

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Xml.Xsl;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -40,8 +39,10 @@ public sealed class TextBox : UIElement, IFocusable
 
     private IObservable<string>? _bound;
 
+    // ReSharper disable once NotAccessedField.Local
     private ForceTakeFocusHandler? _forceTakeFocusHandler;
 
+    // ReSharper disable once NotAccessedField.Local
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
 
     #region Colors.

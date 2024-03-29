@@ -122,14 +122,9 @@ public sealed class ChildInfo
     internal DrawState CreateErasingState()
     {
         // Creating state of all pixels just default-backgrounded.
-        DrawState notVisibleState = new(
-            Enumerable.Range(0, Height)
-                .Select(i => new PixelLine(Left, Top + i,
-                    Enumerable.Range(0, Width)
-                        .Select(_ => new PixelInfo())
-                        .ToArray()))
-                .ToArray()
-        );
+        DrawState notVisibleState = new DrawStateBuilder(Width, Height)
+            .Fill(new PixelInfo())
+            .ToDrawState();
         
         var ordered = _underlying
             .Where(ch => ch.CurrentState is not null)

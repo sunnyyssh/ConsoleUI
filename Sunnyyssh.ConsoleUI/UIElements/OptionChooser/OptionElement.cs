@@ -2,13 +2,13 @@
 
 public abstract class OptionElement : UIElement
 {
-    public abstract void FocusOn();
+    protected internal abstract void FocusOn();
 
-    public abstract void FocusOff();
+    protected internal abstract void FocusOff();
 
-    public abstract void ChosenOn();
+    protected internal abstract void ChosenOn();
 
-    public abstract void ChosenOff();
+    protected internal abstract void ChosenOff();
 
     public abstract bool IsChosen { get; }
     

@@ -34,7 +34,7 @@ internal class DefaultApplication : Application
         Drawer.EnqueueRequest(resultDrawState); 
     }
 
-    public DefaultApplication(ApplicationSettings settings, ChildInfo[] orderedChildren) : base(settings, orderedChildren)
+    public DefaultApplication(ApplicationSettings settings, ChildrenCollection orderedChildren) : base(settings, orderedChildren)
     {
         // DefaultApplication doesn't present anything additional to Application implementation.
     }

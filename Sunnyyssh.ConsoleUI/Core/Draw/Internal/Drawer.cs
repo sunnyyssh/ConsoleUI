@@ -163,7 +163,7 @@ internal class Drawer
         
         // Creating the state of the whole console one-colored
         var fillingState = new DrawStateBuilder(width, height)
-            .Fill(_options.DefaultBackground)
+            .Fill(color)
             .ToDrawState();
         
         // It's important not to enqueue this request but directly draw it

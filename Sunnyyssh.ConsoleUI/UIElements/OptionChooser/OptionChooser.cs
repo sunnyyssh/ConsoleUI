@@ -51,11 +51,13 @@ public abstract class OptionChooser : UIElement, IFocusable
 
     private int _currentIndex = 0;
     
-    protected OptionElement[] OrderedOptions { get; }
+    protected IReadOnlyList<OptionElement> OrderedOptions { get; }
     public bool CanChooseOnlyOne { get; }
 
+    // ReSharper disable once NotAccessedField.Local
     private ForceTakeFocusHandler? _forceTakeFocusHandler;
 
+    // ReSharper disable once NotAccessedField.Local
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
     
     protected bool IsWaitingFocus { get; set; }
@@ -145,11 +147,11 @@ public abstract class OptionChooser : UIElement, IFocusable
 
     private bool MoveOn(int offset)
     {
-        if (_currentIndex + offset < 0 || _currentIndex + offset >= OrderedOptions.Length)
+        if (_currentIndex + offset < 0 || _currentIndex + offset >= OrderedOptions.Count)
             return false;
 
         var pastOption = OrderedOptions[_currentIndex];
-        _currentIndex = (_currentIndex + offset) % OrderedOptions.Length;
+        _currentIndex = (_currentIndex + offset) % OrderedOptions.Count;
         var newOption = OrderedOptions[_currentIndex];
 
         if (IsFocused)
@@ -223,15 +225,15 @@ public abstract class OptionChooser : UIElement, IFocusable
         remove => _forceLoseFocusHandler -= value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    protected OptionChooser(int width, int height, OptionElement[] orderedOptions, 
+    protected OptionChooser(int width, int height, IReadOnlyList<OptionElement> options, 
         OptionChooserKeySet keySet, bool canChooseOnlyOne, OverlappingPriority priority) 
         : base(width, height, priority)
     {
-        ArgumentNullException.ThrowIfNull(orderedOptions, nameof(orderedOptions));
+        ArgumentNullException.ThrowIfNull(options, nameof(options));
         ArgumentNullException.ThrowIfNull(keySet, nameof(keySet));
         
         _keySet = keySet;
-        OrderedOptions = orderedOptions;
+        OrderedOptions = options;
         CanChooseOnlyOne = canChooseOnlyOne;
     }
 }

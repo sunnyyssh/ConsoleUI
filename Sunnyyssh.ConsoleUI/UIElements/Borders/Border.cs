@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public abstract class Border : UIElement
 {

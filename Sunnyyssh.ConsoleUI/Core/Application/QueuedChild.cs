@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 internal class QueuedChild
 {

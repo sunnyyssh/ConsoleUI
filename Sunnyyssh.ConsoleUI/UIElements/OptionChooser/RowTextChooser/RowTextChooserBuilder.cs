@@ -1,4 +1,5 @@
-﻿using Sunnyyssh.ConsoleUI.Exceptions;
+﻿using System.Diagnostics.Contracts;
+using Sunnyyssh.ConsoleUI.Exceptions;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -55,8 +56,8 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         
         var initializedOptions = 
             stackBuilder.Orientation == Orientation.Horizontal
-            ? InitializeOptionsHorizontal(width, height, options)
-            : InitializeOptionsVertical(width, height, options);
+            ? InitializeOptionsHorizontal(width, options)
+            : InitializeOptionsVertical(height, options);
 
         foreach (var optionBuilder in initializedOptions)
         {
@@ -68,7 +69,7 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         var resultElements = initStack.Children
             // Only TextOptionElement children can be here.
             .Select(ch => (TextOptionElement)ch.Child)
-            .ToArray();
+            .ToCollection();
 
         var keySet = KeySet ?? (Orientation == Orientation.Vertical ? VerticalDefaultKeySet : HorizontalDefaultKeySet);
 
@@ -81,7 +82,7 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
-    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsVertical(int width, int height, string[] options)
+    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsVertical(int height, string[] options)
     {
         int count = options.Length;
         
@@ -103,7 +104,7 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         return result;
     }
 
-    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsHorizontal(int width, int height, string[] options)
+    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsHorizontal(int width, string[] options)
     {
         int count = options.Length;
         
@@ -125,7 +126,7 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         return result;
     }
 
-    public RowTextChooserBuilder(Size size, Orientation orientation, string[]? initOptions = null)
+    public RowTextChooserBuilder(Size size, Orientation orientation, [Pure] IEnumerable<string>? initOptions = null)
     {
         Size = size;
         Orientation = orientation;

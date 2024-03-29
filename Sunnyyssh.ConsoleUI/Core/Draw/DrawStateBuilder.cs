@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public sealed class DrawStateBuilder // TODO replace much-allocating DrawState operating with DrawStateBuilder operating.
 {
@@ -62,7 +60,16 @@ public sealed class DrawStateBuilder // TODO replace much-allocating DrawState o
 
     public DrawStateBuilder Place(int left, int top, PixelLine line)
     {
-        return Place(left, top, line.Pixels);
+        ArgumentNullException.ThrowIfNull(line, nameof(line));
+        
+        ValidateSquare(left, top, line.Pixels.Count, 1);
+
+        for (int i = 0; i < line.Pixels.Count; i++)
+        {
+            _pixels[left + i, top] = line.Pixels[i];
+        }
+
+        return this;
     }
 
     public DrawStateBuilder Place(int left, int top, PixelInfo[] pixels)
@@ -158,17 +165,16 @@ public sealed class DrawStateBuilder // TODO replace much-allocating DrawState o
         
         for (int top = 0; top < Height; top++)
         {
-            var pixels = new PixelInfo[Width];
-
-            for (int left = 0; left < Width; left++)
-            {
-                pixels[left] = _pixels[left, top] ?? new PixelInfo();
-            }
+            int thisTop = top;
+            
+            var pixels = Enumerable.Range(0, Width)
+                .Select(left => _pixels[left, thisTop] ?? new PixelInfo())
+                .ToCollection();
             
             lines[top] = new PixelLine(0, top, pixels);
         }
 
-        return new DrawState(lines);
+        return new DrawState(lines.ToCollection());
     }
 
     public static DrawStateBuilder CreateFrom(DrawState drawState)

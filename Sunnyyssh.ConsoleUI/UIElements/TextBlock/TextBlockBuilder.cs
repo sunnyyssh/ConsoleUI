@@ -2,7 +2,7 @@
 
 public sealed class TextBlockBuilder : IUIElementBuilder<TextBlock>
 {
-    private string? StartingText { get; init; }
+    public string? StartingText { get; init; }
 
     public IObservable<string>? BoundObservable { get; init; }
 

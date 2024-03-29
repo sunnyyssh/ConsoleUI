@@ -15,7 +15,7 @@ public abstract class StateOptionElement : OptionElement
         return state;
     }
 
-    public override void ChosenOn()
+    protected internal override void ChosenOn()
     {
         if (_isChosen)
         {
@@ -29,8 +29,8 @@ public abstract class StateOptionElement : OptionElement
             Redraw(state);
         }
     }
-    
-    public override void ChosenOff()
+
+    protected internal override void ChosenOff()
     {
         if (!_isChosen)
         {
@@ -45,7 +45,7 @@ public abstract class StateOptionElement : OptionElement
         }
     }
 
-    public override void FocusOn()
+    protected internal override void FocusOn()
     {
         if (_isFocused)
         {
@@ -60,7 +60,7 @@ public abstract class StateOptionElement : OptionElement
         }
     }
 
-    public override void FocusOff()
+    protected internal override void FocusOff()
     {
         if (!_isFocused)
         {
