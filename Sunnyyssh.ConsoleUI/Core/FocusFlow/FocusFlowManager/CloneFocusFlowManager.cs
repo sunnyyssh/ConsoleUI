@@ -252,6 +252,7 @@ internal sealed class FocusFlowManager
         child.ForceTakeFocus += OnChildForceTakeFocus;
     }
     
+    // ReSharper disable once UnusedMember.Local
     private void UnsubscribeChildEvents(IFocusable child)
     {
         child.ForceLoseFocus -= OnChildForceLoseFocus;

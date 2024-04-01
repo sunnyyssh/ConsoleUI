@@ -13,6 +13,8 @@ public enum Sizing
 
 public sealed class Size
 {
+    public static readonly Size FullSize = new Size(1.0, 1.0);
+    
     public Sizing Sizing { get; }
         
     public int? Height { get; } 

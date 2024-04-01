@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public sealed class LineCompositionBuilder : IUIElementBuilder<LineComposition>
 {

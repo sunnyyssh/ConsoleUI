@@ -13,6 +13,8 @@ public enum Positioning
 
 public class Position // TODO implememnt an ability to take absolute offset to relation.
 {
+    public static readonly Position LeftTop = new Position(0, 0);
+    
     public int? Left { get; }
     public int? Top { get; }
     public double? LeftRelational { get; }

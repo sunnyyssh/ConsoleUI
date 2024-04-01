@@ -6,8 +6,6 @@ public sealed class ApplicationBuilder
 
     private readonly List<QueuedPositionChild> _orderedQueuedChildren = new();
 
-    private readonly Dictionary<IUIElementBuilder, Dictionary<ConsoleKey, IUIElementBuilder>> _focusFlow = new();
-
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, int left, int top)
         => Add(elementBuilder, new Position(left, top));
     

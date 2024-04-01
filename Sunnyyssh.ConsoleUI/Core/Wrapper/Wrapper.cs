@@ -144,11 +144,6 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         foreach (var child in Children)
         {
             child.Child.RedrawElement += RedrawChild;
-        
-            if (child.Child is IFocusable focusableChild)
-            {
-                //_focusFlowManager.Add(focusableChild);
-            }
         }
     }
 }
