@@ -89,18 +89,13 @@ public abstract class Application
         var child = childInfo.Child;
         
         child.RedrawElement += RedrawChild;
-        
-        if (child is IFocusable focusableChild)
-        {
-            HeadFocusFlowManager.Add(focusableChild);
-        }
     }
 
     private protected abstract void Draw();
 
     private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args);
     
-    private protected Application(ApplicationSettings settings, ChildrenCollection orderedChildren)
+    private protected Application(ApplicationSettings settings, ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification)
     {
         ArgumentNullException.ThrowIfNull(settings, nameof(settings));
         ArgumentNullException.ThrowIfNull(orderedChildren, nameof(orderedChildren));
@@ -121,7 +116,7 @@ public abstract class Application
         KeyListener = new KeyListener(keyListenerOptions);
         
         FocusManagerOptions focusManagerOptions = new (
-            Settings.FocusChangeKeys,
+            focusFlowSpecification,
             // Focus Flow should be looped.
             true,
             // If there are only one IFocusable nothing should happen when focus change is ought to occur.

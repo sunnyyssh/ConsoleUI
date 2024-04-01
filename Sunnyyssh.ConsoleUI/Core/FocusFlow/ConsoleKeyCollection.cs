@@ -4,6 +4,8 @@ namespace Sunnyyssh.ConsoleUI;
 
 public class ConsoleKeyCollection : IReadOnlyList<ConsoleKey>
 {
+    public static readonly ConsoleKeyCollection Empty = new ConsoleKeyCollection(Array.Empty<ConsoleKey>());
+    
     private readonly IReadOnlyList<ConsoleKey> _keys;
 
     public IEnumerator<ConsoleKey> GetEnumerator() => _keys.GetEnumerator();

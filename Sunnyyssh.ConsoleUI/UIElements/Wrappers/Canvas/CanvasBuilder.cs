@@ -6,6 +6,10 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
     
     public Size Size { get; }
 
+    public bool FocusFlowLoop { get; init; } = false;
+
+    public bool OverridesFocusFlow { get; init; } = true;
+    
     public bool EnableOverlapping { get; init; } = true;
 
     public ConsoleKeyCollection FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab }.ToCollection();
@@ -45,9 +49,52 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
 
         var orderedChildren = placementBuilder.Build();
 
-        var resultCanvas = new Canvas(args.Width, args.Height, FocusChangeKeys, orderedChildren);
+        var focusFlowSpecification = InitializeFocusSpecification(orderedChildren);
+        
+        var resultCanvas = new Canvas(args.Width, args.Height, focusFlowSpecification, orderedChildren);
 
         return resultCanvas;
+    }
+
+    private FocusFlowSpecification InitializeFocusSpecification(ChildrenCollection orderedChildren)
+    {
+        var specBuilder = new FocusFlowSpecificationBuilder(OverridesFocusFlow);
+        
+        var focusables = orderedChildren
+            .Where(child => child.Child is IFocusable)
+            .Select(child => (IFocusable)child.Child)
+            .ToArray();
+
+        if (focusables.Length <= 1)
+        {
+            if (focusables.Length == 1)
+            {
+                specBuilder.Add(focusables[0]);
+            }
+            
+            return specBuilder.Build();
+        }
+
+        foreach (var focusable in focusables)
+        {
+            specBuilder.Add(focusable);
+        }
+        
+        for (int i = 0; i < focusables.Length - 1; i++)
+        {
+            specBuilder.AddFlow(focusables[i], focusables[i + 1], FocusChangeKeys);
+        }
+
+        if (FocusFlowLoop)
+        {
+            specBuilder.AddFlow(focusables[^1], focusables[0], FocusChangeKeys);
+        }
+        else
+        {
+            specBuilder.AddLoseFocus(focusables[^1], FocusChangeKeys);
+        }
+
+        return specBuilder.Build();
     }
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);

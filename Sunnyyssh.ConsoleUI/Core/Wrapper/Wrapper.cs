@@ -119,20 +119,21 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
     }
 
     protected Wrapper(int width, int height, 
-        ChildrenCollection orderedChildren, ConsoleKeyCollection focusChangeKeys, 
+        ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification, 
         OverlappingPriority overlappingPriority)
         : base(width, height, overlappingPriority)
     {
         ArgumentNullException.ThrowIfNull(orderedChildren, nameof(orderedChildren));
-        ArgumentNullException.ThrowIfNull(focusChangeKeys, nameof(focusChangeKeys));
+        ArgumentNullException.ThrowIfNull(focusFlowSpecification, nameof(focusFlowSpecification));
 
         var focusManagerOptions = new FocusManagerOptions(
-            focusChangeKeys,
+            focusFlowSpecification,
             // It's not provided to loop focus flow
             // because the wrapper must lose focus when all wrapper's IFocusable went throgh focus
             false,
             false,
             true);
+        
         _focusFlowManager = new FocusFlowManager(focusManagerOptions);
 
         _focusFlowManager.FocusFlowEnded += OnManagerFocusFlowEnded;
@@ -146,7 +147,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         
             if (child.Child is IFocusable focusableChild)
             {
-                _focusFlowManager.Add(focusableChild);
+                //_focusFlowManager.Add(focusableChild);
             }
         }
     }

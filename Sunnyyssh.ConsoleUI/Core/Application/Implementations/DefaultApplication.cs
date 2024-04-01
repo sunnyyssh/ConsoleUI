@@ -34,7 +34,8 @@ internal class DefaultApplication : Application
         Drawer.EnqueueRequest(resultDrawState); 
     }
 
-    public DefaultApplication(ApplicationSettings settings, ChildrenCollection orderedChildren) : base(settings, orderedChildren)
+    public DefaultApplication(ApplicationSettings settings, ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification) 
+        : base(settings, orderedChildren, focusFlowSpecification)
     {
         // DefaultApplication doesn't present anything additional to Application implementation.
     }

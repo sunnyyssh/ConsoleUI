@@ -8,7 +8,7 @@ internal sealed class FocusableChain : IEnumerable<IFocusable>
 {
     private readonly bool _loopFocusFlow;
     
-    private readonly List<IFocusable> _items = new();
+    private readonly List<IFocusable> _items;
 
     private int _currentIndex = 0;
 
@@ -89,89 +89,11 @@ internal sealed class FocusableChain : IEnumerable<IFocusable>
         return true;
     }
 
-    #region Items adding or removing
-    
-    public bool TryRemove(IFocusable focusable)
-    {
-        int indexOfRemoving = _items.IndexOf(focusable);
-        if (indexOfRemoving < 0)
-        {
-            return false;
-        }
-
-        if (_currentIndex > indexOfRemoving)
-        {
-            _currentIndex--;
-        }
-
-        if (_cycleRootIndex > indexOfRemoving)
-        {
-            _cycleRootIndex--;
-        }
-
-        _items.RemoveAt(indexOfRemoving);
-
-        _currentIndex %= _items.Count;
-        _cycleRootIndex %= _items.Count;
-
-        return true;
-    }
-
-    public void InsertAt(int index, IFocusable focusable)
-    {
-        _items.Insert(index, focusable);
-        
-        if (_currentIndex >= index)
-        {
-            _currentIndex++;
-        }
-
-        if (_cycleRootIndex >= index)
-        {
-            _cycleRootIndex++;
-        }
-    }
-
-    public bool TryInsertAfter(IFocusable afterThis, IFocusable newFocusable)
-    {
-        int index = _items.IndexOf(afterThis);
-        if (index < 0)
-        {
-            return false;
-        }
-        
-        InsertAt(index + 1, newFocusable);
-
-        return true;
-    }
-
-    public bool TryInsertBefore(IFocusable beforeThis, IFocusable newFocusable)
-    {
-        int index = _items.IndexOf(beforeThis);
-        if (index < 0)
-        {
-            return false;
-        }
-        
-        InsertAt(index, newFocusable);
-
-        return true;
-    }
-
-    public void Add(IFocusable focusable)
-    {
-        if (!_items.Any())
-        {
-            _currentIndex = 0;
-        }
-        _items.Add(focusable);
-    }
-
-    #endregion
-
-    public FocusableChain(bool loopFocusFlow)
+    public FocusableChain(bool loopFocusFlow, IEnumerable<IFocusable> items)
     {
         _loopFocusFlow = loopFocusFlow;
+
+        _items = new List<IFocusable>(items);
     }
 
     public IEnumerator<IFocusable> GetEnumerator()

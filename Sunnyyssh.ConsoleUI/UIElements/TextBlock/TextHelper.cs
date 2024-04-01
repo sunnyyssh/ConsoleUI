@@ -25,15 +25,15 @@ internal static class TextHelper
     {
         var lines = TextHelper.SplitText(width, wordWrap, text);
 
-        int startingTop = lines.Length >= height || textVerticalAligning == VerticalAligning.Top 
+        int startingTop = top + (lines.Length >= height || textVerticalAligning == VerticalAligning.Top 
             ? 0
             : textVerticalAligning == VerticalAligning.Center 
                 ? (height - lines.Length) / 2
-                : height - lines.Length;
+                : height - lines.Length);
         
         for (int i = 0; i < lines.Length; i++)
         {
-            if (startingTop + i >= height)
+            if (startingTop + i >= top + height)
                 break;
 
             string line = lines[i].Length > width ? lines[i][..width] : lines[i];

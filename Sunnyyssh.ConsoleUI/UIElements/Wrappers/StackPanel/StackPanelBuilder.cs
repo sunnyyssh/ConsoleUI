@@ -2,9 +2,29 @@
 
 public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
 {
-    private readonly List<QueuedChildWithOffset> _orderedQueuedChildren = new();
+    private static readonly ConsoleKeyCollection DefaultVerticalNextKeys =
+        new[] { ConsoleKey.Tab, ConsoleKey.DownArrow }.ToCollection();
     
+    private static readonly ConsoleKeyCollection DefaultVerticalPreviousKeys =
+        new[] { ConsoleKey.UpArrow }.ToCollection();
+    
+    private static readonly ConsoleKeyCollection DefaultHorizontalNextKeys =
+        new[] { ConsoleKey.Tab, ConsoleKey.RightArrow }.ToCollection();
+    
+    private static readonly ConsoleKeyCollection DefaultHorizontalPreviousKeys =
+        new[] { ConsoleKey.LeftArrow }.ToCollection();
+    
+    private readonly List<QueuedChildWithOffset> _orderedQueuedChildren = new();
+
     public Size Size { get; }
+
+    public bool FocusFlowLoop { get; init; } = false;
+
+    public bool OverridesFocusFlow { get; init; } = true;
+    
+    public ConsoleKeyCollection? FocusNextKeys { get; init; }
+    
+    public ConsoleKeyCollection? FocusPreviousKeys { get; init; }
 
     public ConsoleKeyCollection FocusChangeKeys { get; init; } = new [] { ConsoleKey.Tab }.ToCollection();
     
@@ -42,10 +62,73 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
             _ => throw new ArgumentOutOfRangeException()
         };
 
+        var focusFlowSpecification = InitializeFocusSpecification(buildedChildren);
+        
         var resultStackPanel = new StackPanel(width, height, buildedChildren, 
-            Orientation, FocusChangeKeys, OverlappingPriority);
+            Orientation, focusFlowSpecification, OverlappingPriority);
 
         return resultStackPanel;
+    }
+
+    private FocusFlowSpecification InitializeFocusSpecification(ChildrenCollection orderedChildren)
+    {
+        var nextKeys = FocusNextKeys ??
+                       (Orientation == Orientation.Horizontal
+                           ? DefaultHorizontalNextKeys
+                           : DefaultVerticalNextKeys);
+
+        var prevKeys = FocusPreviousKeys ??
+                       (Orientation == Orientation.Horizontal
+                           ? DefaultHorizontalPreviousKeys
+                           : DefaultVerticalPreviousKeys);
+        
+        var focusables = orderedChildren
+            .Where(child => child.Child is IFocusable)
+            .Select(child => (IFocusable)child.Child)
+            .ToArray();
+
+        return InitializeFocusSpecification(focusables, prevKeys, nextKeys);
+    }
+
+    private FocusFlowSpecification InitializeFocusSpecification(IFocusable[] focusables, ConsoleKeyCollection prevKeys,
+        ConsoleKeyCollection nextKeys)
+    {
+        var specBuilder = new FocusFlowSpecificationBuilder(OverridesFocusFlow);
+        
+        if (focusables.Length <= 1)
+        {
+            if (focusables.Length == 1)
+            {
+                specBuilder.Add(focusables[0])
+                    .AddLoseFocus(focusables[0], nextKeys);
+            }
+            
+            return specBuilder.Build();
+        }
+
+        foreach (var focusable in focusables)
+        {
+            specBuilder.Add(focusable);
+        }
+
+        for (int i = 0; i < focusables.Length - 1; i++)
+        {
+            specBuilder.AddFlow(focusables[i], focusables[i + 1], nextKeys)
+                .AddFlow(focusables[i + 1], focusables[i], prevKeys);
+        }
+
+        if (FocusFlowLoop)
+        {
+            specBuilder.AddFlow(focusables[^1], focusables[0], nextKeys)
+                .AddFlow(focusables[0], focusables[^1], prevKeys);
+        }
+        else
+        {
+            specBuilder.AddLoseFocus(focusables[^1], nextKeys)
+                .AddLoseFocus(focusables[0], prevKeys);
+        }
+        
+        return specBuilder.Build();
     }
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
