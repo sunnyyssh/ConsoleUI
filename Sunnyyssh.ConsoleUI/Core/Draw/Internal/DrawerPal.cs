@@ -37,8 +37,10 @@ internal class DrawerPal
 
     public void Clear() => Console.Clear();
     
-    // Handles start of drawing. 
-    // It may be implemented by platfrom-specific DrawerPal inheritors.
+    /// <summary>
+    /// Handles start of drawing. 
+    /// It may be implemented by platfrom-specific DrawerPal inheritors.
+    /// </summary>
     public virtual void OnStart()
     {
         Console.OutputEncoding = Encoding.Unicode;

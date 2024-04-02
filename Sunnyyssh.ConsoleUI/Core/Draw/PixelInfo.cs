@@ -2,19 +2,33 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Represents the character and its background and foreground colors. (Or indicates its non-visibility).
+/// </summary>
 [DebuggerDisplay("{DebuggerDisplay}")]
 public sealed class PixelInfo
 {
+    // It's for displaying by debugger.
     private string DebuggerDisplay => !IsVisible ? "not visible" : $"c= '{Char}'; f= {Foreground}; b= {Background}";
-
-    public static PixelInfo VisibleEmpty => new(' ', Color.Transparent, Color.Transparent);
     
+    /// <summary>
+    /// Indicates if pixel is visible.
+    /// </summary>
     public bool IsVisible { get; }
     
+    /// <summary>
+    /// The foreground color of the pixel.
+    /// </summary>
     public Color Foreground { get; }
     
+    /// <summary>
+    /// The background color of the pixel.
+    /// </summary>
     public Color Background { get; }
     
+    /// <summary>
+    /// The character of the pixel.
+    /// </summary>
     public char Char { get; }
 
     public override bool Equals(object? obj)
@@ -38,6 +52,13 @@ public sealed class PixelInfo
         return HashCode.Combine(IsVisible, (int)Foreground, (int)Background, Char);
     }
 
+    /// <summary>
+    /// Creates an instance of <see cref="PixelInfo"/> with specified character and colors.
+    /// </summary>
+    /// <param name="c">The character of the pixel.</param>
+    /// <param name="background">The background color.</param>
+    /// <param name="foreground">The foreground color.</param>
+    /// <exception cref="ArgumentException">Char was special</exception>
     public PixelInfo(char c, Color background = Color.Default, Color foreground = Color.Default)
     {
         if (CharHelper.IsCharSpecial(c))

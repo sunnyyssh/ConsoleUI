@@ -1,7 +1,11 @@
-﻿using System.Runtime.Versioning;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// <see cref="DrawerPal"/> implementation for Windows. Supports specifying width and height.
+/// </summary>
 [SupportedOSPlatform("Windows")]
 internal sealed class WindowsDrawerPal : DrawerPal
 {
@@ -11,10 +15,16 @@ internal sealed class WindowsDrawerPal : DrawerPal
         int? width, int? height) : 
         base(defaultBackground, defaultForeground, borderConflictsAllowed)
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            throw new NotSupportedException();
+        
         _initializedWidth = width;
         _initializedHeight = height;
     }
 
+    /// <summary>
+    /// <inheritdoc cref="DrawerPal.OnStart"/>
+    /// </summary>
     public override void OnStart()
     {
         base.OnStart();

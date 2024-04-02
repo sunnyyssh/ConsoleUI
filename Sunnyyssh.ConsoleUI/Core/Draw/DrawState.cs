@@ -50,6 +50,11 @@ public sealed class DrawState
         return false;
     }
 
+    /// <summary>
+    /// Overlaps this state with <see cref="state"/>. It respects not visible pixels and transparent colors. So, for example, if overlapping pixel is not visible underlying one is resolved.
+    /// </summary>
+    /// <param name="state">State to overlap over this one.</param>
+    /// <returns>Result state.</returns>
     [Pure]
     public DrawState OverlapWith(DrawState state)
     {
@@ -58,6 +63,13 @@ public sealed class DrawState
         return Combine(this, state);
     }
 
+    
+    /// <summary>
+    /// Naively overlaps this state with <see cref="state"/>. It means that overlapping pixel always hides underlying.
+    /// It doesn't respect non-visibility and transparency.
+    /// </summary>
+    /// <param name="state">State to hide-overlap with.</param>
+    /// <returns>Result state.</returns>
     [Pure]
     public DrawState HideOverlapWith(DrawState state)
     {
@@ -66,6 +78,14 @@ public sealed class DrawState
         return HideOverlap(this, state);
     }
 
+    /// <summary>
+    /// Crops draw state to specified area.
+    /// </summary>
+    /// <param name="left">Left position of area to crop to.</param>
+    /// <param name="top">Top position of area to crop to.</param>
+    /// <param name="width">Width of area to crop to.</param>
+    /// <param name="height">Height of area to crop to.</param>
+    /// <returns>Cropped draw state.</returns>
     [Pure]
     public DrawState Crop(int left, int top, int width, int height)
     {
@@ -79,6 +99,12 @@ public sealed class DrawState
         return new DrawState(cropped);
     }
     
+    /// <summary>
+    /// Shifts (or moves) state to the new area.
+    /// </summary>
+    /// <param name="leftShift">Horizontal shift. If it's positive state shifts to the right. If negative - to the left.</param>
+    /// <param name="topShift">Vertical shift. If it's positive state shifts down. If negative - up.</param>
+    /// <returns>Shifted state.</returns>
     [Pure]
     public DrawState Shift(int leftShift, int topShift)
     {
@@ -92,6 +118,11 @@ public sealed class DrawState
             .ToCollection());
     }
 
+    /// <summary>
+    /// Subtracts this state with <see cref="deductible"/>.
+    /// </summary>
+    /// <param name="deductible">The deductible state.</param>
+    /// <returns>The result of subtraction.</returns>
     [Pure]
     public DrawState SubtractWith(DrawState deductible)
     {
@@ -112,7 +143,13 @@ public sealed class DrawState
         return new DrawState(newLines.ToCollection());
     }
     
-    public static DrawState Combine(params DrawState[] orderedDrawStates)
+    /// <summary>
+    /// Combines ordered collection of <see cref="DrawState"/> instances. If state is earlier in collection then it is overlapped by later ones.
+    /// It respects not visible pixels and transparent colors. So, for example, if overlapping pixel is not visible underlying one is resolved.
+    /// </summary>
+    /// <param name="orderedDrawStates">Collection of combining states.</param>
+    /// <returns>Combined state.</returns>
+    public static DrawState Combine([Pure] params DrawState[] orderedDrawStates)
     {
         ArgumentNullException.ThrowIfNull(orderedDrawStates, nameof(orderedDrawStates));
 
@@ -133,7 +170,13 @@ public sealed class DrawState
         return result;
     }
 
-    public static DrawState HideOverlap(params DrawState[] orderedDrawStates)
+    /// <summary>
+    /// Naively combines ordered collection of <see cref="DrawState"/> instances. If state is earlier in collection then it is naively overlapped (or hidden) by later ones.
+    /// It means that overlapping pixel always hides underlying. It doesn't respect non-visibility and transparency.
+    /// </summary>
+    /// <param name="orderedDrawStates">Collection of combining states.</param>
+    /// <returns>Combined state.</returns>
+    public static DrawState HideOverlap([Pure] params DrawState[] orderedDrawStates)
     {
         ArgumentNullException.ThrowIfNull(orderedDrawStates, nameof(orderedDrawStates));
         
@@ -154,3 +197,4 @@ public sealed class DrawState
         return result;
     }
 }
+

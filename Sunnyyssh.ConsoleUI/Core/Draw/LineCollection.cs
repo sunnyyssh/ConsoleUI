@@ -2,6 +2,18 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Immutable collection of <see cref="PixelLine"/> instances.
+/// </summary>
+/// <example>
+/// <code>
+/// IEnumerable&lt;PixelLine&gt; lines = ...;
+/// // First variant.
+/// PixelLineCollection collection = lines.ToCollection();
+/// // Second variant.
+/// collection = PixelLineCollection.From(lines);
+/// </code>
+/// </example>
 public sealed class PixelLineCollection : IReadOnlyList<PixelLine>
 {
     public static readonly PixelLineCollection Empty = new(Array.Empty<PixelLine>());

@@ -1,8 +1,18 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Represents UI colors.
+/// </summary>
 public enum Color
 {
+    /// <summary>
+    /// Default color. It's sepcified by <see cref="Application"/> default color.
+    /// It can differ if it is background or foreground color.
+    /// </summary>
     Default = 0,
+    /// <summary>
+    /// Transparent color. It means that underlying color will be set to this pixel.
+    /// </summary>
     Transparent = 1,
     Black = (ConsoleColor.Black + 2),
     DarkBlue = (ConsoleColor.DarkBlue + 2),

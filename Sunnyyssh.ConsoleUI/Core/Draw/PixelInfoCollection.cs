@@ -2,6 +2,18 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Immutable collection of <see cref="PixelInfo"/> instances
+/// </summary>
+/// <example>
+/// <code>
+/// IEnumerable&lt;PixelInfo&gt; pixels = ...;
+/// // First variant.
+/// PixelInfoCollection collection = pixels.ToCollection();
+/// // Second variant.
+/// collection = PixelInfoCollection.From(pixels);
+/// </code>
+/// </example>
 public sealed class PixelInfoCollection : IReadOnlyList<PixelInfo>
 {
     public static readonly PixelInfoCollection Empty = new(Array.Empty<PixelInfo>());
