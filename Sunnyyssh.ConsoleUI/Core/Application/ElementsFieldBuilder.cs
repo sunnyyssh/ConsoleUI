@@ -2,18 +2,49 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Helps place children at specified area.
+/// </summary>
+/// <example>
+/// <code>
+/// var placementBuilder = new ElementsFieldBuilder(initWidth, initHeight, true);
+///        
+/// foreach (var queuedChild in _orderedQueuedChildren)
+/// {
+///    placementBuilder.Place(queuedChild.Builder, queuedChild.Position);
+/// }
+///
+/// ChildrenCollection orderedChildren = placementBuilder.Build();
+/// </code>
+/// </example>
 public sealed class ElementsFieldBuilder
 {
+    /// <summary>
+    /// The width of area.
+    /// </summary>
     public int Width { get; }
     
+    /// <summary>
+    /// The height of area.
+    /// </summary>
     public int Height { get; }
 
     private readonly bool _enableOverlapping; 
 
     private readonly List<ChildInfo> _orderedChildren = new();
 
+    /// <summary>
+    /// Gets <see cref="ChildrenCollection"/> collection of placed children.
+    /// </summary>
+    /// <returns>Created collection of placed children.</returns>
     public ChildrenCollection Build() => _orderedChildren.ToCollection();
     
+    /// <summary>
+    /// Places <see cref="childBuilder"/> at specified position.
+    /// </summary>
+    /// <param name="childBuilder"><see cref="IUIElementBuilder"/> to add.</param>
+    /// <param name="position">Position to place child at.</param>
+    /// <returns>Same instance of <see cref="ElementsFieldBuilder"/>.</returns>
     public ElementsFieldBuilder Place(IUIElementBuilder childBuilder, Position position)
     {
         ArgumentNullException.ThrowIfNull(childBuilder, nameof(childBuilder));
@@ -21,11 +52,20 @@ public sealed class ElementsFieldBuilder
 
         if (!TryPlace(childBuilder, position, out _))
         {
+            throw new ChildPlacementException($"Cannot place child at this position. Child's builder was {childBuilder}");
         }
         
         return this;
     }
     
+    /// <summary>
+    /// Places <see cref="childBuilder"/> at specified position.
+    /// </summary>
+    /// <param name="childBuilder"><see cref="IUIElementBuilder"/> to add.</param>
+    /// <param name="position">Position to place child at.</param>
+    /// <param name="result">Placed <see cref="ChildInfo"/> instance.</param>
+    /// <returns>Same <see cref="ElementsFieldBuilder"/> instance.</returns>
+    /// <exception cref="ChildPlacementException">Couldn't place child.</exception>
     public ElementsFieldBuilder Place(IUIElementBuilder childBuilder, Position position, out ChildInfo result)
     {
         ArgumentNullException.ThrowIfNull(childBuilder, nameof(childBuilder));
@@ -40,6 +80,13 @@ public sealed class ElementsFieldBuilder
         return this;
     }
 
+    /// <summary>
+    /// Tries to place child at specified position.
+    /// </summary>
+    /// <param name="childBuilder"><see cref="IUIElementBuilder"/> to add.</param>
+    /// <param name="position">Position to place child at.</param>
+    /// <param name="result">Placed <see cref="ChildInfo"/> instance.</param>
+    /// <returns>True if successfully placed. False otherwise.</returns>
     public bool TryPlace(IUIElementBuilder childBuilder, Position position, 
         [NotNullWhen(true)] out ChildInfo? result)
     {
@@ -64,6 +111,7 @@ public sealed class ElementsFieldBuilder
         
         var created = new ChildInfo(builtChild, placement.Left, placement.Top);
 
+        // Check if built child already exists.
         if (_orderedChildren.Any(ch => ch.Child == created.Child))
         {
             return false;
@@ -124,7 +172,6 @@ public sealed class ElementsFieldBuilder
     // The dictionary's keys are placemenets (left, top, width, height)
     // The dictionary's values are the count of the intersections with the other children by specific position
     // and the count of the touches with the other children 
-
     private Dictionary<Placement, (int intersections, int positiveTouches)> CreateChildPlacementModel(Position pos, Size size)
     {
         // Other boxes which to count intersetions with.
@@ -223,6 +270,13 @@ public sealed class ElementsFieldBuilder
         return boxes.Count(box => Placement.AreTouched(box, counting));
     }
 
+    /// <summary>
+    /// Creates an instance of <see cref="ElementsFieldBuilder"/>.
+    /// </summary>
+    /// <param name="width">The width of placement area.</param>
+    /// <param name="height">The height of placement area.</param>
+    /// <param name="enableOverlapping">If True then children can overlap each other. False otherwise.</param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public ElementsFieldBuilder(int width, int height, bool enableOverlapping)
     {
         if (width <= 0)

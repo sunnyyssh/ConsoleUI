@@ -2,6 +2,18 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Immutable collection of <see cref="ChildInfo"/>.
+/// </summary>
+/// <example>
+/// <code>
+/// IEnumerable&lt;ChildInfo&gt; children = ...;
+/// // First variant.
+/// ChildrenCollection collection = children.ToCollection();
+/// // Second variant.
+/// collection = ChildrenCollection.From(children);
+/// </code>
+/// </example>
 public sealed class ChildrenCollection : IReadOnlyList<ChildInfo>
 {
     public static readonly ChildrenCollection Empty = new(Array.Empty<ChildInfo>());
@@ -45,6 +57,9 @@ public sealed class ChildrenCollection : IReadOnlyList<ChildInfo>
     }
 }
 
+/// <summary>
+/// Represents extension methods for creating immutable collections.
+/// </summary>
 public static partial class CollectionExtensions
 {
     public static ChildrenCollection ToCollection(this IEnumerable<ChildInfo> children)

@@ -1,8 +1,13 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-// Maybe it should be not Default but Empty or Bare
+/// <summary>
+/// The default implementation of <see cref="Application"/>.
+/// </summary>
 internal class DefaultApplication : Application
 {
+    /// <summary>
+    /// <inheritdoc cref="Application.Draw"/>
+    /// </summary>
     private protected override void Draw()
     {
         var combinedState =
@@ -22,6 +27,11 @@ internal class DefaultApplication : Application
         Drawer.EnqueueRequest(combinedState);
     }
 
+    /// <summary>
+    /// <inheritdoc cref="Application.RedrawChild"/>
+    /// </summary>
+    /// <param name="child">Child to redraw.</param>
+    /// <param name="args">Redraw args.</param>
     private protected override void RedrawChild(UIElement child, RedrawElementEventArgs args)
     {
         var childInfo = Children.SingleOrDefault(ch => ch.Child == child);
@@ -34,6 +44,9 @@ internal class DefaultApplication : Application
         Drawer.EnqueueRequest(resultDrawState); 
     }
 
+    /// <summary>
+    /// Creates an instance of <see cref="DefaultApplication"/>.
+    /// </summary>
     public DefaultApplication(ApplicationSettings settings, ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification) 
         : base(settings, orderedChildren, focusFlowSpecification)
     {

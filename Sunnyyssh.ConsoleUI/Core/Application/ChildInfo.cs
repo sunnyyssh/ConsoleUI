@@ -3,6 +3,9 @@ using System.Diagnostics;
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Represents a collection of children that overlap given instance.
+/// </summary>
 internal sealed class OrderedOverlappingCollection : IEnumerable<ChildInfo>
 {
     private readonly List<ChildInfo> _children = new();
@@ -20,17 +23,15 @@ internal sealed class OrderedOverlappingCollection : IEnumerable<ChildInfo>
         _children.Insert(lastLowerPriorityIndex + 1, childInfo);
         return true;
     }
-
-    public bool Remove(ChildInfo childInfo)
-    {
-        return _children.Remove(childInfo);
-    }
     
     public IEnumerator<ChildInfo> GetEnumerator() => _children.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_children).GetEnumerator();
 }
 
+/// <summary>
+/// Represents information of <see cref="UIElement"/> child and its position.
+/// </summary>
 [DebuggerDisplay("{DebuggerDisplay}")]
 public sealed class ChildInfo
 {
@@ -40,20 +41,43 @@ public sealed class ChildInfo
     
     private string DebuggerDisplay => $"{Child}: Left={Left}; Top={Top}; Width={Width}; Height={Height}";
     
+    /// <summary>
+    /// <see cref="UIElement"/> instance of a child.
+    /// </summary>
     public UIElement Child { get; }
 
     internal DrawState? CurrentState => Child.CurrentState?.Shift(Left, Top);
     
+    /// <summary>
+    /// Left absolute position (counted in characters).
+    /// </summary>
     public int Left { get; }
 
+    /// <summary>
+    /// Top absolute position (counted in characters).
+    /// </summary>
     public int Top { get; }
 
+    /// <summary>
+    /// The width of child.
+    /// </summary>
     public int Width => Child.Width;
 
+    /// <summary>
+    /// The height of child.
+    /// </summary>
     public int Height => Child.Height;
 
+    /// <summary>
+    /// Indicates if child implements IFocusable.
+    /// </summary>
     public bool IsFocusable { get; }
 
+    /// <summary>
+    /// Indicates if given child is intersected with this instance.
+    /// </summary>
+    /// <param name="child">Child to check.</param>
+    /// <returns>True if intersected, False otherwise.</returns>
     public bool IsIntersectedWith(ChildInfo child)
     {
         ArgumentNullException.ThrowIfNull(child, nameof(child));
@@ -64,11 +88,11 @@ public sealed class ChildInfo
     }
 
     /// <summary>
-    /// 
+    /// Adds <see cref="ChildInfo"/> instance in collections of overlapping.
     /// </summary>
     /// <param name="possibleOverlapping"><see cref="ChildInfo"/> instance to check overlapping with.
     /// If <see cref="equalPriorityOverlapping"/> is true then this instance is overlapping.</param>
-    /// <param name="equalPriorityOverlapping"></param>
+    /// <param name="equalPriorityOverlapping">If true this instance is overlapping.</param>
     /// <returns>True if successfully added. False otherwise</returns>
     internal bool AddIfOverlapping(ChildInfo possibleOverlapping, bool equalPriorityOverlapping)
     {
@@ -97,6 +121,10 @@ public sealed class ChildInfo
         return false;
     }
 
+    /// <summary>
+    /// Gets <see cref="DrawState"/> handled with overlapping and shifted to position.
+    /// </summary>
+    /// <returns>Transformed state.</returns>
     internal DrawState TransformState()
     {
         var ordered = _underlying
@@ -113,16 +141,14 @@ public sealed class ChildInfo
             .Crop(Left, Top, Width, Height);
     }
 
-    internal bool RemoveIfOverlapping(ChildInfo childInfo)
-    {
-        return _overlapping.Remove(childInfo) && childInfo._underlying.Remove(this) || 
-               childInfo._overlapping.Remove(this) && _underlying.Remove(childInfo);
-    }
-
+    /// <summary>
+    /// Creates <see cref="DrawState"/> that erases this child.
+    /// </summary>
+    /// <returns>Erasing state.</returns>
     internal DrawState CreateErasingState()
     {
         // Creating state of all pixels just default-backgrounded.
-        DrawState notVisibleState = new DrawStateBuilder(Width, Height)
+        var notVisibleState = new DrawStateBuilder(Width, Height)
             .Fill(new PixelInfo())
             .ToDrawState();
         
@@ -140,6 +166,14 @@ public sealed class ChildInfo
             .Crop(Left, Top, Width, Height);
     }
 
+    /// <summary>
+    /// Creates an instance of <see cref="ChildInfo"/> at given position.
+    /// </summary>
+    /// <param name="child"><see cref="UIElement"/> instance of child.</param>
+    /// <param name="left">Left absolute position (counted in characters).</param>
+    /// <param name="top">Top absolute position (counted in characters).</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public ChildInfo(UIElement child, int left, int top)
     {
         ArgumentNullException.ThrowIfNull(child, nameof(child));

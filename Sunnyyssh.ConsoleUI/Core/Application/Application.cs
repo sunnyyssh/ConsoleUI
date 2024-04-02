@@ -1,29 +1,64 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Handles the whole UI. It draws and listens keys in different threads and holds application running while it's running.
+/// </summary>
+/// <example>
+/// <code>
+/// // ... (ApplicationBuilder) appBuilder initialization.
+/// 
+/// Application app = appBuilder.Build();
+///
+/// app.Run();
+/// 
+/// app.Wait(); // Waiting for app.
+/// </code>
+/// </example>
 public abstract class Application
 {
+    /// <summary>
+    /// Indicates if any <see cref="Application"/> instance is running at this moment.
+    /// </summary>
     public static bool IsAnyAppRunning { get; private set; } 
     
+    /// <summary>
+    /// Collection of <see cref="ChildInfo"/> instances holding <see cref="UIElement"/> children.
+    /// </summary>
     public ChildrenCollection Children { get; }
     
     private protected readonly ApplicationSettings Settings;
 
     private protected readonly FocusFlowManager HeadFocusFlowManager;
 
+    // Indicates if this instance was started in past.
     private bool _hasStartedOnce = false;
 
+    // Helps wait for running application.
     private readonly AutoResetEvent _waitForStopEvent = new (true);
     
     private protected readonly Drawer Drawer;
 
     private protected readonly KeyListener KeyListener;
 
+    /// <summary>
+    /// The width of area where it can draw.
+    /// </summary>
     public int BufferWidth { get; }
     
+    /// <summary>
+    /// The height of area where it can draw.
+    /// </summary>
     public int BufferHeight { get; }
     
+    /// <summary>
+    /// Indicates if this instance is running now.
+    /// </summary>
     public bool IsRunning { get; private set; }
 
+    /// <summary>
+    /// Starts UI running.
+    /// </summary>
+    /// <exception cref="ApplicationException">Trying to run incorrectly.</exception>
     public void Run()
     {
         if (_hasStartedOnce)
@@ -51,11 +86,16 @@ public abstract class Application
         
         Drawer.Start();
         KeyListener.Start();
+        // It should take focus only after Drawer and KeyListener start because it forces focus flow immediately.
         HeadFocusFlowManager.TakeFocus();
         
         Draw();
     }
 
+    /// <summary>
+    /// Stops UI running.
+    /// </summary>
+    /// <exception cref="ApplicationException"></exception>
     public void Stop()
     {
         if (!IsRunning)
@@ -74,8 +114,11 @@ public abstract class Application
         _waitForStopEvent.Set();
     }
 
+    /// <summary>
+    /// Waits for running UI. Allows calling thread continue only when <see cref="Application"/> is not running.
+    /// </summary>
     public void Wait() => _waitForStopEvent.WaitOne();
-
+    
     private void SubscribeChildren(ChildrenCollection orderedChildren)
     {
         foreach (var childInfo in orderedChildren)
@@ -91,8 +134,16 @@ public abstract class Application
         child.RedrawElement += RedrawChild;
     }
 
+    /// <summary>
+    /// Draws the whole UI of application at start.
+    /// </summary>
     private protected abstract void Draw();
 
+    /// <summary>
+    /// Redraws the child with given args.
+    /// </summary>
+    /// <param name="child">Child to redraw.</param>
+    /// <param name="args">Redraw args.</param>
     private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args);
     
     private protected Application(ApplicationSettings settings, ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification)

@@ -1,7 +1,11 @@
-﻿using System.Runtime.Versioning;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// The settings of <see cref="Application"/> instance.
+/// </summary>
 public sealed class ApplicationSettings
 {
     private readonly Color _defaultBackground = Color.Black;
@@ -10,6 +14,9 @@ public sealed class ApplicationSettings
     private readonly int? _height = null;
     private readonly int? _width = null;
 
+    /// <summary>
+    /// Specifies default background of UI. All children with <see cref="Color.Default"/> background will have this Color.
+    /// </summary>
     public Color DefaultForeground
     {
         get => _defaultForeground;
@@ -23,6 +30,10 @@ public sealed class ApplicationSettings
             _defaultForeground = value;
         }
     }
+    
+    /// <summary>
+    /// Specifies default foreground of UI. All children with <see cref="Color.Default"/> foreground will have this Color.
+    /// </summary>
     public Color DefaultBackground
     {
         get => _defaultBackground;
@@ -37,25 +48,41 @@ public sealed class ApplicationSettings
         }
     }
 
+    /// <summary>
+    /// Gets or sets a Height of <see cref="Application"/> (in characters).
+    /// </summary>
+    /// <exception cref="NotSupportedException">Only Windows supports.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public int? Height
     {
         get => _height;
         [SupportedOSPlatform("Windows")]
         init
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                throw new NotSupportedException();
+            
             if (value <= 0)
                 throw new ArgumentOutOfRangeException(nameof(value), value, null);
             
             _height = value;
         }
-    } // TODO
+    } 
 
+    /// <summary>
+    /// Gets or sets a Width of <see cref="Application"/> (in characters).
+    /// </summary>
+    /// <exception cref="NotSupportedException">Only Windows supports.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public int? Width
     {
         get => _width;
         [SupportedOSPlatform("Windows")]
         init
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                throw new NotSupportedException();
+            
             if (value <= 0)
                 throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 
@@ -63,8 +90,15 @@ public sealed class ApplicationSettings
         }
     }
 
+    /// <summary>
+    /// Specifies if it's okay to draw out of box. (Actually it's not possible by Application implementation).
+    /// </summary>
     public bool BorderConflictsAllowed { get; init; } = true;
 
+    /// <summary>
+    /// Keys to change focus.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"></exception>
     public ConsoleKeyCollection FocusChangeKeys
     {
         get => _focusChangeKeys;
@@ -72,10 +106,15 @@ public sealed class ApplicationSettings
     }
 
     // Now there is no need in overlapping disabled.
-    public bool EnableOverlapping { get; private init; } = true;
+    public bool EnableOverlapping { get; init; } = true;
 
-    // TODO make DrawerPal draw with delay to get all requests to redraw.
-    public bool DrawingDelay { get; init; } = true; // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // /// <summary>
+    // /// Specifies if Drawer should make a delay to take all requests in small amount of time and only then draw. It's needed to smooth drawing to near-time requests.
+    // /// </summary>
+    // public bool DrawingDelay { get; init; } = true;
 
+    /// <summary>
+    /// A key to kill the application.
+    /// </summary>
     public ConsoleKey? KillApplicationKey { get; init; } = null;
 }
