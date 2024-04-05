@@ -1,6 +1,9 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContainer
+/// <summary>
+/// <see cref="UIElement"/> that consists of other <see cref="UIElement"/> instances.
+/// </summary>
+public abstract class Wrapper : UIElement, IFocusManagerHolder
 {
     private readonly FocusFlowManager _focusFlowManager;
 
@@ -8,17 +11,26 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
 
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
 
+    /// <summary>
+    /// Whether it waits for focus.
+    /// </summary>
     public virtual bool IsWaitingFocus => _focusFlowManager.HasWaitingFocusable;
 
+    /// <summary>
+    /// <see cref="UIElement"/> children this instance consists of.
+    /// </summary>
     public ChildrenCollection Children { get; }
 
+    /// <summary>
+    /// Whether it is focused now. 
+    /// </summary>
     public bool IsFocused { get; private set; }
     
     void IFocusable.TakeFocus()
     {
         IsFocused = true;
     }
-
+    
     void IFocusable.LoseFocus()
     {
         IsFocused = false;
@@ -48,6 +60,11 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         return _focusFlowManager;
     }
 
+    /// <summary>
+    /// Whether this instance contains <see cref="child"/>.
+    /// </summary>
+    /// <param name="child"><see cref="UIElement"/> instance to check for being a child.</param>
+    /// <returns>True if contains.</returns>
     public bool Contains(UIElement child)
     {
         ArgumentNullException.ThrowIfNull(child, nameof(child));
@@ -72,7 +89,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
     {
         return GetChildrenCombinedState();
     }
-
+    
     private DrawState GetChildrenCombinedState()
     {
         var childrenStates = Children
@@ -88,6 +105,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         
         var result = child.TransformState();
 
+        // It's neccessary to invoke it on drawing.
         child.Child.OnDraw();
         
         return result;
@@ -118,6 +136,14 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         _forceLoseFocusHandler?.Invoke(this);
     }
 
+    /// <summary>
+    /// Creates an instance of <see cref="Wrapper"/>.
+    /// </summary>
+    /// <param name="width">The absolute width.</param>
+    /// <param name="height">The absolute height.</param>
+    /// <param name="orderedChildren">Collection of <see cref="UIElement"/> children what this instance consists of.</param>
+    /// <param name="focusFlowSpecification">The specification of focus flow.</param>
+    /// <param name="overlappingPriority">Overlapping priority.</param>
     protected Wrapper(int width, int height, 
         ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification, 
         OverlappingPriority overlappingPriority)
