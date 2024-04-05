@@ -64,7 +64,7 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
 
     public string? StartingText { get; init; } = null;
 
-    public IObservable<string>? BoundObservable { get; init; } = null;
+    public IObservable<string, UpdatedEventArgs>? BoundObservable { get; init; } = null;
 
     public BorderKind BorderKind { get; init; } = BorderKind.SingleLine;
 

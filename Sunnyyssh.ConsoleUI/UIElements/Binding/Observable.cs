@@ -3,7 +3,7 @@
 namespace Sunnyyssh.ConsoleUI;
 
 public sealed class Observable<TValue> 
-    : IObservable<TValue>
+    : IObservable<TValue, UpdatedEventArgs>
 {
     private TValue? _value;
 
@@ -17,7 +17,7 @@ public sealed class Observable<TValue>
         }
     }
     
-    public event UpdatedEventHandler<TValue>? Updated;
+    public event UpdatedEventHandler<TValue, UpdatedEventArgs>? Updated;
 
     private void OnUpdated([CallerMemberName] string? propertyName = null)
     {

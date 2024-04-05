@@ -4,7 +4,7 @@ public sealed class TextBlockBuilder : IUIElementBuilder<TextBlock>
 {
     public string? StartingText { get; init; }
 
-    public IObservable<string>? BoundObservable { get; init; }
+    public IObservable<string, UpdatedEventArgs>? BoundObservable { get; init; }
 
     public Color Background { get; init; } = Color.Default;
 

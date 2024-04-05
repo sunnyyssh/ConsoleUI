@@ -37,7 +37,7 @@ public sealed class TextBox : UIElement, IFocusable
     
     private string? _text;
 
-    private IObservable<string>? _bound;
+    private IObservable<string, UpdatedEventArgs>? _bound;
 
     // ReSharper disable once NotAccessedField.Local
     private ForceTakeFocusHandler? _forceTakeFocusHandler;
@@ -167,7 +167,7 @@ public sealed class TextBox : UIElement, IFocusable
 
     public void Clear() => Text = null;
 
-    public void Bind(IObservable<string> textObservable)
+    public void Bind(IObservable<string, UpdatedEventArgs> textObservable)
     {
         ArgumentNullException.ThrowIfNull(textObservable, nameof(textObservable));
         
@@ -181,7 +181,7 @@ public sealed class TextBox : UIElement, IFocusable
         Text = _bound.Value;
     }
 
-    private void HandleObservableTextUpdate(IObservable<string> sender, UpdatedEventArgs args)
+    private void HandleObservableTextUpdate(IObservable<string, UpdatedEventArgs> sender, UpdatedEventArgs args)
     {
         Text = sender.Value;
     }

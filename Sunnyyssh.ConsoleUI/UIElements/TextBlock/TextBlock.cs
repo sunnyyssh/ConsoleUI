@@ -8,7 +8,7 @@ public sealed class TextBlock : UIElement
 
     private string? _text;
 
-    private IObservable<string>? _bound;
+    private IObservable<string, UpdatedEventArgs>? _bound;
 
     public Color Background { get; init; } = Color.Default;
 
@@ -35,7 +35,7 @@ public sealed class TextBlock : UIElement
         }
     }
 
-    public void Bind(IObservable<string> textObservable)
+    public void Bind(IObservable<string, UpdatedEventArgs> textObservable)
     {
         ArgumentNullException.ThrowIfNull(textObservable, nameof(textObservable));
         
@@ -49,7 +49,7 @@ public sealed class TextBlock : UIElement
         Text = _bound.Value;
     }
 
-    private void HandleTextUpdate(IObservable<string> updated, UpdatedEventArgs args)
+    private void HandleTextUpdate(IObservable<string, UpdatedEventArgs> updated, UpdatedEventArgs args)
     {
         Text = updated.Value;
     }
