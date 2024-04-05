@@ -1,5 +1,8 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Creates an instance of <see cref="ChildSpecification"/>. It gives an opportunity to add flows and <see cref="IFocusable"/> children.
+/// </summary>
 public sealed class ChildSpecificationBuilder
 {
     private readonly IFocusable _from;
@@ -8,6 +11,13 @@ public sealed class ChildSpecificationBuilder
 
     private ConsoleKeyCollection _loseKeys = ConsoleKeyCollection.Empty;
 
+    /// <summary>
+    /// Adds flow to another child with specified keys.
+    /// </summary>
+    /// <param name="to">Child to flow focus to.</param>
+    /// <param name="keys">Keys indicating focus should flow.</param>
+    /// <returns>Same instance of <see cref="ChildSpecificationBuilder"/> to chain calls.</returns>
+    /// <exception cref="ArgumentException">Key is already added.</exception>
     public ChildSpecificationBuilder AddFlow(IFocusable to, ConsoleKeyCollection keys)
     {
         ArgumentNullException.ThrowIfNull(to, nameof(to));
@@ -26,6 +36,11 @@ public sealed class ChildSpecificationBuilder
         return this;
     }
 
+    /// <summary>
+    /// Adds focus lose keys.
+    /// </summary>
+    /// <param name="keys">Keys indicating that current <see cref="FocusFlowManager"/> should lose focus.</param>
+    /// <returns>Same instance of <see cref="ChildSpecificationBuilder"/> to chain calls.</returns>
     public ChildSpecificationBuilder AddLoseFocus(ConsoleKeyCollection keys)
     {
         _loseKeys = keys.Union(_loseKeys).ToCollection();
@@ -33,6 +48,10 @@ public sealed class ChildSpecificationBuilder
         return this;
     }
 
+    /// <summary>
+    /// Builds <see cref="ChildSpecification"/>.
+    /// </summary>
+    /// <returns>Created instance of <see cref="ChildSpecification"/> with parameters that are given earlier.</returns>
     public ChildSpecification Build()
     {
         IReadOnlyDictionary<ConsoleKey, IFocusable> readOnlyFlows = _flows;
@@ -42,6 +61,10 @@ public sealed class ChildSpecificationBuilder
         return result;
     }
 
+    /// <summary>
+    /// Creates <see cref="ChildSpecificationBuilder"/> on specified focusable child.
+    /// </summary>
+    /// <param name="from"></param>
     public ChildSpecificationBuilder(IFocusable from)
     {
         ArgumentNullException.ThrowIfNull(from, nameof(from));

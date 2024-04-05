@@ -3,7 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
-// This type is not thread-safe. But it must be used in thread-safe context.
+/// <summary>
+/// Immutable collection of <see cref="IFocusable"/> children. Helps flow focus.
+/// </summary>
 internal sealed class FocusableChain : IEnumerable<IFocusable>
 {
     private readonly bool _loopFocusFlow;
@@ -12,17 +14,33 @@ internal sealed class FocusableChain : IEnumerable<IFocusable>
 
     private int _currentIndex = 0;
 
+    /// <summary>
+    /// Index of child that is a start of focus flow cycle.
+    /// </summary>
     private int _cycleRootIndex = 0;
 
+    /// <summary>
+    /// Returns current child if there are any ones.
+    /// </summary>
     public IFocusable? Current => _items.Any() ? _items[_currentIndex] : null;
 
+    /// <summary>
+    /// Returns child that is focused at this moment. And null is there are no focused ones.
+    /// </summary>
     public IFocusable? FocusedItem { get; private set; }
 
     [MemberNotNullWhen(false, nameof(Current))]
     public bool IsEmpty => !_items.Any();
 
+    /// <summary>
+    /// Whether there are any <see cref="IFocusable"/> that are waiting for focus.
+    /// </summary>
     public bool HasWaiting => _items.Any(f => f.IsWaitingFocus);
 
+    /// <summary>
+    /// Sets <see cref="FocusedItem"/> to null. (It means there are no focused ones.)
+    /// </summary>
+    /// <returns></returns>
     public bool LoseFocus()
     {
         if (FocusedItem is null)
@@ -34,12 +52,20 @@ internal sealed class FocusableChain : IEnumerable<IFocusable>
         return true;
     }
 
+    /// <summary>
+    /// Sets <see cref="FocusedItem"/> to <see cref="Current"/>.
+    /// </summary>
+    /// <returns></returns>
     public bool SetFocusToCurrent()
     {
         FocusedItem = Current;
         return FocusedItem is null;
     }
 
+    /// <summary>
+    /// Moves to the next child that is waiting for focus.
+    /// </summary>
+    /// <returns>True if successfully moved. False if there are no waiting for focus.</returns>
     public bool MoveNextWaitingFocus()
     {
         if (!_items.Any(f => f.IsWaitingFocus))
@@ -65,6 +91,10 @@ internal sealed class FocusableChain : IEnumerable<IFocusable>
         return false;
     }
 
+    /// <summary>
+    /// Just moves next.
+    /// </summary>
+    /// <returns>False if focus cycle root is reached.</returns>
     public bool MoveNext()
     {
         if (!_items.Any())
@@ -77,6 +107,11 @@ internal sealed class FocusableChain : IEnumerable<IFocusable>
         return _currentIndex == _cycleRootIndex && !_loopFocusFlow;
     }
 
+    /// <summary>
+    /// Tries to set <see cref="Current"/> to <see cref="sender"/>.
+    /// </summary>
+    /// <param name="sender"><see cref="IFocusable"/> child that should be current.</param>
+    /// <returns>True is successfully set. False otherwise.</returns>
     public bool TrySetCurrentTo(IFocusable sender)
     {
         int index = _items.IndexOf(sender);
@@ -89,6 +124,11 @@ internal sealed class FocusableChain : IEnumerable<IFocusable>
         return true;
     }
 
+    /// <summary>
+    /// Creates <see cref="FocusableChain"/> instance.
+    /// </summary>
+    /// <param name="loopFocusFlow">Indicates if focus flow should be looped.</param>
+    /// <param name="items">Children.</param>
     public FocusableChain(bool loopFocusFlow, IEnumerable<IFocusable> items)
     {
         _loopFocusFlow = loopFocusFlow;

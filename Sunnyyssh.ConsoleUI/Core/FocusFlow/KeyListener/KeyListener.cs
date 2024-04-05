@@ -2,28 +2,51 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-public delegate void KeyPressedHandler(KeyPressedArgs args);
+/// <summary>
+/// Handles pressed key.
+/// </summary>
+internal delegate void KeyPressedHandler(KeyPressedArgs args);
 
-public record KeyPressedArgs(ConsoleKeyInfo KeyInfo);
+/// <summary>
+/// Args of pressed key.
+/// </summary>
+/// <param name="KeyInfo"></param>
+internal record KeyPressedArgs(ConsoleKeyInfo KeyInfo);
 
-public record KeyListenerOptions;
+/// <summary>
+/// Specifies <see cref="KeyListener"/> realization.
+/// </summary>
+internal record KeyListenerOptions;
 
-public class KeyListener
+/// <summary>
+/// Listens console keys.
+/// </summary>
+internal class KeyListener
 {
     private KeyPressedHandler? _keyPressed;
 
     private readonly CancellationTokenSource _cancellation = new();
-
+    
     private readonly AutoResetEvent _waitEvent = new(false);
 
     // It may be used in the future, so it's important to get such parameter in constructor
     // ReSharper disable once NotAccessedField.Local
     private readonly KeyListenerOptions _options; 
 
+    /// <summary>
+    /// Indicates if this instance is running.
+    /// </summary>
     public bool IsRunning { get; private set; } 
 
+    /// <summary>
+    /// Indicates if this instance is listening keys. (It can be stopped).
+    /// </summary>
     public bool IsListening { get; private set; }
     
+    /// <summary>
+    /// Starts listening keys.
+    /// </summary>
+    /// <exception cref="KeyListeningException">It's already running.</exception>
     public void Start()
     {
         if (IsRunning)
@@ -31,6 +54,8 @@ public class KeyListener
             throw new KeyListeningException("It's already running.");
         }
 
+        // Thread listening keys.
+        // It's not background to hold application running while it's running.
         Thread runningThread = new(
                 () => StartWithCancellation(_cancellation.Token))
             { IsBackground = false };
@@ -59,6 +84,10 @@ public class KeyListener
         }
     }
 
+    /// <summary>
+    /// Stops running.
+    /// </summary>
+    /// <exception cref="KeyListeningException">It's not running to stop it.</exception>
     public void Stop()
     {
         if (!IsRunning)
@@ -75,6 +104,9 @@ public class KeyListener
         IsRunning = false;
     }
 
+    /// <summary>
+    /// Stops listening.
+    /// </summary>
     public void ForceWait()
     {
         if (IsListening)
@@ -84,6 +116,9 @@ public class KeyListener
         }
     }
     
+    /// <summary>
+    /// Restores listening.
+    /// </summary>
     public void ForceRestore()
     {
         if (!IsListening)
@@ -129,6 +164,10 @@ public class KeyListener
         _keyPressed?.Invoke(args);
     }
 
+    /// <summary>
+    /// Creates an instance of <see cref="KeyListener"/>.
+    /// </summary>
+    /// <param name="options">Specifies <see cref="KeyListener"/> realization.</param>
     public KeyListener(KeyListenerOptions options)
     {
         ArgumentNullException.ThrowIfNull(options, nameof(options));

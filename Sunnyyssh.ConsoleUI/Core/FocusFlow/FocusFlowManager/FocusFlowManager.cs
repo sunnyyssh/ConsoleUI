@@ -17,32 +17,57 @@ internal delegate void FocusFlowEndedHandler(FocusFlowManager lostManager, Focus
 
 internal delegate void ForceManagerTakeFocusHandler(FocusFlowManager manager);
 
+/// <summary>
+/// Manager of the whole focus flow. It handles keys and delegates it to the focused <see cref="IFocusable"/>.
+/// </summary>
 internal sealed class FocusFlowManager
 {
+    /// <summary>
+    /// Focus flow and handling keys is delegated to this manager.
+    /// If current <see cref="IFocusable"/> is <see cref="IFocusManagerHolder"/> (<see cref="Wrapper"/> for example)
+    /// then its <see cref="FocusFlowManager"/> is the successor of focus.
+    /// </summary>
     private FocusFlowManager? _successor;
 
     private readonly FocusManagerOptions _options;
 
     private readonly FocusableChain _focusableChain;
     
-    private readonly object _lockObject = new();
+    private readonly object _keyHandlingLockObject = new();
 
+    /// <summary>
+    /// Focused child.
+    /// </summary>
     public IFocusable? FocusedItem => _focusableChain.FocusedItem;
     
+    /// <summary>
+    /// Indicates if this instance should handle all keys on its own.
+    /// </summary>
     public bool OverridesFlow { get; }
 
+    /// <summary>
+    /// Indicastes if any child is waiting for focus at this moment.
+    /// </summary>
     public bool HasWaitingFocusable => _focusableChain.HasWaiting;
-
+    
     public int ChildrenCount => _focusableChain.Count();
 
     public IFocusable[] Children => _focusableChain.ToArray();
 
+    /// <summary>
+    /// Indicates if this instance is handling focus now.
+    /// </summary>
     public bool IsFocused { get; private set; }
 
     
+    /// <summary>
+    /// Handles pressed key.
+    /// </summary>
+    /// <param name="args">Args of pressed key.</param>
+    /// <exception cref="FocusFlowException">It's not focused.</exception>
     public void HandlePressedKey(KeyPressedArgs args)
     {
-        lock (_lockObject)
+        lock (_keyHandlingLockObject)
         {
             if (!IsFocused)
             {
@@ -57,6 +82,8 @@ internal sealed class FocusFlowManager
                 return;
             }
 
+            // If it overrides flow then it should handle it on its own. 
+            // Then it's neccessary to call it before own handling.
             if (_successor is not null && _successor.OverridesFlow)
             {
                 _successor.HandlePressedKey(args);
@@ -70,6 +97,7 @@ internal sealed class FocusFlowManager
                 return;
             }
 
+            // Check if key moves focus.
             if (TryGetNext(args.KeyInfo.Key, out var next)) 
             {
                 if (next.IsWaitingFocus)
@@ -88,12 +116,14 @@ internal sealed class FocusFlowManager
                 return;
             }
         
+            // Delegating focus if it doesn't override flow.
             if (_successor is {} successor)
             {
                 successor.HandlePressedKey(args);
                 return;
             }
 
+            // If there is one focused it chould handle this key.
             if (_focusableChain.FocusedItem is {} focused)
             {
                 bool toKeepFocus = focused.HandlePressedKey(args.KeyInfo);
@@ -105,6 +135,7 @@ internal sealed class FocusFlowManager
         }
     }
 
+    // Checks in specification if key forces lose focus.
     private bool IsKeyLose(ConsoleKey key)
     {
         if (_focusableChain.Current is not {} current)
@@ -117,6 +148,7 @@ internal sealed class FocusFlowManager
         return spec.FocusLose.Contains(key);
     }
 
+    // Tries to get next <see cref="IFocusable"/> if key should move focus to next according to the specification.
     private bool TryGetNext(ConsoleKey pressedKey, [NotNullWhen(true)] out IFocusable? next)
     {
         next = null;
@@ -177,6 +209,7 @@ internal sealed class FocusFlowManager
 
     public event ForceManagerTakeFocusHandler? ForceTakeFocus; 
     
+    // Delegates focus flow handling to the enother manager.
     private void GiveManagementTo(FocusFlowManager successor)
     {
         if (successor == this)
@@ -194,6 +227,7 @@ internal sealed class FocusFlowManager
         _successor.TakeFocus();
     }
 
+    // Restores handling keys on its own.
     private void RestoreOwnManagement()
     {
         var pastSuccessor = _successor;
@@ -204,6 +238,10 @@ internal sealed class FocusFlowManager
         }
     }
 
+    /// <summary>
+    /// Takes focus. Makes current <see cref="IFocusable"/> take focus.
+    /// </summary>
+    /// <exception cref="FocusFlowException">It's already focused.</exception>
     public void TakeFocus()
     {
         if (IsFocused)
@@ -216,6 +254,10 @@ internal sealed class FocusFlowManager
         }
     }
     
+    /// <summary>
+    /// Loses focus. Makes focused <see cref="IFocusable"/> lose focus.
+    /// </summary>
+    /// <exception cref="FocusFlowException">It's not focused.</exception>
     public void LoseFocus()
     {
         if (!IsFocused)
@@ -292,6 +334,10 @@ internal sealed class FocusFlowManager
 
     public event KeyPressedHandler? SpecialKeyPressed;
 
+    /// <summary>
+    /// Creates an instance of <see cref="FocusFlowManager"/>.
+    /// </summary>
+    /// <param name="options">Specifies flow.</param>
     public FocusFlowManager(FocusManagerOptions options)
     {
         ArgumentNullException.ThrowIfNull(options, nameof(options));
