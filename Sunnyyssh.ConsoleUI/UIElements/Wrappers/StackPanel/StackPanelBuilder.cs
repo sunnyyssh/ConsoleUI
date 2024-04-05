@@ -83,7 +83,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
                            : DefaultVerticalPreviousKeys);
         
         var focusables = orderedChildren
-            .Where(child => child.Child is IFocusable)
+            .Where(child => child.IsFocusable)
             .Select(child => (IFocusable)child.Child)
             .ToArray();
 

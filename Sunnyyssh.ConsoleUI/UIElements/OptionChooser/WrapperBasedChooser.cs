@@ -5,14 +5,14 @@ public abstract class WrapperBasedChooser<TWrapper> : OptionChooser
 {
     protected TWrapper OptionsWrapper { get; }
     
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
         return OptionsWrapper.RequestDrawState(DrawOptions.Empty);
     }
 
     private void RedrawWrapper(UIElement sender, RedrawElementEventArgs args)
     {
-        Redraw(CreateDrawState(Width, Height));
+        Redraw(CreateDrawState());
     }
 
     private void SubscribeWrapper(TWrapper wrapper)

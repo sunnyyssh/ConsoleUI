@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.Contracts;
-using Sunnyyssh.ConsoleUI.Exceptions;
 
 namespace Sunnyyssh.ConsoleUI;
 

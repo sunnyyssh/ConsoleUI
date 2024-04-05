@@ -102,7 +102,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         var leftKeys = FocusLeftKeys ?? DefaultFocusLeftKeys;
         
         var focusableCells = allCells
-            .Where(cell => cell.ChildInfo.Child is IFocusable)
+            .Where(cell => cell.ChildInfo.IsFocusable)
             .ToCollection();
 
         return CreateFocusSpecification(focusableCells, changeKeys, upKeys, downKeys, rightKeys, leftKeys);

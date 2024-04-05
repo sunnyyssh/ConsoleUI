@@ -30,7 +30,7 @@ public sealed class TextBlock : UIElement
             
             if (IsDrawn)
             {
-                Redraw(CreateDrawState(Width, Height));
+                Redraw(CreateDrawState());
             }
         }
     }
@@ -54,13 +54,13 @@ public sealed class TextBlock : UIElement
         Text = updated.Value;
     }
     
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
-        var builder = new DrawStateBuilder(width, height);
+        var builder = new DrawStateBuilder(Width, Height);
         
         builder.Fill(Background);
         
-        TextHelper.PlaceText(0, 0, width, height, 
+        TextHelper.PlaceText(0, 0, Width, Height, 
             WordWrap, Text, Background, Foreground, 
             TextVerticalAligning, TextHorizontalAligning, builder);
 

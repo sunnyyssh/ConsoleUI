@@ -13,14 +13,14 @@ public sealed class Rectangle : UIElement
             
             if (IsDrawn)
             {
-                Redraw(CreateDrawState(Width, Height));
+                Redraw(CreateDrawState());
             }
         }
     }
 
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
-        var builder = new DrawStateBuilder(width, height);
+        var builder = new DrawStateBuilder(Width, Width);
 
         builder.Fill(Color);
 

@@ -6,11 +6,11 @@ public abstract class Border : UIElement
     
     public Color Color { get; }
 
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
-        var builder = new DrawStateBuilder(width, height);
+        var builder = new DrawStateBuilder(Width, Height);
         
-        PlaceAt(0, 0, width, height, 
+        PlaceAt(0, 0, Width, Height, 
             Color.Transparent, Color, 
             CharSet, builder);
 

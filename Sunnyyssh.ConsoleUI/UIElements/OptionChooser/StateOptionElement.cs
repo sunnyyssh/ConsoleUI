@@ -9,7 +9,7 @@ public abstract class StateOptionElement : OptionElement
 
     public override bool IsFocused => _isFocused;
 
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
         var state = RequestState(_isChosen, _isFocused);
         return state;

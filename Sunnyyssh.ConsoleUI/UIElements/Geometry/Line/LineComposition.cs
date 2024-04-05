@@ -10,15 +10,15 @@ public sealed class LineComposition : UIElement
 
     public Color Color { get; init; }
 
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
-        var stateBuilder = new DrawStateBuilder(width, height);
+        var stateBuilder = new DrawStateBuilder(Width, Height);
 
-        var pixels = ResolvePixels(width, height);
+        var pixels = ResolvePixels(Width, Height);
 
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < Width; i++)
         {
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < Height; j++)
             {
                 var ch = ResolveChar(pixels[i, j]);
 

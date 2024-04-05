@@ -68,7 +68,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder, IElementContaine
         childInfo.Child.OnRemove();
     }
 
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
         return GetChildrenCombinedState();
     }

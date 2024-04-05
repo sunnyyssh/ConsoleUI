@@ -61,7 +61,7 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
         var specBuilder = new FocusFlowSpecificationBuilder(OverridesFocusFlow);
         
         var focusables = orderedChildren
-            .Where(child => child.Child is IFocusable)
+            .Where(child => child.IsFocusable)
             .Select(child => (IFocusable)child.Child)
             .ToArray();
 

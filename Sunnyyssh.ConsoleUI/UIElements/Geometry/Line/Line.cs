@@ -10,7 +10,7 @@ public sealed class Line : UIElement
     
     public int Length { get; }
 
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
         var builder = new DrawStateBuilder(Width, Height);
         

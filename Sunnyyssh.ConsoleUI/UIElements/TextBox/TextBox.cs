@@ -118,7 +118,7 @@ public sealed class TextBox : UIElement, IFocusable
             
             if (IsDrawn)
             {
-                Redraw(CreateDrawState(Width, Height));
+                Redraw(CreateDrawState());
             }
         }
     }
@@ -139,26 +139,26 @@ public sealed class TextBox : UIElement, IFocusable
 
     public bool IsFocused { get; private set; }
 
-    protected override DrawState CreateDrawState(int width, int height)
+    protected override DrawState CreateDrawState()
     {
-        var builder = new DrawStateBuilder(width, height);
+        var builder = new DrawStateBuilder(Width, Height);
         
         builder.Fill(Background);
         
         if (BorderKind == BorderKind.None)
         {
             // Placing text in full area.
-            TextHelper.PlaceText(0, 0, width, height,
+            TextHelper.PlaceText(0, 0, Width, Height,
                 WordWrap, Text, Background, Foreground,
                 TextVerticalAligning, TextHorizontalAligning, builder);
             return builder.ToDrawState();
         }
         
-        Border.PlaceAt(0, 0, width, height, 
+        Border.PlaceAt(0, 0, Width, Height, 
             Background, BorderColor, BorderKind, builder);
         
         // Placing text in smaller area. (1 indent from each side).
-        TextHelper.PlaceText(1, 1, width - 2, height - 2,
+        TextHelper.PlaceText(1, 1, Width - 2, Height - 2,
             WordWrap, Text, Background, Foreground,
             TextVerticalAligning, TextHorizontalAligning, builder);
 
@@ -257,7 +257,7 @@ public sealed class TextBox : UIElement, IFocusable
 
         if (IsDrawn)
         {
-            Redraw(CreateDrawState(Width, Height));
+            Redraw(CreateDrawState());
         }
     }
 
@@ -271,7 +271,7 @@ public sealed class TextBox : UIElement, IFocusable
 
         if (IsDrawn)
         {
-            Redraw(CreateDrawState(Width, Height));
+            Redraw(CreateDrawState());
         }
     }
 

@@ -1,4 +1,4 @@
-﻿namespace Sunnyyssh.ConsoleUI.Exceptions;
+﻿namespace Sunnyyssh.ConsoleUI;
 
 public class TooManyOptionsException : ConsoleUIException
 {
