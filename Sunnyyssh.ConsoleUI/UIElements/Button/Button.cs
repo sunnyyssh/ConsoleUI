@@ -137,7 +137,7 @@ public sealed class Button : UIElement, IFocusable
         _pressedHandler.Add(new Action<Button, ButtonPressedArgs>(handler), true);
     }
 
-    public void UnregisterPressedHandler(ButtonPressedHandler handler)
+    public void RemovePressedHandler(ButtonPressedHandler handler)
     {
         ArgumentNullException.ThrowIfNull(handler, nameof(handler));
 
@@ -281,7 +281,7 @@ public sealed class Button : UIElement, IFocusable
     public event ButtonPressedHandler Pressed
     {
         add => RegisterPressedHandler(value);
-        remove => UnregisterPressedHandler(value);
+        remove => RemovePressedHandler(value);
     }
 
     event ForceTakeFocusHandler IFocusable.ForceTakeFocus

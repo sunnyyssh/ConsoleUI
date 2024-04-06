@@ -39,6 +39,10 @@ public sealed class TextBox : UIElement, IFocusable
 
     private IObservable<string, UpdatedEventArgs>? _bound;
 
+    private readonly Handler<TextBox, CharEnteredEventArgs> _charEnteredHandler = new(5);
+    
+    private readonly Handler<TextBox, TextEnteredEventArgs> _textEnteredHandler = new(5);
+    
     // ReSharper disable once NotAccessedField.Local
     private ForceTakeFocusHandler? _forceTakeFocusHandler;
 
@@ -56,7 +60,7 @@ public sealed class TextBox : UIElement, IFocusable
     private readonly Color _notFocusedBackground = Color.Default;
 
     private readonly Color _notFocusedForeground = Color.Default;
-
+    
     private readonly Color _notFocusedBorderColor = Color.Default;
 
     public Color Background { get; private set; } = Color.Default;
@@ -139,6 +143,48 @@ public sealed class TextBox : UIElement, IFocusable
 
     public bool IsFocused { get; private set; }
 
+    public void RegisterCharEnteredHandler(CharEnteredEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler, nameof(handler));
+
+        _charEnteredHandler.Add(new Action<TextBox, CharEnteredEventArgs>(handler), true);
+    }
+
+    public void UnsafeRegisterCharEnteredHandler(CharEnteredEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler, nameof(handler));
+
+        _charEnteredHandler.Add(new Action<TextBox, CharEnteredEventArgs>(handler), false);
+    }
+
+    public void RemoveCharEnteredHandler(CharEnteredEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler, nameof(handler));
+
+        _charEnteredHandler.Remove(new Action<TextBox, CharEnteredEventArgs>(handler));
+    }
+
+    public void RegisterTextEnteredHandler(TextEnteredEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler, nameof(handler));
+
+        _textEnteredHandler.Add(new Action<TextBox, TextEnteredEventArgs>(handler), true);
+    }
+    
+    public void UnsafeRegisterTextEnteredHandler(TextEnteredEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler, nameof(handler));
+
+        _textEnteredHandler.Add(new Action<TextBox, TextEnteredEventArgs>(handler), false);
+    }
+    
+    public void RemoveTextEnteredHandler(TextEnteredEventHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler, nameof(handler));
+
+        _textEnteredHandler.Remove(new Action<TextBox, TextEnteredEventArgs>(handler));
+    }
+    
     protected override DrawState CreateDrawState()
     {
         var builder = new DrawStateBuilder(Width, Height);
@@ -278,14 +324,22 @@ public sealed class TextBox : UIElement, IFocusable
     #region Events.
     
     private void OnCharEntered(char c, bool backspace) =>
-        CharEntered?.Invoke(this, new CharEnteredEventArgs(c, backspace));
+        _charEnteredHandler.Invoke(this, new CharEnteredEventArgs(c, backspace));
 
     private void OnTextEntered(string text) => 
-        TextEntered?.Invoke(this, new TextEnteredEventArgs(text));
+        _textEnteredHandler.Invoke(this, new TextEnteredEventArgs(text));
 
-    public event CharEnteredEventHandler? CharEntered;
+    public event CharEnteredEventHandler CharEntered
+    {
+        add => RegisterCharEnteredHandler(value);
+        remove => RemoveCharEnteredHandler(value);
+    }
 
-    public event TextEnteredEventHandler? TextEntered;
+    public event TextEnteredEventHandler TextEntered
+    {
+        add => RegisterTextEnteredHandler(value);
+        remove => RemoveTextEnteredHandler(value);
+    }
 
     event ForceTakeFocusHandler IFocusable.ForceTakeFocus
     {

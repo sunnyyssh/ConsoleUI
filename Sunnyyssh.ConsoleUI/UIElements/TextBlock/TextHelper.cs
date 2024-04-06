@@ -23,7 +23,7 @@ internal static class TextHelper
         bool wordWrap, string text, Color background, Color foreground,
         VerticalAligning textVerticalAligning, HorizontalAligning textHorizontalAligning, DrawStateBuilder builder)
     {
-        var lines = TextHelper.SplitText(width, wordWrap, text);
+        var lines = SplitText(width, wordWrap, text);
 
         int startingTop = top + (lines.Length >= height || textVerticalAligning == VerticalAligning.Top 
             ? 0
@@ -50,7 +50,7 @@ internal static class TextHelper
     }
 
     
-    private static IEnumerable<string> WordsWrap(string str, int width) // TODO code your own algorythm.
+    private static IEnumerable<string> WordsWrap(string str, int width)
     {
         string[] words = Explode(str, SplitChars);
 
