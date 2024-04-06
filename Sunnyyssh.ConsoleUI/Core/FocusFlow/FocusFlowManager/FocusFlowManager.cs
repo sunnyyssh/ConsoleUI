@@ -100,18 +100,15 @@ internal sealed class FocusFlowManager
             // Check if key moves focus.
             if (TryGetNext(args.KeyInfo.Key, out var next)) 
             {
-                if (next.IsWaitingFocus)
+                if (_focusableChain.FocusedItem is {} from)
                 {
-                    if (_focusableChain.FocusedItem is {} from)
-                    {
-                        RemoveFocusFrom(from);
-                    }
-
-                    _focusableChain.TrySetCurrentTo(next);
-                    _focusableChain.SetFocusToCurrent();
-                    
-                    GiveFocusTo(next);
+                    RemoveFocusFrom(from);
                 }
+
+                _focusableChain.TrySetCurrentTo(next);
+                _focusableChain.SetFocusToCurrent();
+                    
+                GiveFocusTo(next);
                
                 return;
             }
@@ -163,7 +160,29 @@ internal sealed class FocusFlowManager
             return false;
         }
 
-        return spec.Flows.TryGetValue(pressedKey, out next);
+        return RecursiveGetNext(pressedKey, spec, out next);
+    }
+
+    // If child is not waiting for focus. Its specification is checked for next one by this key.
+    // If it waits it is next.
+    private bool RecursiveGetNext(ConsoleKey pressedKey, ChildSpecification from, [NotNullWhen(true)] out IFocusable? next)
+    {
+        next = null;
+        
+        if (!from.Flows.TryGetValue(pressedKey, out var possibleNext))
+        {
+            return false;
+        }
+
+        if (possibleNext.IsWaitingFocus)
+        {
+            next = possibleNext;
+            return true;
+        }
+        
+        var nextSpecification = _options.Specification.Children[possibleNext];
+        
+        return RecursiveGetNext(pressedKey, nextSpecification, out next);
     }
 
     // It goes to the next IFocusable which IsWaitingFocus == true
