@@ -64,8 +64,6 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
 
     public string? StartingText { get; init; } = null;
 
-    public IObservable<string, UpdatedEventArgs>? BoundObservable { get; init; } = null;
-
     public BorderKind BorderKind { get; init; } = BorderKind.SingleLine;
 
     public OverlappingPriority OverlappingPriority { get; init; } = OverlappingPriority.Medium;
@@ -79,10 +77,6 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
     public HorizontalAligning TextHorizontalAligning { get; init; } = HorizontalAligning.Left;
 
     public VerticalAligning TextVerticalAligning { get; init; } = VerticalAligning.Top;
-
-    public event CharEnteredEventHandler? CharEntered;
-
-    public event TextEnteredEventHandler? TextEntered;
     
     public TextBox Build(UIElementBuildArgs args)
     {
@@ -107,21 +101,6 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
             UserEditable = UserEditable,
             Text = StartingText,
         };
-        
-        if (CharEntered is not null)
-        {
-            resultTextBox.CharEntered += CharEntered;
-        }
-        
-        if (TextEntered is not null)
-        {
-            resultTextBox.TextEntered += TextEntered;
-        }
-
-        if (BoundObservable is not null)
-        {
-            resultTextBox.Bind(BoundObservable);
-        }
 
         return resultTextBox;
     }

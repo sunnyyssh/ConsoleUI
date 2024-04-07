@@ -8,7 +8,7 @@ public sealed class TextBlock : UIElement
 
     private string? _text;
 
-    private IObservable<string, UpdatedEventArgs>? _bound;
+    private IObservable<string?, ValueChangedEventArgs<string?>>? _observing;
 
     public Color Background { get; init; } = Color.Default;
 
@@ -35,21 +35,33 @@ public sealed class TextBlock : UIElement
         }
     }
 
-    public void Bind(IObservable<string, UpdatedEventArgs> textObservable)
+    public void Observe(IObservable<string?, ValueChangedEventArgs<string?>> textObservable)
     {
         ArgumentNullException.ThrowIfNull(textObservable, nameof(textObservable));
         
-        if (_bound is not null)
+        if (_observing is not null)
         {
-            _bound.Updated -= HandleTextUpdate;
+            _observing.Updated -= HandleObservableTextUpdate;
         }
 
-        _bound = textObservable;
-        _bound.Updated += HandleTextUpdate;
-        Text = _bound.Value;
+        _observing = textObservable;
+        _observing.Updated += HandleObservableTextUpdate;
+        Text = _observing.Value;
     }
 
-    private void HandleTextUpdate(IObservable<string, UpdatedEventArgs> updated, UpdatedEventArgs args)
+    public void Unobserve()
+    {
+        if (_observing is null)
+        {
+            throw new InvalidOperationException("Nothing was observed.");
+        }
+
+        _observing.Updated -= HandleObservableTextUpdate;
+        _observing = null;
+        Text = null;
+    }
+
+    private void HandleObservableTextUpdate(IObservable<string?, UpdatedEventArgs> updated, UpdatedEventArgs args)
     {
         Text = updated.Value;
     }

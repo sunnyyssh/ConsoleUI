@@ -4,8 +4,6 @@ public sealed class TextBlockBuilder : IUIElementBuilder<TextBlock>
 {
     public string? StartingText { get; init; }
 
-    public IObservable<string, UpdatedEventArgs>? BoundObservable { get; init; }
-
     public Color Background { get; init; } = Color.Default;
 
     public Color Foreground { get; init; } = Color.Default;
@@ -36,11 +34,6 @@ public sealed class TextBlockBuilder : IUIElementBuilder<TextBlock>
             WordWrap = WordWrap,
             Text = StartingText,
         };
-
-        if (BoundObservable is not null)
-        {
-            resultTextBlock.Bind(BoundObservable);
-        }
 
         return resultTextBlock;
     }

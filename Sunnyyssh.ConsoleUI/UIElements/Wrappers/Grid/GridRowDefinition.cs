@@ -28,6 +28,13 @@ public sealed class GridRowDefinition : IReadOnlyList<GridRow>
         
         return new GridRowDefinition(rowsArr);
     }
+
+    public static GridRowDefinition From(params double[] rowRelations)
+    {
+        return rowRelations
+            .Select(GridRow.FromRowRelation)
+            .ToDefinition();
+    }
     
     private GridRowDefinition(GridRow[] rows)
     {

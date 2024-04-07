@@ -21,6 +21,13 @@ public sealed class GridColumnDefinition : IReadOnlyList<GridColumn>
         return new GridColumnDefinition(columnsArr);
     }
 
+    public static GridColumnDefinition From(params double[] columnRelations)
+    {
+        return columnRelations
+            .Select(GridColumn.FromColumnRelation)
+            .ToDefinition();
+    }
+
     private void ValidateColumns(GridColumn[] columns)
     {
         if (!columns.Any(column => column.IsColumnRelation))

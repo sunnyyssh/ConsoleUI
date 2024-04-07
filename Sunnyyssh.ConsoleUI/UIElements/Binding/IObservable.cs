@@ -2,12 +2,7 @@
 
 public class UpdatedEventArgs : EventArgs
 {
-    public string PropertyName { get; }
-
-    public UpdatedEventArgs(string propertyName)
-    {
-        PropertyName = propertyName;
-    }
+    
 }
 
 public delegate void UpdatedEventHandler<in TValue, in TArgs>(IObservable<TValue, TArgs> sender, TArgs args)

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -37,7 +38,9 @@ public sealed class TextBox : UIElement, IFocusable
     
     private string? _text;
 
-    private IObservable<string, UpdatedEventArgs>? _bound;
+    private IObservable<string?, ValueChangedEventArgs<string?>>? _observing;
+
+    private IBindable<string?, ValueChangedEventArgs<string?>>? _bound;
 
     private readonly Handler<TextBox, CharEnteredEventArgs> _charEnteredHandler = new(5);
     
@@ -113,17 +116,8 @@ public sealed class TextBox : UIElement, IFocusable
         get => _text ?? DefaultText;
         set
         {
-            var newText = CharHelper.RemoveSpecialChars(value, false);
-            
-            if (_text == newText)
-                return;
-
-            _text = newText;
-            
-            if (IsDrawn)
-            {
-                Redraw(CreateDrawState());
-            }
+            SetText(value);
+            _bound?.HandleUpdate(new ValueChangedEventArgs<string?>(_text));
         }
     }
 
@@ -213,23 +207,88 @@ public sealed class TextBox : UIElement, IFocusable
 
     public void Clear() => Text = null;
 
-    public void Bind(IObservable<string, UpdatedEventArgs> textObservable)
+    public void Observe(IObservable<string?, ValueChangedEventArgs<string?>> textObservable)
     {
         ArgumentNullException.ThrowIfNull(textObservable, nameof(textObservable));
         
-        if (_bound is not null)
+        if (UserEditable)
         {
-            _bound.Updated -= HandleObservableTextUpdate;
+            throw new InvalidOperationException($"Can't observe {nameof(textObservable)} when {UserEditable}=true." +
+                                                $"Try {nameof(Bind)} or set {nameof(UserEditable)}=false.");
+        }
+        
+        if (_observing is not null)
+        {
+            _observing.Updated -= HandleObservableTextUpdate;
         }
 
-        _bound = textObservable;
-        _bound.Updated += HandleObservableTextUpdate;
-        Text = _bound.Value;
+        _observing = textObservable;
+        _observing.Updated += HandleObservableTextUpdate;
+        SetText(_observing.Value);
     }
 
-    private void HandleObservableTextUpdate(IObservable<string, UpdatedEventArgs> sender, UpdatedEventArgs args)
+    public void Unobserve()
     {
-        Text = sender.Value;
+        if (_observing is null)
+        {
+            throw new InvalidOperationException("Nothing was observed.");
+        }
+
+        _observing.Updated -= HandleObservableTextUpdate;
+        _observing = null;
+        SetText(null);
+    }
+
+    public void Bind(IBindable<string?, ValueChangedEventArgs<string?>> textBindable)
+    {
+        ArgumentNullException.ThrowIfNull(textBindable, nameof(textBindable));
+        
+        if (_observing is not null)
+        {
+            _observing.Updated -= HandleObservableTextUpdate;
+        }
+
+        _observing = textBindable;
+        _observing.Updated += HandleObservableTextUpdate;
+        
+        SetText(_observing.Value);
+        
+        _bound = textBindable;
+    }
+
+    public void Unbind()
+    {
+        if (_observing is null || _bound is null)
+        {
+            throw new InvalidOperationException("Nothing was bound.");
+        }
+
+        _observing.Updated -= HandleObservableTextUpdate;
+        _observing = null;
+        
+        _bound = null;
+
+        SetText(null);
+    }
+
+    private void SetText(string? value)
+    {
+        var newText = CharHelper.RemoveSpecialChars(value, false);
+            
+        if (_text == newText)
+            return;
+
+        _text = newText;
+            
+        if (IsDrawn)
+        {
+            Redraw(CreateDrawState());
+        }
+    }
+    
+    private void HandleObservableTextUpdate(IObservable<string?, ValueChangedEventArgs<string?>> sender, ValueChangedEventArgs<string?> args)
+    {
+        SetText(args.NewValue);
     }
 
     #region Key pressed handling.
