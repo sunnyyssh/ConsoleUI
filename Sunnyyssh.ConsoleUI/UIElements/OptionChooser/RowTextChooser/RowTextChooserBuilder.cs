@@ -26,6 +26,12 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
 
     public Size Size { get; }
 
+    public BorderKind BorderKind { get; init; } = BorderKind.SingleLine;
+    
+    public LineCharSet? BorderLineCharSet { get; init; }
+
+    public Color BorderColor { get; init; } = Color.Default;
+
     public OverlappingPriority OverlappingPriority { get; init; } = OverlappingPriority.Medium;
 
     public string[] Options => _options.ToArray();
@@ -48,24 +54,24 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
 
         int width = args.Width;
         int height = args.Height;
-
-        var stackBuilder = new StackPanelBuilder(new Size(width, height), Orientation);
         
         var options = _options.ToArray();
-        
-        var initializedOptions = 
-            stackBuilder.Orientation == Orientation.Horizontal
-            ? InitializeOptionsHorizontal(width, options)
-            : InitializeOptionsVertical(height, options);
 
-        foreach (var optionBuilder in initializedOptions)
+        Grid initGrid;
+
+        if (Orientation == Orientation.Vertical)
         {
-            stackBuilder.Add(optionBuilder);
+            var initOptions = InitializeOptionsVertical(options);
+            initGrid = InitializeVerticalGrid(width, height, initOptions);
+        }
+        else
+        {
+            var initOptions = InitializeOptionsHorizontal(options);
+            initGrid = InitializeHorizontalGrid(width, height, initOptions);
         }
 
-        var initStack = stackBuilder.Build(new UIElementBuildArgs(args.Width, args.Height));
-
-        var resultElements = initStack.Children
+        var resultElements = initGrid.Children
+            .Where(ch => ch.Child is TextOptionElement)
             // Only TextOptionElement children can be here.
             .Select(ch => (TextOptionElement)ch.Child)
             .ToCollection();
@@ -73,20 +79,72 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         var keySet = KeySet ?? (Orientation == Orientation.Vertical ? VerticalDefaultKeySet : HorizontalDefaultKeySet);
 
         var resultChooser = new RowTextChooser(width, height, 
-            initStack, resultElements, keySet, 
+            initGrid, resultElements, keySet, 
             CanChooseOnlyOne, OverlappingPriority);
 
         return resultChooser;
     }
+    private Grid InitializeVerticalGrid(int width, int height, IUIElementBuilder<TextOptionElement>[] initOptions)
+    {
+        var rows = initOptions
+            .Select(builder => builder.Size.IsHeightRelational
+                ? GridRow.FromRowRelation(builder.Size.HeightRelation.Value)
+                : GridRow.FromWidth(builder.Size.Height.Value));
+
+        var columns = Enumerable.Repeat(GridColumn.FromColumnRelation(1), 1);
+
+        var gridDefinition = new GridDefinition(
+            GridColumnDefinition.From(columns),
+            GridRowDefinition.From(rows));
+
+        var gridBuilder = new GridBuilder(width, height, gridDefinition)
+        {
+            BorderLineCharSet = BorderLineCharSet,
+            BorderKind = BorderKind,
+            BorderColor = BorderColor,
+        };
+        
+        for (int row = 0; row < initOptions.Length; row++)
+        {
+            gridBuilder.Add(initOptions[row].UnsafeWithSize(Size.FullSize), 0, row);
+        }
+
+        return gridBuilder.Build(new UIElementBuildArgs(width, height));
+    }
+
+    private Grid InitializeHorizontalGrid(int width, int height, IUIElementBuilder<TextOptionElement>[] initOptions)
+    {
+        var rows = Enumerable.Repeat(GridRow.FromRowRelation(1), 1);
+
+        var columns = initOptions
+            .Select(builder => builder.Size.IsWidthRelational
+                ? GridColumn.FromColumnRelation(builder.Size.WidthRelation.Value)
+                : GridColumn.FromWidth(builder.Size.Width.Value));
+
+        var gridDefinition = new GridDefinition(
+            GridColumnDefinition.From(columns),
+            GridRowDefinition.From(rows));
+
+        var gridBuilder = new GridBuilder(width, height, gridDefinition)
+        {
+            BorderLineCharSet = BorderLineCharSet,
+            BorderKind = BorderKind,
+            BorderColor = BorderColor,
+        };
+        
+        for (int column = 0; column < initOptions.Length; column++)
+        {
+            gridBuilder.Add(initOptions[column].UnsafeWithSize(Size.FullSize), column, 0);
+        }
+
+        return gridBuilder.Build(new UIElementBuildArgs(width, height));
+    }
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
-    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsVertical(int height, string[] options)
+    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsVertical(string[] options)
     {
         int count = options.Length;
-        
-        if (count > height)
-            throw new TooManyOptionsException();
 
         double heightRelational = 1.0 / count;
         const double wideWidth = 1.0;
@@ -103,12 +161,9 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         return result;
     }
 
-    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsHorizontal(int width, string[] options)
+    private IUIElementBuilder<TextOptionElement>[] InitializeOptionsHorizontal(string[] options)
     {
         int count = options.Length;
-        
-        if (count > width)
-            throw new TooManyOptionsException();
 
         double widthRelational = 1.0 / count;
         const double wideHeight = 1.0;

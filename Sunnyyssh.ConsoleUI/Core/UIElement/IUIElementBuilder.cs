@@ -16,6 +16,11 @@ public interface IUIElementBuilder
     /// <param name="args">Build args.</param>
     /// <returns>Created instance.</returns>
     UIElement Build(UIElementBuildArgs args);
+    
+    internal IUIElementBuilder UnsafeWithSize(Size newSize)
+    {
+        return new UnsafeBuilder(this, newSize);
+    }
 }
 
 /// <summary>
@@ -31,4 +36,9 @@ public interface IUIElementBuilder<out TUIElement> : IUIElementBuilder
     /// <param name="args">Build args.</param>
     /// <returns>Created instance.</returns>
     new TUIElement Build(UIElementBuildArgs args);
+
+    internal new IUIElementBuilder<TUIElement> UnsafeWithSize(Size newSize)
+    {
+        return new UnsafeBuilder<TUIElement>(this, newSize);
+    }
 }
