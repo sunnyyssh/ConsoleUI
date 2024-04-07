@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -34,10 +35,10 @@ public sealed class ElementsFieldBuilder
     private readonly List<ChildInfo> _orderedChildren = new();
 
     /// <summary>
-    /// Gets <see cref="ChildrenCollection"/> collection of placed children.
+    /// Gets collection of placed children.
     /// </summary>
     /// <returns>Created collection of placed children.</returns>
-    public ChildrenCollection Build() => _orderedChildren.ToCollection();
+    public ImmutableList<ChildInfo> Build() => _orderedChildren.ToImmutableList();
     
     /// <summary>
     /// Places <see cref="childBuilder"/> at specified position.

@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// Creates <see cref="Application"/> instance.
@@ -118,7 +120,7 @@ public sealed class ApplicationBuilder
 
     // Initializes the specification.
     // It's just linear flow. One after one.
-    private FocusFlowSpecification InitializeFocusSpecification(ChildrenCollection orderedChildren)
+    private FocusFlowSpecification InitializeFocusSpecification(IReadOnlyList<ChildInfo> orderedChildren)
     {
         var specBuilder = new FocusFlowSpecificationBuilder(true);
         
@@ -155,7 +157,7 @@ public sealed class ApplicationBuilder
     }
 
     // Resolves what Application instance should be created and creates it.
-    private Application InitializeApplication(ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification)
+    private Application InitializeApplication(ImmutableList<ChildInfo> orderedChildren, FocusFlowSpecification focusFlowSpecification)
     {
         // Now no additional implementations of Application are needed.
         // In the future it may be another Application inheritor.

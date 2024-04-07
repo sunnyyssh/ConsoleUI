@@ -1,18 +1,20 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
 {
-    private static readonly ConsoleKeyCollection DefaultVerticalNextKeys =
-        new[] { ConsoleKey.Tab, ConsoleKey.DownArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultVerticalNextKeys =
+        new[] { ConsoleKey.Tab, ConsoleKey.DownArrow }.ToImmutableList();
     
-    private static readonly ConsoleKeyCollection DefaultVerticalPreviousKeys =
-        new[] { ConsoleKey.UpArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultVerticalPreviousKeys =
+        new[] { ConsoleKey.UpArrow }.ToImmutableList();
     
-    private static readonly ConsoleKeyCollection DefaultHorizontalNextKeys =
-        new[] { ConsoleKey.Tab, ConsoleKey.RightArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultHorizontalNextKeys =
+        new[] { ConsoleKey.Tab, ConsoleKey.RightArrow }.ToImmutableList();
     
-    private static readonly ConsoleKeyCollection DefaultHorizontalPreviousKeys =
-        new[] { ConsoleKey.LeftArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultHorizontalPreviousKeys =
+        new[] { ConsoleKey.LeftArrow }.ToImmutableList();
     
     private readonly List<QueuedChildWithOffset> _orderedQueuedChildren = new();
 
@@ -22,11 +24,11 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
 
     public bool OverridesFocusFlow { get; init; } = true;
     
-    public ConsoleKeyCollection? FocusNextKeys { get; init; }
+    public ImmutableList<ConsoleKey>? FocusNextKeys { get; init; }
     
-    public ConsoleKeyCollection? FocusPreviousKeys { get; init; }
+    public ImmutableList<ConsoleKey>? FocusPreviousKeys { get; init; }
 
-    public ConsoleKeyCollection FocusChangeKeys { get; init; } = new [] { ConsoleKey.Tab }.ToCollection();
+    public ImmutableList<ConsoleKey> FocusChangeKeys { get; init; } = new [] { ConsoleKey.Tab }.ToImmutableList();
     
     public Orientation Orientation { get; }
 
@@ -70,7 +72,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         return resultStackPanel;
     }
 
-    private FocusFlowSpecification InitializeFocusSpecification(ChildrenCollection orderedChildren)
+    private FocusFlowSpecification InitializeFocusSpecification(IReadOnlyList<ChildInfo> orderedChildren)
     {
         var nextKeys = FocusNextKeys ??
                        (Orientation == Orientation.Horizontal
@@ -90,8 +92,8 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         return InitializeFocusSpecification(focusables, prevKeys, nextKeys);
     }
 
-    private FocusFlowSpecification InitializeFocusSpecification(IFocusable[] focusables, ConsoleKeyCollection prevKeys,
-        ConsoleKeyCollection nextKeys)
+    private FocusFlowSpecification InitializeFocusSpecification(IFocusable[] focusables, ImmutableList<ConsoleKey> prevKeys,
+        ImmutableList<ConsoleKey> nextKeys)
     {
         var specBuilder = new FocusFlowSpecificationBuilder(OverridesFocusFlow);
         
@@ -133,7 +135,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);
 
-    private ChildrenCollection BuildHorizontal(int width, int height)
+    private ImmutableList<ChildInfo> BuildHorizontal(int width, int height)
     {
         var placer = new ElementsFieldBuilder(width, height, 
             // false because StackPanel should contain children sequentially.
@@ -157,7 +159,7 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         return placer.Build();
     }
 
-    private ChildrenCollection BuildVertical(int width, int height)
+    private ImmutableList<ChildInfo> BuildVertical(int width, int height)
     {
         var placer = new ElementsFieldBuilder(width, height, 
             // false because StackPanel should contain children sequentially.

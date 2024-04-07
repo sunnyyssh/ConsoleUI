@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// Handles the whole UI. It draws and listens keys in different threads and holds application running while it's running.
@@ -24,7 +26,7 @@ public abstract class Application
     /// <summary>
     /// Collection of <see cref="ChildInfo"/> instances holding <see cref="UIElement"/> children.
     /// </summary>
-    public ChildrenCollection Children { get; }
+    public IReadOnlyList<ChildInfo> Children { get; }
     
     private protected readonly ApplicationSettings Settings;
 
@@ -119,7 +121,7 @@ public abstract class Application
     /// </summary>
     public void Wait() => _waitForStopEvent.WaitOne();
     
-    private void SubscribeChildren(ChildrenCollection orderedChildren)
+    private void SubscribeChildren(IReadOnlyList<ChildInfo> orderedChildren)
     {
         foreach (var childInfo in orderedChildren)
         {
@@ -146,7 +148,7 @@ public abstract class Application
     /// <param name="args">Redraw args.</param>
     private protected abstract void RedrawChild(UIElement child, RedrawElementEventArgs args);
     
-    private protected Application(ApplicationSettings settings, ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification)
+    private protected Application(ApplicationSettings settings, ImmutableList<ChildInfo> orderedChildren, FocusFlowSpecification focusFlowSpecification)
     {
         ArgumentNullException.ThrowIfNull(settings, nameof(settings));
         ArgumentNullException.ThrowIfNull(orderedChildren, nameof(orderedChildren));

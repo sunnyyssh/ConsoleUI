@@ -1,17 +1,19 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
 public sealed class Grid : CompositionWrapper
 {
     public LineComposition? Border { get; }
-    
+    public AbsoluteGridDefinition AbsoluteDefinition { get; }
+
     public GridCellsCollection Cells { get; }
 
     [MemberNotNullWhen(true, nameof(Border))]
     public bool HasBorder { get; }
 
-    private static ChildrenCollection ResolveCompositionChildren(GridCellsCollection cells, LineComposition? border)
+    private static ImmutableList<ChildInfo> ResolveCompositionChildren(GridCellsCollection cells, LineComposition? border)
     {
         var children = cells.Select(cell => cell.ChildInfo);
 
@@ -20,14 +22,14 @@ public sealed class Grid : CompositionWrapper
             children = children.Append(new ChildInfo(border, 0, 0));
         }
 
-        return children.ToCollection();
+        return children.ToImmutableList();
     }
 
-    private static ChildrenCollection ResolveChildren(GridCellsCollection cells)
+    private static ImmutableList<ChildInfo> ResolveChildren(GridCellsCollection cells)
     {
         return cells
             .Select(cell => cell.ChildInfo)
-            .ToCollection();
+            .ToImmutableList();
     }
     
     internal Grid(int width, int height, LineComposition? border,
@@ -39,6 +41,7 @@ public sealed class Grid : CompositionWrapper
         ArgumentNullException.ThrowIfNull(absoluteDefinition, nameof(absoluteDefinition));
 
         Border = border;
+        AbsoluteDefinition = absoluteDefinition;
         Cells = cells;
 
         HasBorder = border is not null;

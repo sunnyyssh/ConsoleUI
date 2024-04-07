@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -74,14 +75,14 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
             .Where(ch => ch.Child is TextOptionElement)
             // Only TextOptionElement children can be here.
             .Select(ch => (TextOptionElement)ch.Child)
-            .ToCollection();
+            .ToImmutableList();
 
         var keySet = KeySet ?? (Orientation == Orientation.Vertical ? VerticalDefaultKeySet : HorizontalDefaultKeySet);
 
         var resultChooser = new RowTextChooser(width, height, 
             initGrid, resultElements, keySet, 
             CanChooseOnlyOne, OverlappingPriority);
-
+        
         return resultChooser;
     }
     private Grid InitializeVerticalGrid(int width, int height, IUIElementBuilder<TextOptionElement>[] initOptions)

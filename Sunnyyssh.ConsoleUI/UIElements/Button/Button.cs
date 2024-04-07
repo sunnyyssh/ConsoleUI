@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -109,9 +110,9 @@ public sealed class Button : UIElement, IFocusable
 
     public bool LoseFocusAfterPress { get; init; } = false;
     
-    public ConsoleKeyCollection? HandledKeys { get; }
+    public ImmutableList<ConsoleKey>? HandledKeys { get; }
     
-    public ConsoleKeyCollection IgnoredKeys { get; }
+    public ImmutableList<ConsoleKey> IgnoredKeys { get; }
 
     public bool ShowPress { get; init; } = true;
 
@@ -306,7 +307,7 @@ public sealed class Button : UIElement, IFocusable
     /// <param name="ignoredKeys">Keys that should be ignored. Excludes from <see cref="handledKeys"/>.</param>
     /// <param name="priority"></param>
     internal Button(int width, int height, string? text, 
-        ConsoleKeyCollection? handledKeys, ConsoleKeyCollection ignoredKeys, 
+        ImmutableList<ConsoleKey>? handledKeys, ImmutableList<ConsoleKey> ignoredKeys, 
         OverlappingPriority priority) 
         : base(width, height, priority)
     {

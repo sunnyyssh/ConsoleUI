@@ -43,7 +43,7 @@ public sealed class GridColumnDefinition : IReadOnlyList<GridColumn>
     }
 }
 
-public static partial class CollectionExtensions
+internal static partial class CollectionExtensions
 {
     public static GridColumnDefinition ToDefinition(this IEnumerable<GridColumn> columns)
     {

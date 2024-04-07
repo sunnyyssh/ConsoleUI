@@ -1,8 +1,10 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 public abstract class CompositionWrapper : Wrapper
 {
-    private readonly ChildrenCollection _compositionChildren;
+    private readonly IReadOnlyList<ChildInfo> _compositionChildren;
     
 
     protected override DrawState CreateDrawState()
@@ -59,8 +61,8 @@ public abstract class CompositionWrapper : Wrapper
         childInfo.Child.OnRemove();
     }
 
-    protected CompositionWrapper(int width, int height, ChildrenCollection orderedChildren,
-        ChildrenCollection compositionChildren, FocusFlowSpecification focusFlowSpecification, OverlappingPriority overlappingPriority) 
+    protected CompositionWrapper(int width, int height, ImmutableList<ChildInfo> orderedChildren,
+        ImmutableList<ChildInfo> compositionChildren, FocusFlowSpecification focusFlowSpecification, OverlappingPriority overlappingPriority) 
         : base(width, height, orderedChildren, focusFlowSpecification, overlappingPriority)
     {
         ArgumentNullException.ThrowIfNull(compositionChildren, nameof(compositionChildren));

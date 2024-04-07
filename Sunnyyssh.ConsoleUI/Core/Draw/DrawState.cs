@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
@@ -11,18 +12,18 @@ public sealed class DrawState
     /// <summary>
     /// The empty draw state.
     /// </summary>
-    public static DrawState Empty => new DrawState(PixelLineCollection.Empty);
+    public static DrawState Empty => new DrawState(ImmutableList<PixelLine>.Empty);
     
     /// <summary>
     /// Lines of the draw state. The state actually consists of them.
     /// </summary>
-    public PixelLineCollection Lines { get; }
+    public ImmutableList<PixelLine> Lines { get; }
 
     /// <summary>
     /// Creates the instance of <see cref="DrawState"/> with given lines.
     /// </summary>
     /// <param name="lines">Lines that draw state'll consist of.</param>
-    public DrawState(PixelLineCollection lines)
+    public DrawState(ImmutableList<PixelLine> lines)
     {
         Lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }
@@ -95,7 +96,7 @@ public sealed class DrawState
             // Removing lines not matching horizntal bounds.
             .Where(line => line.Left + line.Length > left && line.Left < left + width)
             .Select(line => line.Crop(left - line.Left, left + width - line.Left))
-            .ToCollection();
+            .ToImmutableList();
         return new DrawState(cropped);
     }
     
@@ -115,7 +116,7 @@ public sealed class DrawState
                     l.Left + leftShift, 
                     l.Top + topShift, 
                     l.Pixels))
-            .ToCollection());
+            .ToImmutableList());
     }
 
     /// <summary>
@@ -140,7 +141,7 @@ public sealed class DrawState
             }
         }
 
-        return new DrawState(newLines.ToCollection());
+        return new DrawState(newLines.ToImmutableList());
     }
     
     /// <summary>
@@ -164,7 +165,7 @@ public sealed class DrawState
                 line => line.Top,
                 line => line,
                 (_, lines) => PixelLine.Overlap(lines.ToArray()))
-            .ToCollection();
+            .ToImmutableList();
 
         DrawState result = new(lines);
         return result;
@@ -191,7 +192,7 @@ public sealed class DrawState
                 line => line.Top,
                 line => line,
                 (_, lines) => PixelLine.HideOverlap(lines.ToArray()))
-            .ToCollection();
+            .ToImmutableList();
 
         DrawState result = new(lines);
         return result;
