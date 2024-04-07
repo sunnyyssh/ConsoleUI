@@ -204,6 +204,8 @@ public sealed class ElementsFieldBuilder
             })
             // Removing placement that are not inside the field.
             .Where(IsPlacementInsideField)
+            // Checking if right bottom bound is not so far.
+            .Where(placement => NoRightBottomViolation(placement, size, pos))
             // Turning combinations into the resulting dictionary 
             .ToDictionary(
                 // ectracting Code of placement (it's {0, 1}^4 as described higher)
@@ -228,7 +230,21 @@ public sealed class ElementsFieldBuilder
             return resultCombinations;
         }
     }
-    
+
+    private bool NoRightBottomViolation(Placement placement, Size size, Position position)
+    {
+        double expectedBottom = (position.IsTopRelational ? position.TopRelational.Value * Height : position.Top.Value)
+                                + (size.IsHeightRelational ? size.HeightRelation.Value * Height : size.Height.Value);
+        
+        double expectedRight = (position.IsLeftRelational ? position.LeftRelational.Value * Width : position.Left.Value)
+                                + (size.IsWidthRelational ? size.WidthRelation.Value * Width : size.Width.Value);
+
+        bool noBottomViolation = Math.Abs(expectedBottom - placement.Top - placement.Height) < 1;
+        bool noRightViolation = Math.Abs(expectedRight - placement.Left - placement.Width) < 1;
+
+        return noBottomViolation && noRightViolation;
+    }
+
     private IEnumerable<int> RoundingVariants(bool takeRelational, int? absolute, double? relational, int absoluteMultiplier)
     {
         if (!takeRelational)
@@ -237,14 +253,26 @@ public sealed class ElementsFieldBuilder
             yield break;
         }
 
+        // Experimental !!!
+        // It's used in order to make bounds more flexible if they are too solid.
+        const double epsilon = 0.001;
+
         double raw = relational!.Value * absoluteMultiplier;
         int floor = Convert.ToInt32(Math.Floor(raw));
         int ceiling = Convert.ToInt32(Math.Ceiling(raw));
+        int epsFloor = Convert.ToInt32(Math.Floor(raw - epsilon));
+        int epsCeiling = Convert.ToInt32(Math.Ceiling(raw + epsilon));
         
         yield return floor;
         
         if (ceiling != floor)
             yield return ceiling;
+
+        if (epsFloor != floor)
+            yield return epsFloor;
+
+        if (epsCeiling != ceiling)
+            yield return epsCeiling;
     }
 
     private bool IsPlacementInsideField(Placement counting)

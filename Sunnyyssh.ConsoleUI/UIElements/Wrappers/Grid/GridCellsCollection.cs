@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
-public record GridCell(ChildInfo ChildInfo, int Column, int Row);
+public record GridCell(ChildInfo ChildInfo, int Row, int Column);
 
 public sealed class GridCellsCollection : IReadOnlyList<GridCell>
 {
@@ -18,10 +18,10 @@ public sealed class GridCellsCollection : IReadOnlyList<GridCell>
 
     GridCell IReadOnlyList<GridCell>.this[int index] => _gridCells[index];
 
-    public GridCell? this[int column, int row] =>
-        TryGet(column, row, out var result) ? result : null;
+    public GridCell? this[int row, int column] =>
+        TryGet(row, column, out var result) ? result : null;
 
-    public bool TryGet(int column, int row, [NotNullWhen(true)] out GridCell? cell)
+    public bool TryGet(int row, int column, [NotNullWhen(true)] out GridCell? cell)
     {
         cell = _gridCells.SingleOrDefault(cell => cell.Column == column && cell.Row == row);
 

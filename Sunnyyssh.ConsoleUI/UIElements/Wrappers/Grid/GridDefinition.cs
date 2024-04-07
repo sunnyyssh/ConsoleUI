@@ -10,7 +10,7 @@ public sealed class GridDefinition
     
     public int RowCount => RowDefinition.Count;
 
-    public GridDefinition(GridColumnDefinition columnDefinition, GridRowDefinition rowDefinition)
+    public GridDefinition(GridRowDefinition rowDefinition, GridColumnDefinition columnDefinition)
     {
         RowDefinition = rowDefinition;
         ColumnDefinition = columnDefinition;
