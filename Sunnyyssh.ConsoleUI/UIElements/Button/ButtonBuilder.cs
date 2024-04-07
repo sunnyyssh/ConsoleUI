@@ -42,8 +42,8 @@ public sealed class ButtonBuilder : IUIElementBuilder<Button>
     }
 
     public BorderCharSet? BorderCharSet { get; set; }
-    
-    public BorderKind BorderKind { get; set; }
+
+    public BorderKind BorderKind { get; set; } = BorderKind.SingleLine;
 
     public bool ShowPress { get; set; } = true;
 

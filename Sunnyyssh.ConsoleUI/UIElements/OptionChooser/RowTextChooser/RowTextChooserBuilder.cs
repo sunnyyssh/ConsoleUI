@@ -95,8 +95,8 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         var columns = Enumerable.Repeat(GridColumn.FromColumnRelation(1), 1);
 
         var gridDefinition = new GridDefinition(
-            GridColumnDefinition.From(columns),
-            GridRowDefinition.From(rows));
+            GridRowDefinition.From(rows),
+            GridColumnDefinition.From(columns));
 
         var gridBuilder = new GridBuilder(width, height, gridDefinition)
         {
@@ -123,8 +123,8 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
                 : GridColumn.FromWidth(builder.Size.Width.Value));
 
         var gridDefinition = new GridDefinition(
-            GridColumnDefinition.From(columns),
-            GridRowDefinition.From(rows));
+            GridRowDefinition.From(rows),
+            GridColumnDefinition.From(columns));
 
         var gridBuilder = new GridBuilder(width, height, gridDefinition)
         {

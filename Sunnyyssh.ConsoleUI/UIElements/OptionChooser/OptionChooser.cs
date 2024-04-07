@@ -60,7 +60,7 @@ public abstract class OptionChooser : UIElement, IFocusable
     // ReSharper disable once NotAccessedField.Local
     private ForceLoseFocusHandler? _forceLoseFocusHandler;
 
-    protected bool IsWaitingFocus { get; set; } = true;
+    public bool IsWaitingFocus { get; set; } = true;
 
     bool IFocusable.IsWaitingFocus => IsWaitingFocus;
 

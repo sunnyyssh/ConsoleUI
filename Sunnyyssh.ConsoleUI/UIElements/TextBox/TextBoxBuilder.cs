@@ -10,35 +10,11 @@ public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
 
     private readonly Color? _focusedBorderColor;
 
-    private readonly Color _notFocusedBackground = Color.Default;
+    public Color NotFocusedBackground { get; init; } = Color.Default;
 
-    private readonly Color _notFocusedForeground = Color.Default;
+    public Color NotFocusedForeground { get; init; } = Color.Default;
 
-    private readonly Color _notFocusedBorderColor = Color.Default;
-
-    public Color Background { get; private set; } = Color.Default;
-    
-    public Color Foreground { get; private set; } = Color.Default;
-    
-    public Color BorderColor { get; private set; } = Color.Default;
-
-    public Color NotFocusedBackground
-    {
-        get => _notFocusedBackground;
-        init => _notFocusedBackground = Background = value;
-    }
-
-    public Color NotFocusedForeground
-    {
-        get => _notFocusedForeground;
-        init => _notFocusedForeground = Foreground = value;
-    }
-
-    public Color NotFocusedBorderColor
-    {
-        get => _notFocusedBorderColor;
-        init => _notFocusedBorderColor = BorderColor = value;
-    }
+    public Color NotFocusedBorderColor { get; init; } = Color.Default;
 
     public Color FocusedBackground
     {

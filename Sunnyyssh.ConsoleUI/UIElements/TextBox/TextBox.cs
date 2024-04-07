@@ -121,7 +121,9 @@ public sealed class TextBox : UIElement, IFocusable
         }
     }
 
-    public bool ShowPressedChars { get; set; } = true;
+    public bool IsWaitingFocus { get; set; } = true;
+    
+    public bool ShowPressedChars { get; init; } = true;
 
     public bool UserEditable { get; init; } = true;
 
@@ -133,7 +135,7 @@ public sealed class TextBox : UIElement, IFocusable
 
     public VerticalAligning TextVerticalAligning { get; init; } = VerticalAligning.Top;
     
-    bool IFocusable.IsWaitingFocus => UserEditable;
+    bool IFocusable.IsWaitingFocus => UserEditable && IsWaitingFocus;
 
     public bool IsFocused { get; private set; }
 
