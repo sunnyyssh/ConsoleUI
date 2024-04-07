@@ -49,7 +49,7 @@ public sealed class GridCellsCollection : IReadOnlyList<GridCell>
             for (int j = i + 1; j < cells.Length; j++)
             {
                 if (cells[i].Column == cells[j].Column
-                    && cells[i].Column == cells[j].Column)
+                    && cells[i].Row == cells[j].Row)
                 {
                     throw new ChildPlacementException("Trying to add two children in one cell.");
                 }

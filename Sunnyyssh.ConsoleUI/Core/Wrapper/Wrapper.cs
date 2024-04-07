@@ -72,60 +72,6 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
         return Children.Any(ch => ch.Child == child);
     }
 
-    // ReSharper disable once UnusedMember.Local
-    private void EraseChild(ChildInfo childInfo)
-    {
-        ArgumentNullException.ThrowIfNull(childInfo, nameof(childInfo));
-
-        var erasingState = childInfo.CreateErasingState()
-            .Shift(childInfo.Left, childInfo.Top);
-        
-        Redraw(erasingState);
-        
-        childInfo.Child.OnRemove();
-    }
-
-    protected override DrawState CreateDrawState()
-    {
-        return GetChildrenCombinedState();
-    }
-    
-    private DrawState GetChildrenCombinedState()
-    {
-        var childrenStates = Children
-            .Select(RequestChildState)
-            .ToArray();
-
-        return DrawState.Combine(childrenStates);
-    }
-
-    private DrawState RequestChildState(ChildInfo child)
-    {
-        child.Child.RequestDrawState(new DrawOptions());
-        
-        var result = child.TransformState();
-
-        // It's neccessary to invoke it on drawing.
-        child.Child.OnDraw();
-        
-        return result;
-    }
-    
-    private void RedrawChild(UIElement child, RedrawElementEventArgs args)
-    {
-        ArgumentNullException.ThrowIfNull(child, nameof(child));
-        ArgumentNullException.ThrowIfNull(args, nameof(args));
-
-        var childInfo = Children.SingleOrDefault(ch => ch.Child == child);
-
-        if (childInfo is null)
-            return;
-
-        var resultState = childInfo.TransformState();
-        
-        Redraw(resultState);
-    }
-
     private void OnManagerForceTakeFocus(FocusFlowManager manager)
     {
         _forceTakeFocusHandler?.Invoke(this);
@@ -166,10 +112,5 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
         _focusFlowManager.ForceTakeFocus += OnManagerForceTakeFocus;
 
         Children = orderedChildren;
-
-        foreach (var child in Children)
-        {
-            child.Child.RedrawElement += RedrawChild;
-        }
     }
 }

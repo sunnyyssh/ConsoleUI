@@ -2,7 +2,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-public sealed class Grid : Wrapper
+public sealed class Grid : CompositionWrapper
 {
     public LineComposition? Border { get; }
     
@@ -11,7 +11,7 @@ public sealed class Grid : Wrapper
     [MemberNotNullWhen(true, nameof(Border))]
     public bool HasBorder { get; }
 
-    private static ChildrenCollection ResolveChildren(GridCellsCollection cells, LineComposition? border)
+    private static ChildrenCollection ResolveCompositionChildren(GridCellsCollection cells, LineComposition? border)
     {
         var children = cells.Select(cell => cell.ChildInfo);
 
@@ -22,11 +22,19 @@ public sealed class Grid : Wrapper
 
         return children.ToCollection();
     }
+
+    private static ChildrenCollection ResolveChildren(GridCellsCollection cells)
+    {
+        return cells
+            .Select(cell => cell.ChildInfo)
+            .ToCollection();
+    }
     
     internal Grid(int width, int height, LineComposition? border,
         AbsoluteGridDefinition absoluteDefinition, GridCellsCollection cells, 
         FocusFlowSpecification focusFlowSpecification, OverlappingPriority overlappingPriority) 
-        : base(width, height, ResolveChildren(cells, border), focusFlowSpecification, overlappingPriority)
+        : base(width, height, ResolveChildren(cells), ResolveCompositionChildren(cells, border),
+            focusFlowSpecification, overlappingPriority)
     {
         ArgumentNullException.ThrowIfNull(absoluteDefinition, nameof(absoluteDefinition));
 

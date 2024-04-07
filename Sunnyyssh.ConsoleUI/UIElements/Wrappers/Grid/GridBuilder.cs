@@ -105,6 +105,11 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
             .Where(cell => cell.ChildInfo.IsFocusable)
             .ToCollection();
 
+        if (focusableCells.Count == 0)
+        {
+            return new FocusFlowSpecification(new Dictionary<IFocusable, ChildSpecification>(), false);
+        }
+
         return CreateFocusSpecification(focusableCells, changeKeys, upKeys, downKeys, rightKeys, leftKeys);
     }
 
@@ -253,15 +258,23 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
                 for (int row = 0; row < cells.GetLength(1); row++)
                 {
                     var cell = cells[column, row];
+
+                    var wrapperCell = (Canvas)cell.ChildInfo.Child;
+
+                    var singleChild = wrapperCell.Children.SingleOrDefault();
                     
-                    if (!((Wrapper)cell.ChildInfo.Child).Children.Any())
+                    if (singleChild is null)
                         continue;
 
-                    var childInfo = hasBorders
-                        ? new ChildInfo(cell.ChildInfo.Child,
-                            cell.ChildInfo.Left + column + 1,
-                            cell.ChildInfo.Top + row + 1)
-                        : cell.ChildInfo;
+                    int left = hasBorders
+                        ? cell.ChildInfo.Left + singleChild.Left + column + 1
+                        : cell.ChildInfo.Left + singleChild.Left;
+
+                    int top = hasBorders
+                        ? cell.ChildInfo.Top + singleChild.Top + row + 1
+                        : cell.ChildInfo.Top + singleChild.Top;
+
+                    var childInfo = new ChildInfo(singleChild.Child, left, top);
 
                     yield return new GridCell(childInfo, column, row);
                 }
