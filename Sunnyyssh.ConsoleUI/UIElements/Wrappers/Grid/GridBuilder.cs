@@ -1,4 +1,6 @@
 ﻿using System.Collections.Immutable;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -43,16 +45,16 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
     
     public LineCharSet? BorderLineCharSet { get; init; } = null;
 
-    public BorderKind BorderKind { get; init; } = BorderKind.None;
+    public BorderKind BorderKind { get; init; } = BorderKind.SingleLine;
     
     public GridDefinition Definition { get; }
 
     public GridBuilder Add(IUIElementBuilder builder, int column, int row)
     {
-        return Add(builder, column, row, new Position(0, 0));
+        return Add(builder, row, column, Position.LeftTop);
     }
 
-    public GridBuilder Add(IUIElementBuilder builder, int column, int row, Position position)
+    public GridBuilder Add(IUIElementBuilder builder, int row, int column, Position position)
     {
         if (column < 0 || column >= Definition.ColumnCount)
             throw new ArgumentOutOfRangeException(nameof(column), column, null);
@@ -63,10 +65,10 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         ArgumentNullException.ThrowIfNull(builder, nameof(builder));
         ArgumentNullException.ThrowIfNull(position, nameof(position));
 
-        if (_queuedCellChildren[column, row] is not null)
+        if (_queuedCellChildren[row, column] is not null)
             throw new ArgumentException("Grid cell already has child.");
 
-        _queuedCellChildren[column, row] = new QueuedPositionChild(builder, position);
+        _queuedCellChildren[row, column] = new QueuedPositionChild(builder, position);
 
         return this;
     }
@@ -86,7 +88,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
 
         var focusFlowSpecification = CreateFocusSpecification(gridCells);
 
-        var border = hasBorders ? CreateBorder(width, height, absoluteDefinition, borderCharSet!) : null;
+        var border = hasBorders ? CreateBorder(width, height, absoluteDefinition, borderCharSet!, BorderColor) : null;
 
         var resultGrid = new Grid(width, height, 
             border, absoluteDefinition, gridCells, 
@@ -132,26 +134,26 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
             .ToArray();
         AddLinearFlow(linearFocusables, changeKeys, specBuilder);
         
-        foreach (var (childInfo, column, row) in focusableCells)
+        foreach (var (childInfo, row, column) in focusableCells)
         {
             var currentFocusable = (IFocusable)childInfo.Child;
             
-            if (focusableCells.TryGet(column - 1, row, out var leftCell))
+            if (focusableCells.TryGet(row, column - 1, out var leftCell))
             {
                 specBuilder.AddFlow(currentFocusable, (IFocusable)leftCell.ChildInfo.Child, leftKeys);
             }
             
-            if (focusableCells.TryGet(column + 1, row, out var rightCell))
+            if (focusableCells.TryGet(row, column + 1, out var rightCell))
             {
                 specBuilder.AddFlow(currentFocusable, (IFocusable)rightCell.ChildInfo.Child, rightKeys);
             }
             
-            if (focusableCells.TryGet(column, row - 1, out var upCell))
+            if (focusableCells.TryGet(row - 1, column, out var upCell))
             {
                 specBuilder.AddFlow(currentFocusable, (IFocusable)upCell.ChildInfo.Child, upKeys);
             }
             
-            if (focusableCells.TryGet(column, row + 1, out var downCell))
+            if (focusableCells.TryGet(row + 1, column, out var downCell))
             {
                 specBuilder.AddFlow(currentFocusable, (IFocusable)downCell.ChildInfo.Child, downKeys);
             }
@@ -176,11 +178,12 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         specBuilder.AddLoseFocus(focusables[^1], changeKeys);
     }
 
-    private LineComposition CreateBorder(int width, int height, AbsoluteGridDefinition definition, LineCharSet charSet)
+    public static LineComposition CreateBorder(int width, int height, AbsoluteGridDefinition definition, 
+        LineCharSet charSet, Color borderColor)
     {
         var linesBuilder = new LineCompositionBuilder(width, height)
         {
-            Color = BorderColor,
+            Color = borderColor,
             LineCharSet = charSet,
             OverlappingPriority = OverlappingPriority.Highest
         };
@@ -206,6 +209,59 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return linesBuilder.Build(new UIElementBuildArgs(width, height));
     }
 
+    public static AbsoluteGridDefinition ResolveGrid(int width, int height, bool hasBorders, GridDefinition definition)
+    {
+        int cleanWidth = hasBorders ? width - (1 + definition.ColumnCount) : width;
+        int cleanHeight = hasBorders ? height - (1 + definition.RowCount) : height;
+        
+        var resolvedColumns = ResolveColumns(cleanWidth, definition);
+        var resolvedRows = ResolveRows(cleanHeight, definition);
+
+        var boxes = new RectangleBuilder[resolvedRows.Length, resolvedColumns.Length];
+
+        for (int row = 0; row < resolvedRows.Length; row++)
+        {
+            for (int column = 0; column < resolvedColumns.Length; column++)
+            {
+                var size = ResolveSize(resolvedColumns[column], resolvedRows[row]);
+
+                boxes[row, column] = new RectangleBuilder(size, Color.Default);
+            }
+        }
+        
+        var cleanPlacer = new ElementsFieldBuilder(cleanWidth, cleanHeight, false);
+
+        var cells = new GridCell[definition.RowCount, definition.ColumnCount];
+
+        int accumulatedCleanLeft = 0;
+
+        for (int column = 0; column < definition.ColumnCount; column++)
+        {
+            int leftDelta = 0;
+            int accumulatedCleanTop = 0;
+            
+            for (int row = 0; row < definition.RowCount; row++)
+            {
+                var rectangleBuilder = boxes[row, column];
+
+                var position = new Position(accumulatedCleanLeft, accumulatedCleanTop); // BUG do like lower
+
+                cleanPlacer.Place(rectangleBuilder, position, out var cellChild);
+                
+                accumulatedCleanTop += cellChild.Height;
+                leftDelta = cellChild.Width;
+
+                cells[row, column] = new GridCell(cellChild, row, column);
+            }
+
+            accumulatedCleanLeft += leftDelta;
+        }
+
+        var absoluteDefinition = GetAbsoluteDefinition(cells);
+
+        return absoluteDefinition;
+    }
+    
     private (GridCellsCollection, AbsoluteGridDefinition) ResolveGrid(int width, int height, bool hasBorders)
     {
         // Width and height without borders.
@@ -216,30 +272,35 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
 
         var cleanPlacer = new ElementsFieldBuilder(cleanWidth, cleanHeight, false);
 
-        var cells = new GridCell[Definition.ColumnCount, Definition.RowCount];
+        var cells = new GridCell[Definition.RowCount, Definition.ColumnCount];
 
-        int accumulatedCleanLeft = 0;
+        double accumulatedRelationalLeft = 0;
 
         for (int column = 0; column < Definition.ColumnCount; column++)
         {
-            int leftDelta = 0;
-            int accumulatedCleanTop = 0;
+            double leftDelta = 0;
+            double accumulatedRelationalTop = 0;
             
             for (int row = 0; row < Definition.RowCount; row++)
             {
-                var canvasBuilder = boxes[column, row];
+                var canvasBuilder = boxes[row, column];
 
-                var position = new Position(accumulatedCleanLeft, accumulatedCleanTop);
+                var position = new Position(accumulatedRelationalLeft, accumulatedRelationalTop);
 
                 cleanPlacer.Place(canvasBuilder, position, out var cellChild);
-                
-                accumulatedCleanTop += cellChild.Height;
-                leftDelta = cellChild.Width;
 
-                cells[column, row] = new GridCell(cellChild, column, row);
+                accumulatedRelationalTop += canvasBuilder.Size.IsHeightRelational
+                    ? canvasBuilder.Size.HeightRelation.Value
+                    : (double)canvasBuilder.Size.Height.Value / cleanHeight;
+                
+                leftDelta = canvasBuilder.Size.IsWidthRelational
+                    ? canvasBuilder.Size.WidthRelation.Value
+                    : (double)canvasBuilder.Size.Width.Value / cleanWidth;
+
+                cells[row, column] = new GridCell(cellChild, row, column);
             }
 
-            accumulatedCleanLeft += leftDelta;
+            accumulatedRelationalLeft += leftDelta;
         }
 
         var children = GetChildren(cells, hasBorders);
@@ -255,11 +316,11 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         
         IEnumerable<GridCell> ResolvedPositionNotEmpty()
         {
-            for (int column = 0; column < cells.GetLength(0); column++)
+            for (int row = 0; row < cells.GetLength(0); row++)
             {
-                for (int row = 0; row < cells.GetLength(1); row++)
+                for (int column = 0; column < cells.GetLength(1); column++)
                 {
-                    var cell = cells[column, row];
+                    var cell = cells[row, column];
 
                     var wrapperCell = (Canvas)cell.ChildInfo.Child;
 
@@ -278,21 +339,21 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
 
                     var childInfo = new ChildInfo(singleChild.Child, left, top);
 
-                    yield return new GridCell(childInfo, column, row);
+                    yield return new GridCell(childInfo, row, column);
                 }
             }
         }
     }
 
-    private AbsoluteGridDefinition GetAbsoluteDefinition(GridCell[,] cells)
+    private static AbsoluteGridDefinition GetAbsoluteDefinition(GridCell[,] cells)
     {
-        var columns = Enumerable.Range(0, cells.GetLength(0))
-            .Select(column => cells[column, 0].ChildInfo.Width)
+        var columns = Enumerable.Range(0, cells.GetLength(1))
+            .Select(column => cells[0, column].ChildInfo.Width)
             .Select(width => new AbsoluteGridColumn(width))
             .ToArray();
         
-        var rows = Enumerable.Range(0, cells.GetLength(1))
-            .Select(row => cells[0, row].ChildInfo.Height)
+        var rows = Enumerable.Range(0, cells.GetLength(0))
+            .Select(row => cells[row, 0].ChildInfo.Height)
             .Select(height => new AbsoluteGridRow(height))
             .ToArray();
 
@@ -301,16 +362,16 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
 
     private CanvasBuilder[,] ResolveBoxes(int width, int height)
     {
-        var resolvedColumns = ResolveColumns(width);
-        var resolvedRows = ResolveRows(height);
+        var resolvedColumns = ResolveColumns(width, Definition);
+        var resolvedRows = ResolveRows(height, Definition);
 
-        var result = new CanvasBuilder[resolvedColumns.Length, resolvedRows.Length];
+        var result = new CanvasBuilder[resolvedRows.Length, resolvedColumns.Length];
 
-        for (int i = 0; i < resolvedColumns.Length; i++)
+        for (int column = 0; column < resolvedColumns.Length; column++)
         {
-            for (int j = 0; j < resolvedRows.Length; j++)
+            for (int row = 0; row < resolvedRows.Length; row++)
             {
-                var size = ResolveSize(resolvedColumns[i], resolvedRows[j]);
+                var size = ResolveSize(resolvedColumns[column], resolvedRows[row]);
 
                 var canvasBuilder = new CanvasBuilder(size)
                 {
@@ -319,19 +380,19 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
                     EnableOverlapping = false,
                 };
 
-                if (_queuedCellChildren[i, j] is {} queued)
+                if (_queuedCellChildren[row, column] is {} queued)
                 {
                     canvasBuilder.Add(queued.Builder, queued.Position);
                 }
 
-                result[i, j] = canvasBuilder;
+                result[row, column] = canvasBuilder;
             }
         }
 
         return result;
     }
 
-    private Size ResolveSize((int? abs, double? rel) width, (int? abs, double? rel) height)
+    private static Size ResolveSize((int? abs, double? rel) width, (int? abs, double? rel) height)
     {
         if (width.abs.HasValue)
         {
@@ -345,9 +406,9 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
             : new Size(width.rel!.Value, height.rel!.Value);
     }
 
-    private (int? abs, double? rel)[] ResolveColumns(int width)
+    private static (int? abs, double? rel)[] ResolveColumns(int width, GridDefinition definition)
     {
-        var columns = Definition.ColumnDefinition;
+        var columns = definition.ColumnDefinition;
 
         var result = new (int? abs, double? rel)[columns.Count];
 
@@ -395,9 +456,9 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return result;
     }
 
-    private (int? abs, double? rel)[] ResolveRows(int height)
+    private static (int? abs, double? rel)[] ResolveRows(int height, GridDefinition definition)
     {
-        var rows = Definition.RowDefinition;
+        var rows = definition.RowDefinition;
 
         var result = new (int? abs, double? rel)[rows.Count];
 
@@ -471,6 +532,6 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         Size = size;
         Definition = definition;
 
-        _queuedCellChildren = new QueuedPositionChild?[definition.ColumnCount, definition.RowCount];
+        _queuedCellChildren = new QueuedPositionChild?[definition.RowCount, definition.ColumnCount];
     }
 }
