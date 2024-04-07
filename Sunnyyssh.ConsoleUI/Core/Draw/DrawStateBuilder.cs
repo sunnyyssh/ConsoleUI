@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// Represents <see cref="DrawState"/> creating.
@@ -258,12 +260,12 @@ public sealed class DrawStateBuilder
             
             var pixels = Enumerable.Range(0, Width)
                 .Select(left => _pixels[left, thisTop] ?? new PixelInfo())
-                .ToCollection();
+                .ToImmutableList();
             
             lines[top] = new PixelLine(0, top, pixels);
         }
 
-        return new DrawState(lines.ToCollection());
+        return new DrawState(lines.ToImmutableList());
     }
 
     /// <summary>

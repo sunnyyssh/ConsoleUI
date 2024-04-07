@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// <see cref="UIElement"/> that consists of other <see cref="UIElement"/> instances.
@@ -19,7 +21,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
     /// <summary>
     /// <see cref="UIElement"/> children this instance consists of.
     /// </summary>
-    public ChildrenCollection Children { get; }
+    public IReadOnlyList<ChildInfo> Children { get; }
 
     /// <summary>
     /// Whether it is focused now. 
@@ -91,7 +93,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
     /// <param name="focusFlowSpecification">The specification of focus flow.</param>
     /// <param name="overlappingPriority">Overlapping priority.</param>
     protected Wrapper(int width, int height, 
-        ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification, 
+        ImmutableList<ChildInfo> orderedChildren, FocusFlowSpecification focusFlowSpecification, 
         OverlappingPriority overlappingPriority)
         : base(width, height, overlappingPriority)
     {

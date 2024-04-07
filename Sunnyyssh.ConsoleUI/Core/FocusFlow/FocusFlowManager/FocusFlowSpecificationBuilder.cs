@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// Creates an instance of <see cref="FocusFlowSpecification"/>.
@@ -57,7 +59,7 @@ public sealed class FocusFlowSpecificationBuilder
     /// <param name="keys">Keys making lose focus.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentException">Child hasn't been added.</exception>
-    public FocusFlowSpecificationBuilder AddLoseFocus(IFocusable from, ConsoleKeyCollection keys)
+    public FocusFlowSpecificationBuilder AddLoseFocus(IFocusable from, ImmutableList<ConsoleKey> keys)
     {
         if (!_children.TryGetValue(from, out var fromSpecBuilder))
         {
@@ -77,7 +79,7 @@ public sealed class FocusFlowSpecificationBuilder
     /// <param name="keys">Flow keys.</param>
     /// <returns>Same instance of <see cref="FocusFlowSpecificationBuilder"/></returns>
     /// <exception cref="ArgumentException"></exception>
-    public FocusFlowSpecificationBuilder AddFlow(IFocusable from, IFocusable to, ConsoleKeyCollection keys)
+    public FocusFlowSpecificationBuilder AddFlow(IFocusable from, IFocusable to, ImmutableList<ConsoleKey> keys)
     {
         if (!_children.TryGetValue(from, out var fromSpecBuilder))
         {

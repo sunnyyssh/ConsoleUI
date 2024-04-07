@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// The default implementation of <see cref="Application"/>.
@@ -47,7 +49,7 @@ internal class DefaultApplication : Application
     /// <summary>
     /// Creates an instance of <see cref="DefaultApplication"/>.
     /// </summary>
-    public DefaultApplication(ApplicationSettings settings, ChildrenCollection orderedChildren, FocusFlowSpecification focusFlowSpecification) 
+    public DefaultApplication(ApplicationSettings settings, ImmutableList<ChildInfo> orderedChildren, FocusFlowSpecification focusFlowSpecification) 
         : base(settings, orderedChildren, focusFlowSpecification)
     {
         // DefaultApplication doesn't present anything additional to Application implementation.

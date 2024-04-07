@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Sunnyyssh.ConsoleUI;
@@ -16,7 +17,7 @@ public sealed class PixelLine
     /// <summary>
     /// Pixels collection which this line consits of.
     /// </summary>
-    public PixelInfoCollection Pixels { get; }
+    public ImmutableList<PixelInfo> Pixels { get; }
 
     /// <summary>
     /// The length of the line.
@@ -48,7 +49,7 @@ public sealed class PixelLine
     [Pure]
     public PixelLine Crop(int startIndex, int length)
     {
-        var cropped = Pixels.Skip(startIndex).Take(length).ToCollection();
+        var cropped = Pixels.Skip(startIndex).Take(length).ToImmutableList();
         
         return new PixelLine(Left + Math.Max(startIndex, 0), Top, cropped);
     }
@@ -93,7 +94,7 @@ public sealed class PixelLine
                 deductiblePixel.Foreground);
         }
 
-        return new PixelLine(Left, Top, newPixels.ToCollection());
+        return new PixelLine(Left, Top, newPixels.ToImmutableList());
     }
 
     /// <summary>
@@ -122,7 +123,7 @@ public sealed class PixelLine
         
         var pixels = Enumerable.Range(0, line.Length)
             .Select(i => new PixelInfo(line[i], background, foreground))
-            .ToCollection();
+            .ToImmutableList();
         
         Left = left;
         Top = top;
@@ -135,7 +136,7 @@ public sealed class PixelLine
     /// <param name="left">The left position of the line. (Counted in characters).</param>;
     /// <param name="top">The top position of the line. (Counted in characters).</param>;
     /// <param name="pixels">Initial pixels.</param>
-    public PixelLine(int left, int top, PixelInfoCollection pixels)
+    public PixelLine(int left, int top, ImmutableList<PixelInfo> pixels)
     {
         ArgumentNullException.ThrowIfNull(pixels, nameof(pixels));
         
@@ -155,7 +156,7 @@ public sealed class PixelLine
         ArgumentNullException.ThrowIfNull(orderedLines, nameof(orderedLines));
         
         if (orderedLines.Length == 0)
-            return new PixelLine(0, 0, PixelInfoCollection.Empty);
+            return new PixelLine(0, 0, ImmutableList<PixelInfo>.Empty);
         
         CheckLinesTopEquality(orderedLines);
 
@@ -198,7 +199,7 @@ public sealed class PixelLine
         for (int i = 0; i < pixels.Length; i++)
             pixels[i] ??= new PixelInfo();
 
-        return new PixelLine(leftInclusive, top, pixels!.ToCollection());
+        return new PixelLine(leftInclusive, top, pixels.ToImmutableList()!);
     }
     
     /// <summary>
@@ -212,7 +213,7 @@ public sealed class PixelLine
         ArgumentNullException.ThrowIfNull(orderedLines, nameof(orderedLines));
         
         if (orderedLines.Length == 0)
-            return new PixelLine(0, 0, PixelInfoCollection.Empty);
+            return new PixelLine(0, 0, ImmutableList<PixelInfo>.Empty);
         
         CheckLinesTopEquality(orderedLines);
 
@@ -235,7 +236,7 @@ public sealed class PixelLine
         for (int i = 0; i < pixels.Length; i++)
             pixels[i] ??= new PixelInfo();
 
-        return new PixelLine(leftInclusive, top, pixels!.ToCollection());
+        return new PixelLine(leftInclusive, top, pixels.ToImmutableList()!);
     }
     
     private static void CheckLinesTopEquality(PixelLine[] lines)

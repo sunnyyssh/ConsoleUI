@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
 {
@@ -12,7 +14,7 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
     
     public bool EnableOverlapping { get; init; } = true;
 
-    public ConsoleKeyCollection FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab }.ToCollection();
+    public ImmutableList<ConsoleKey> FocusChangeKeys { get; init; } = new[] { ConsoleKey.Tab }.ToImmutableList();
 
     public CanvasBuilder Add(IUIElementBuilder elementBuilder, int left, int top)
         => Add(elementBuilder, new Position(left, top));
@@ -56,7 +58,7 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
         return resultCanvas;
     }
 
-    private FocusFlowSpecification InitializeFocusSpecification(ChildrenCollection orderedChildren)
+    private FocusFlowSpecification InitializeFocusSpecification(IReadOnlyList<ChildInfo> orderedChildren)
     {
         var specBuilder = new FocusFlowSpecificationBuilder(OverridesFocusFlow);
         

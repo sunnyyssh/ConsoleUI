@@ -1,35 +1,37 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 public sealed class GridBuilder : IUIElementBuilder<Grid>
 {
-    private static readonly ConsoleKeyCollection DefaultFocusChangeKeys 
-        = new[] { ConsoleKey.Tab }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultFocusChangeKeys 
+        = new[] { ConsoleKey.Tab }.ToImmutableList();
     
-    private static readonly ConsoleKeyCollection DefaultFocusUpKeys 
-        = new[] { ConsoleKey.UpArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultFocusUpKeys 
+        = new[] { ConsoleKey.UpArrow }.ToImmutableList();
     
-    private static readonly ConsoleKeyCollection DefaultFocusDownKeys 
-        = new[] { ConsoleKey.DownArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultFocusDownKeys 
+        = new[] { ConsoleKey.DownArrow }.ToImmutableList();
     
-    private static readonly ConsoleKeyCollection DefaultFocusRightKeys 
-        = new[] { ConsoleKey.RightArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultFocusRightKeys 
+        = new[] { ConsoleKey.RightArrow }.ToImmutableList();
     
-    private static readonly ConsoleKeyCollection DefaultFocusLeftKeys 
-        = new[] { ConsoleKey.LeftArrow }.ToCollection();
+    private static readonly ImmutableList<ConsoleKey> DefaultFocusLeftKeys 
+        = new[] { ConsoleKey.LeftArrow }.ToImmutableList();
     
     private readonly QueuedPositionChild?[,] _queuedCellChildren;
     
     public Size Size { get; }
 
-    public ConsoleKeyCollection? FocusChangeKeys { get; init; }
+    public ImmutableList<ConsoleKey>? FocusChangeKeys { get; init; }
 
-    public ConsoleKeyCollection? FocusUpKeys { get; init; }
+    public ImmutableList<ConsoleKey>? FocusUpKeys { get; init; }
 
-    public ConsoleKeyCollection? FocusDownKeys { get; init; }
+    public ImmutableList<ConsoleKey>? FocusDownKeys { get; init; }
 
-    public ConsoleKeyCollection? FocusRightKeys { get; init; }
+    public ImmutableList<ConsoleKey>? FocusRightKeys { get; init; }
 
-    public ConsoleKeyCollection? FocusLeftKeys { get; init; }
+    public ImmutableList<ConsoleKey>? FocusLeftKeys { get; init; }
 
     public bool FocusFlowLoop { get; init; } = false;
 
@@ -113,9 +115,9 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return CreateFocusSpecification(focusableCells, changeKeys, upKeys, downKeys, rightKeys, leftKeys);
     }
 
-    private FocusFlowSpecification CreateFocusSpecification(GridCellsCollection focusableCells, ConsoleKeyCollection changeKeys, 
-        ConsoleKeyCollection upKeys, ConsoleKeyCollection downKeys, 
-        ConsoleKeyCollection rightKeys, ConsoleKeyCollection leftKeys)
+    private FocusFlowSpecification CreateFocusSpecification(GridCellsCollection focusableCells, ImmutableList<ConsoleKey> changeKeys, 
+        ImmutableList<ConsoleKey> upKeys, ImmutableList<ConsoleKey> downKeys, 
+        ImmutableList<ConsoleKey> rightKeys, ImmutableList<ConsoleKey> leftKeys)
     {
         var specBuilder = new FocusFlowSpecificationBuilder(OverridesFocusFlow);
 
@@ -158,7 +160,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return specBuilder.Build();
     }
 
-    private void AddLinearFlow(IFocusable[] focusables, ConsoleKeyCollection changeKeys, FocusFlowSpecificationBuilder specBuilder)
+    private void AddLinearFlow(IFocusable[] focusables, ImmutableList<ConsoleKey> changeKeys, FocusFlowSpecificationBuilder specBuilder)
     {
         for (int i = 0; i < focusables.Length - 1; i++)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
@@ -27,9 +28,9 @@ public sealed class GridCellsCollection : IReadOnlyList<GridCell>
         return cell is not null;
     }
 
-    public ChildrenCollection ToChildrenCollection()
+    public ImmutableList<ChildInfo> ToChildrenCollection()
     {
-        return this.Select(cell => cell.ChildInfo).ToCollection();
+        return this.Select(cell => cell.ChildInfo).ToImmutableList();
     }
 
     public static GridCellsCollection From(IEnumerable<GridCell> gridCells)
@@ -70,7 +71,7 @@ public sealed class GridCellsCollection : IReadOnlyList<GridCell>
     }
 }
 
-public static partial class CollectionExtensions
+internal static partial class CollectionExtensions
 {
     public static GridCellsCollection ToCollection(this IEnumerable<GridCell> gridCells)
     {

@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// Creates an instance of <see cref="ChildSpecification"/>. It gives an opportunity to add flows and <see cref="IFocusable"/> children.
@@ -9,7 +11,7 @@ public sealed class ChildSpecificationBuilder
 
     private readonly Dictionary<ConsoleKey, IFocusable> _flows = new();
 
-    private ConsoleKeyCollection _loseKeys = ConsoleKeyCollection.Empty;
+    private ImmutableList<ConsoleKey> _loseKeys = ImmutableList<ConsoleKey>.Empty;
 
     /// <summary>
     /// Adds flow to another child with specified keys.
@@ -18,7 +20,7 @@ public sealed class ChildSpecificationBuilder
     /// <param name="keys">Keys indicating focus should flow.</param>
     /// <returns>Same instance of <see cref="ChildSpecificationBuilder"/> to chain calls.</returns>
     /// <exception cref="ArgumentException">Key is already added.</exception>
-    public ChildSpecificationBuilder AddFlow(IFocusable to, ConsoleKeyCollection keys)
+    public ChildSpecificationBuilder AddFlow(IFocusable to, ImmutableList<ConsoleKey> keys)
     {
         ArgumentNullException.ThrowIfNull(to, nameof(to));
         ArgumentNullException.ThrowIfNull(keys, nameof(keys));
@@ -41,9 +43,9 @@ public sealed class ChildSpecificationBuilder
     /// </summary>
     /// <param name="keys">Keys indicating that current <see cref="FocusFlowManager"/> should lose focus.</param>
     /// <returns>Same instance of <see cref="ChildSpecificationBuilder"/> to chain calls.</returns>
-    public ChildSpecificationBuilder AddLoseFocus(ConsoleKeyCollection keys)
+    public ChildSpecificationBuilder AddLoseFocus(ImmutableList<ConsoleKey> keys)
     {
-        _loseKeys = keys.Union(_loseKeys).ToCollection();
+        _loseKeys = keys.Union(_loseKeys).ToImmutableList();
 
         return this;
     }

@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
 {
@@ -58,7 +60,7 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
             .Where(child => child.Child is OptionElement)
             // Here can't be any children except OptionElement.
             .Select(child => (OptionElement)child.Child)
-            .ToCollection();
+            .ToImmutableList();
 
         var keySet = KeySet ?? (Orientation == Orientation.Vertical ? VerticalDefaultKeySet : HorizontalDefaultKeySet);
 

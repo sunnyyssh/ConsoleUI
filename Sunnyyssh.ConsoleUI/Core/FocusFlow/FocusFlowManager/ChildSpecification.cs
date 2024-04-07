@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// Specification of child's (<see cref="IFocusable"/>'s) focus flow.
@@ -18,7 +20,7 @@ public sealed class ChildSpecification
     /// <summary>
     /// Keys indicating that current <see cref="FocusFlowManager"/> must lose focus.
     /// </summary>
-    public ConsoleKeyCollection FocusLose { get; }
+    public IReadOnlyList<ConsoleKey> FocusLose { get; }
 
     /// <summary>
     /// Creates <see cref="ChildSpecification"/> instance.
@@ -26,7 +28,7 @@ public sealed class ChildSpecification
     /// <param name="from">Child from what focus flows.</param>
     /// <param name="flows">Collection of flows to other children.</param>
     /// <param name="focusLose">Keys indicating that current <see cref="FocusFlowManager"/> must lose focus.</param>
-    internal ChildSpecification(IFocusable from, IReadOnlyDictionary<ConsoleKey, IFocusable> flows, ConsoleKeyCollection focusLose)
+    internal ChildSpecification(IFocusable from, IReadOnlyDictionary<ConsoleKey, IFocusable> flows, ImmutableList<ConsoleKey> focusLose)
     {
         From = from;
         Flows = flows;

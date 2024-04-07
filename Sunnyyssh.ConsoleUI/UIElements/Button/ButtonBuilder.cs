@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -10,7 +11,7 @@ public sealed class ButtonBuilder : IUIElementBuilder<Button>
     
     #region Properties
     
-    private ConsoleKeyCollection _ignoredKeys = ConsoleKeyCollection.Empty;
+    private ImmutableList<ConsoleKey> _ignoredKeys = ImmutableList<ConsoleKey>.Empty;
 
     public OverlappingPriority OverlappingPriority { get; set; } = OverlappingPriority.Medium;
     
@@ -36,9 +37,9 @@ public sealed class ButtonBuilder : IUIElementBuilder<Button>
 
     public bool LoseFocusAfterPress { get; set; } = false;
     
-    public ConsoleKeyCollection? HandledKeys { get; set; }
+    public ImmutableList<ConsoleKey>? HandledKeys { get; set; }
 
-    public ConsoleKeyCollection IgnoredKeys
+    public ImmutableList<ConsoleKey> IgnoredKeys
     {
         get => _ignoredKeys;
         set => _ignoredKeys = value ?? throw new ArgumentNullException(nameof(value));
@@ -132,13 +133,13 @@ public sealed class ButtonBuilder : IUIElementBuilder<Button>
         return this;
     }
 
-    public ButtonBuilder SetHandledKeys(ConsoleKeyCollection? handledKeys)
+    public ButtonBuilder SetHandledKeys(ImmutableList<ConsoleKey>? handledKeys)
     {
         HandledKeys = handledKeys;
         return this;
     }
 
-    public ButtonBuilder SetIgnoredKeys(ConsoleKeyCollection ignoredKeys)
+    public ButtonBuilder SetIgnoredKeys(ImmutableList<ConsoleKey> ignoredKeys)
     {
         IgnoredKeys = ignoredKeys;
         return this;

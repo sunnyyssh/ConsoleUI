@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 namespace Sunnyyssh.ConsoleUI;
@@ -10,7 +11,7 @@ public sealed class ApplicationSettings
 {
     private readonly Color _defaultBackground = Color.Black;
     private readonly Color _defaultForeground = Color.White;
-    private readonly ConsoleKeyCollection _focusChangeKeys = new[] { ConsoleKey.Tab }.ToCollection();
+    private readonly ImmutableList<ConsoleKey> _focusChangeKeys = new[] { ConsoleKey.Tab }.ToImmutableList();
     private readonly int? _height = null;
     private readonly int? _width = null;
 
@@ -99,7 +100,7 @@ public sealed class ApplicationSettings
     /// Keys to change focus.
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
-    public ConsoleKeyCollection FocusChangeKeys
+    public ImmutableList<ConsoleKey> FocusChangeKeys
     {
         get => _focusChangeKeys;
         init => _focusChangeKeys = value ?? throw new ArgumentNullException(nameof(value));
