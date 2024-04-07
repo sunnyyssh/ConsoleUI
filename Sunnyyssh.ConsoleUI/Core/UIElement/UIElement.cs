@@ -74,7 +74,7 @@ public abstract class UIElement
     /// <summary>
     /// Handles being drawn at start.
     /// </summary>
-    internal void OnDraw()
+    protected internal virtual void OnDraw()
     {
         IsDrawn = true;
     }
@@ -82,7 +82,7 @@ public abstract class UIElement
     /// <summary>
     /// Handles being removed.
     /// </summary>
-    internal void OnRemove()
+    protected internal virtual void OnRemove()
     {
         IsDrawn = false;
     }

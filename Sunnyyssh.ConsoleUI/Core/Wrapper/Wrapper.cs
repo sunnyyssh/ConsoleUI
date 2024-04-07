@@ -16,7 +16,9 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
     /// <summary>
     /// Whether it waits for focus.
     /// </summary>
-    public virtual bool IsWaitingFocus => _focusFlowManager.HasWaitingFocusable;
+    public virtual bool IsWaitingFocus { get; set; }
+    
+    bool IFocusable.IsWaitingFocus => IsWaitingFocus && _focusFlowManager.HasWaitingFocusable;
 
     /// <summary>
     /// <see cref="UIElement"/> children this instance consists of.
@@ -74,6 +76,8 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
         return Children.Any(ch => ch.Child == child);
     }
 
+    protected bool TryGiveFocusTo(IFocusable focusable) => _focusFlowManager.TryGiveFocusTo(focusable);
+    
     private void OnManagerForceTakeFocus(FocusFlowManager manager)
     {
         _forceTakeFocusHandler?.Invoke(this);
@@ -84,24 +88,48 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
         _forceLoseFocusHandler?.Invoke(this);
     }
 
+    protected internal override void OnDraw()
+    {
+        base.OnDraw();
+        foreach (var child in Children)
+        {
+            if (!child.Child.IsDrawn)
+            {
+                child.Child.OnDraw();
+            }
+        }
+    }
+
+    protected internal override void OnRemove()
+    {
+        base.OnRemove();
+        foreach (var child in Children)
+        {
+            if (child.Child.IsDrawn)
+            {
+                child.Child.OnRemove();
+            }
+        }
+    }
+
     /// <summary>
     /// Creates an instance of <see cref="Wrapper"/>.
     /// </summary>
     /// <param name="width">The absolute width.</param>
     /// <param name="height">The absolute height.</param>
     /// <param name="orderedChildren">Collection of <see cref="UIElement"/> children what this instance consists of.</param>
-    /// <param name="focusFlowSpecification">The specification of focus flow.</param>
+    /// <param name="excludingFocusSpecification">The specification of focus flow.</param>
     /// <param name="overlappingPriority">Overlapping priority.</param>
     protected Wrapper(int width, int height, 
-        ImmutableList<ChildInfo> orderedChildren, FocusFlowSpecification focusFlowSpecification, 
+        ImmutableList<ChildInfo> orderedChildren, FocusFlowSpecification excludingFocusSpecification, 
         OverlappingPriority overlappingPriority)
         : base(width, height, overlappingPriority)
     {
         ArgumentNullException.ThrowIfNull(orderedChildren, nameof(orderedChildren));
-        ArgumentNullException.ThrowIfNull(focusFlowSpecification, nameof(focusFlowSpecification));
+        ArgumentNullException.ThrowIfNull(excludingFocusSpecification, nameof(excludingFocusSpecification));
 
         var focusManagerOptions = new FocusManagerOptions(
-            focusFlowSpecification,
+            excludingFocusSpecification,
             // It's not provided to loop focus flow
             // because the wrapper must lose focus when all wrapper's IFocusable went throgh focus
             false,

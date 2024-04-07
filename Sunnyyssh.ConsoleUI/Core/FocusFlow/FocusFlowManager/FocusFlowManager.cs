@@ -59,6 +59,26 @@ internal sealed class FocusFlowManager
     /// </summary>
     public bool IsFocused { get; private set; }
 
+
+    public bool TryGiveFocusTo(IFocusable focusable)
+    {
+        if (!_focusableChain.TrySetCurrentTo(focusable))
+            return false;
+
+        if (IsFocused)
+        {
+            if (_focusableChain.FocusedItem is {} from)
+            {
+                RemoveFocusFrom(from);
+            }
+
+            _focusableChain.SetFocusToCurrent();
+                    
+            GiveFocusTo(focusable);
+        }
+
+        return true;
+    }
     
     /// <summary>
     /// Handles pressed key.
