@@ -225,6 +225,60 @@ public sealed class DrawStateBuilder
     }
 
     #endregion
+
+    #region Overlap methods.
+
+    public DrawStateBuilder OverlapWith(DrawState drawState)
+        => OverlapWith(0, 0, drawState);
+    
+    public DrawStateBuilder OverlapWith(int left, int top, DrawState drawState)
+    {
+        ArgumentNullException.ThrowIfNull(drawState, nameof(drawState));
+        ValidatePosition(left, top);
+
+        foreach (var line in drawState.Lines)
+        {
+            OverlapWith(left + line.Left, top + line.Top, line);
+        }
+        
+        return this;
+    }
+
+    public DrawStateBuilder OverlapWith(int left, int top, PixelLine line)
+    {
+        ArgumentNullException.ThrowIfNull(line, nameof(line));
+        ValidateSquare(left, top, line.Length, 1);
+
+        for (int i = 0; i < line.Length; i++)
+        {
+            if (!line[i].IsVisible)
+            {
+                continue;
+            }
+            
+            if (_pixels[left + i, top] is null || !_pixels[left + i, top]!.IsVisible)
+            {
+                _pixels[left + i, top] = line[i];
+                continue;
+            }
+                
+            if (line[i].Background == Color.Transparent)
+            {
+                // If background is transparent then background should be taken from the lower line.
+                _pixels[left + i, top] = new PixelInfo(
+                    line[i].Char, 
+                    _pixels[left + i, top]!.Background,
+                    line[i].Foreground);
+                continue;
+            }
+                
+            _pixels[left + i, top] = line[i];
+        }
+        
+        return this;
+    }
+
+    #endregion
     
     private void ValidateSquare(int left, int top, int width, int height)
     {
