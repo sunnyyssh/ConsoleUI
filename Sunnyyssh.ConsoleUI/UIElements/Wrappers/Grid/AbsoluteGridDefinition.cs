@@ -1,6 +1,8 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Collections.Immutable;
 
-public record AbsoluteGridRow(int Width);
+namespace Sunnyyssh.ConsoleUI;
+
+public record AbsoluteGridRow(int Height);
 
 public record AbsoluteGridColumn(int Width);
 
@@ -13,7 +15,7 @@ public sealed class AbsoluteGridDefinition
 
     public int RowCount => Rows.Count;
 
-    public AbsoluteGridDefinition(AbsoluteGridColumn[] columns, AbsoluteGridRow[] rows)
+    public AbsoluteGridDefinition(ImmutableList<AbsoluteGridColumn> columns, ImmutableList<AbsoluteGridRow> rows)
     {
         ArgumentNullException.ThrowIfNull(columns, nameof(columns));
         ArgumentNullException.ThrowIfNull(rows, nameof(rows));

@@ -10,7 +10,7 @@ public sealed class UIElementSwitcher : Wrapper, IFocusable
     
     public int CurrentStateIndex { get; private set; }
 
-    public void SetCurrentStateTo(int stateIndex)
+    public void SwitchTo(int stateIndex)
     {
         if (stateIndex < 0 || stateIndex >= PresentationStates.Count)
             throw new ArgumentOutOfRangeException(nameof(stateIndex), stateIndex, null);

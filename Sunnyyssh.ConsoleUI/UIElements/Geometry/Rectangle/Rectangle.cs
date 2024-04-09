@@ -10,8 +10,8 @@ public sealed class Rectangle : UIElement
         set
         {
             _color = value;
-            
-            if (IsDrawn)
+
+            if (IsStateInitialized)
             {
                 Redraw(CreateDrawState());
             }

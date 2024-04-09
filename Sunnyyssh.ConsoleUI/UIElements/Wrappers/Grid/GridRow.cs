@@ -4,35 +4,35 @@ namespace Sunnyyssh.ConsoleUI;
 
 public sealed class GridRow
 {
-    public int? AbsoluteWidth { get; }
+    public int? AbsoluteHeight { get; }
 
-    [MemberNotNullWhen(true, nameof(AbsoluteWidth))]
-    public bool IsAbsoluteWidth { get; }
+    [MemberNotNullWhen(true, nameof(AbsoluteHeight))]
+    public bool IsAbsoluteHeight { get; }
     
-    public double? RelationalWidth { get; }
+    public double? RelationalHeight { get; }
 
-    [MemberNotNullWhen(true, nameof(RelationalWidth))]
-    public bool IsRelationalWidth { get; }
+    [MemberNotNullWhen(true, nameof(RelationalHeight))]
+    public bool IsRelationalHeight { get; }
     
     public double? RowRelation { get; }
 
     [MemberNotNullWhen(true, nameof(RowRelation))]
     public bool IsRowRelation { get; }
 
-    public static GridRow FromWidth(int absoluteWidth)
+    public static GridRow FromHeight(int absoluteHeight)
     {
-        if (absoluteWidth <= 0)
-            throw new ArgumentOutOfRangeException(nameof(absoluteWidth), absoluteWidth, null);
+        if (absoluteHeight <= 0)
+            throw new ArgumentOutOfRangeException(nameof(absoluteHeight), absoluteHeight, null);
         
-        return new GridRow(absoluteWidth, null, null);
+        return new GridRow(absoluteHeight, null, null);
     }
     
-    public static GridRow FromWidth(double relationalWidth)
+    public static GridRow FromHeight(double relationalHeight)
     {
-        if (relationalWidth <= 0 || relationalWidth > 1)
-            throw new ArgumentOutOfRangeException(nameof(relationalWidth), relationalWidth, null);
+        if (relationalHeight <= 0 || relationalHeight > 1)
+            throw new ArgumentOutOfRangeException(nameof(relationalHeight), relationalHeight, null);
         
-        return new GridRow(null, relationalWidth, null);
+        return new GridRow(null, relationalHeight, null);
     }
 
     public static GridRow FromRowRelation(double rowRelation)
@@ -42,13 +42,13 @@ public sealed class GridRow
         return new GridRow(null, null, rowRelation);
     }
     
-    private GridRow(int? absoluteWidth, double? relationalWidth, double? rowRelation)
+    private GridRow(int? absoluteHeight, double? relationalHeight, double? rowRelation)
     {
-        IsAbsoluteWidth = absoluteWidth is not null;
-        AbsoluteWidth = absoluteWidth;
+        IsAbsoluteHeight = absoluteHeight is not null;
+        AbsoluteHeight = absoluteHeight;
 
-        IsRelationalWidth = relationalWidth is not null;
-        RelationalWidth = relationalWidth;
+        IsRelationalHeight = relationalHeight is not null;
+        RelationalHeight = relationalHeight;
 
         IsRowRelation = rowRelation is not null;
         RowRelation = rowRelation;

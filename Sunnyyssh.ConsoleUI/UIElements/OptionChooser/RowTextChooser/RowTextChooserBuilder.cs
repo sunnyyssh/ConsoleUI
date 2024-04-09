@@ -90,7 +90,7 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         var rows = initOptions
             .Select(builder => builder.Size.IsHeightRelational
                 ? GridRow.FromRowRelation(builder.Size.HeightRelation.Value)
-                : GridRow.FromWidth(builder.Size.Height.Value));
+                : GridRow.FromHeight(builder.Size.Height.Value));
 
         var columns = Enumerable.Repeat(GridColumn.FromColumnRelation(1), 1);
 
@@ -107,7 +107,7 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         
         for (int row = 0; row < initOptions.Length; row++)
         {
-            gridBuilder.Add(initOptions[row].UnsafeWithSize(Size.FullSize), 0, row);
+            gridBuilder.Add(initOptions[row].UnsafeWithSize(Size.FullSize), row, 0);
         }
 
         return gridBuilder.Build(new UIElementBuildArgs(width, height));
@@ -135,7 +135,7 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
         
         for (int column = 0; column < initOptions.Length; column++)
         {
-            gridBuilder.Add(initOptions[column].UnsafeWithSize(Size.FullSize), column, 0);
+            gridBuilder.Add(initOptions[column].UnsafeWithSize(Size.FullSize), 0, column);
         }
 
         return gridBuilder.Build(new UIElementBuildArgs(width, height));

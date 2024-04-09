@@ -1,4 +1,6 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.Contracts;
+
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -49,7 +51,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
     
     public GridDefinition Definition { get; }
 
-    public GridBuilder Add(IUIElementBuilder builder, int column, int row)
+    public GridBuilder Add(IUIElementBuilder builder, int row, int column)
     {
         return Add(builder, row, column, Position.LeftTop);
     }
@@ -202,13 +204,14 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         
         for (int i = 0; i < definition.Rows.Count; i++)
         {
-            accumulatedTop += definition.Rows[i].Width;
+            accumulatedTop += definition.Rows[i].Height;
             linesBuilder.Add(width, Orientation.Horizontal, 0, accumulatedTop++);
         }
 
         return linesBuilder.Build(new UIElementBuildArgs(width, height));
     }
 
+    [Pure]
     public static AbsoluteGridDefinition ResolveGrid(int width, int height, bool hasBorders, GridDefinition definition)
     {
         int cleanWidth = hasBorders ? width - (1 + definition.ColumnCount) : width;
@@ -267,6 +270,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return absoluteDefinition;
     }
     
+    [Pure]
     private (GridCellsCollection, AbsoluteGridDefinition) ResolveGrid(int width, int height, bool hasBorders)
     {
         // Width and height without borders.
@@ -315,6 +319,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return (children, absoluteDefinition);
     }
 
+    [Pure]
     private GridCellsCollection GetChildren(GridCell[,] cells, bool hasBorders)
     {
         return ResolvedPositionNotEmpty().ToCollection();
@@ -350,21 +355,23 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         }
     }
 
+    [Pure]
     private static AbsoluteGridDefinition GetAbsoluteDefinition(GridCell[,] cells)
     {
         var columns = Enumerable.Range(0, cells.GetLength(1))
             .Select(column => cells[0, column].ChildInfo.Width)
             .Select(width => new AbsoluteGridColumn(width))
-            .ToArray();
+            .ToImmutableList();
         
         var rows = Enumerable.Range(0, cells.GetLength(0))
             .Select(row => cells[row, 0].ChildInfo.Height)
             .Select(height => new AbsoluteGridRow(height))
-            .ToArray();
+            .ToImmutableList();
 
         return new AbsoluteGridDefinition(columns, rows);
     }
 
+    [Pure]
     private CanvasBuilder[,] ResolveBoxes(int width, int height)
     {
         var resolvedColumns = ResolveColumns(width, Definition);
@@ -397,6 +404,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return result;
     }
 
+    [Pure]
     private static Size ResolveSize((int? abs, double? rel) width, (int? abs, double? rel) height)
     {
         if (width.abs.HasValue)
@@ -411,6 +419,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
             : new Size(width.rel!.Value, height.rel!.Value);
     }
 
+    [Pure]
     private static (int? abs, double? rel)[] ResolveColumns(int width, GridDefinition definition)
     {
         var columns = definition.ColumnDefinition;
@@ -461,6 +470,7 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         return result;
     }
 
+    [Pure]
     private static (int? abs, double? rel)[] ResolveRows(int height, GridDefinition definition)
     {
         var rows = definition.RowDefinition;
@@ -475,17 +485,17 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         {
             var currentRow = rows[i];
             
-            if (currentRow.IsAbsoluteWidth)
+            if (currentRow.IsAbsoluteHeight)
             {
-                result[i] = (currentRow.AbsoluteWidth, null);
-                absoluteSum += currentRow.AbsoluteWidth.Value;
+                result[i] = (currentRow.AbsoluteHeight, null);
+                absoluteSum += currentRow.AbsoluteHeight.Value;
                 continue;
             }
 
-            if (currentRow.IsRelationalWidth)
+            if (currentRow.IsRelationalHeight)
             {
-                result[i] = (null, currentRow.RelationalWidth);
-                relationalSum += currentRow.RelationalWidth.Value;
+                result[i] = (null, currentRow.RelationalHeight);
+                relationalSum += currentRow.RelationalHeight.Value;
                 continue;
             }
 

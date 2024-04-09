@@ -170,12 +170,12 @@ internal sealed class FocusFlowManager
     {
         next = null;
         
-        if (_focusableChain.Current is null)
+        if (_focusableChain.FocusedItem is null)
         {
             return false;
         }
         
-        if (!_options.Specification.Children.TryGetValue(_focusableChain.Current, out var spec))
+        if (!_options.Specification.Children.TryGetValue(_focusableChain.FocusedItem, out var spec))
         {
             return false;
         }

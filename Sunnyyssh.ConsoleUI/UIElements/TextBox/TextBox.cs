@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Sunnyyssh.ConsoleUI.Binding;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Sunnyyssh.ConsoleUI;
@@ -282,7 +284,7 @@ public sealed class TextBox : UIElement, IFocusable
 
         _text = newText;
             
-        if (IsDrawn)
+        if (IsStateInitialized)
         {
             Redraw(CreateDrawState());
         }
@@ -362,7 +364,7 @@ public sealed class TextBox : UIElement, IFocusable
         Foreground = FocusedForeground;
         BorderColor = FocusedBorderColor;
 
-        if (IsDrawn)
+        if (IsStateInitialized)
         {
             Redraw(CreateDrawState());
         }
@@ -376,7 +378,7 @@ public sealed class TextBox : UIElement, IFocusable
         Foreground = NotFocusedForeground;
         BorderColor = NotFocusedBorderColor;
 
-        if (IsDrawn)
+        if (IsStateInitialized)
         {
             Redraw(CreateDrawState());
         }

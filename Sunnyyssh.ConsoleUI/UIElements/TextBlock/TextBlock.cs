@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Sunnyyssh.ConsoleUI.Binding;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -28,10 +29,7 @@ public sealed class TextBlock : UIElement
         {
             _text = value;
             
-            if (IsDrawn)
-            {
-                Redraw(CreateDrawState());
-            }
+            Redraw(CreateDrawState());
         }
     }
 

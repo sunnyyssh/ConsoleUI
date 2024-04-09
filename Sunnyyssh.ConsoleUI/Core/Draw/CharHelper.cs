@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.Contracts;
+using System.Text;
 
 namespace Sunnyyssh.ConsoleUI;
 
@@ -15,6 +16,7 @@ internal static class CharHelper
     /// <param name="text"><see cref="string"/> instance to remove special characters from.</param>
     /// <param name="ignore">True if special characters should be simply removed. False if it's needed to attempt to replace them by their meaning.</param>
     /// <returns>Transfromed string.</returns>
+    [Pure]
     public static string? RemoveSpecialChars(string? text, bool ignore)
     {
         if (string.IsNullOrEmpty(text))

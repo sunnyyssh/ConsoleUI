@@ -224,7 +224,7 @@ public sealed class Button : UIElement, IFocusable
                 BorderColor = NotFocusedBorderColor;
             }
 
-            if (Interlocked.Decrement(ref _showingPressesCount) == 0 && IsDrawn)
+            if (Interlocked.Decrement(ref _showingPressesCount) == 0 && IsStateInitialized)
             {
                 Redraw(CreateDrawState());
             }
@@ -246,10 +246,7 @@ public sealed class Button : UIElement, IFocusable
         Foreground = FocusedForeground;
         BorderColor = FocusedBorderColor;
 
-        if (IsDrawn)
-        {
-            Redraw(CreateDrawState());
-        }
+        Redraw(CreateDrawState());
     }
 
     void IFocusable.LoseFocus()
@@ -266,10 +263,7 @@ public sealed class Button : UIElement, IFocusable
         Foreground = NotFocusedForeground;
         BorderColor = NotFocusedBorderColor;
 
-        if (IsDrawn)
-        {
-            Redraw(CreateDrawState());
-        }
+        Redraw(CreateDrawState());
     }
 
     private void OnPressed(ConsoleKeyInfo pressedKey)

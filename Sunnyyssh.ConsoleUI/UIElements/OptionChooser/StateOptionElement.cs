@@ -23,7 +23,7 @@ public abstract class StateOptionElement : OptionElement
         }
         
         _isChosen = true;
-        if (IsDrawn)
+        if (IsStateInitialized)
         {
             var state = RequestState(true, _isFocused);
             Redraw(state);
@@ -38,7 +38,7 @@ public abstract class StateOptionElement : OptionElement
         }
         
         _isChosen = false;
-        if (IsDrawn)
+        if (IsStateInitialized)
         {
             var state = RequestState(false, _isFocused);
             Redraw(state);
@@ -53,7 +53,7 @@ public abstract class StateOptionElement : OptionElement
         }
 
         _isFocused = true;
-        if (IsDrawn)
+        if (IsStateInitialized)
         {
             var state = RequestState(_isChosen, true);
             Redraw(state);
@@ -68,7 +68,7 @@ public abstract class StateOptionElement : OptionElement
         }
 
         _isFocused = false;
-        if (IsDrawn)
+        if (IsStateInitialized)
         {
             var state = RequestState(_isChosen, false);
             Redraw(state);

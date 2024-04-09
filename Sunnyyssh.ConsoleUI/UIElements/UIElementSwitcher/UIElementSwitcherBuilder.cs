@@ -78,6 +78,22 @@ public sealed class UIElementSwitcherBuilder : IUIElementBuilder<UIElementSwitch
             .Build(buildArgs);
     }
 
+    public UIElementSwitcherBuilder(int width, int height)
+        : this(new Size(width, height))
+    { }
+
+    public UIElementSwitcherBuilder(int width, double heightRelational)
+        : this(new Size(width, heightRelational))
+    { }
+
+    public UIElementSwitcherBuilder(double widthRelational, int height)
+        : this(new Size(widthRelational, height))
+    { }
+
+    public UIElementSwitcherBuilder(double widthRelational, double heightRelational)
+        : this(new Size(widthRelational, heightRelational))
+    { }
+    
     public UIElementSwitcherBuilder(Size size)
     {
         Size = size;

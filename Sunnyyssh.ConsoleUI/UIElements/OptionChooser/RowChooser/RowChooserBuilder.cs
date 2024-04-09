@@ -75,7 +75,7 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
         var rows = _queuedChildren
             .Select(builder => builder.Builder.Size.IsHeightRelational
                 ? GridRow.FromRowRelation(builder.Builder.Size.HeightRelation.Value)
-                : GridRow.FromWidth(builder.Builder.Size.Height.Value));
+                : GridRow.FromHeight(builder.Builder.Size.Height.Value));
 
         var columns = Enumerable.Repeat(GridColumn.FromColumnRelation(1), 1);
 
@@ -92,7 +92,7 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
         
         for (int row = 0; row < _queuedChildren.Count; row++)
         {
-            gridBuilder.Add(_queuedChildren[row].Builder.UnsafeWithSize(Size.FullSize), 0, row);
+            gridBuilder.Add(_queuedChildren[row].Builder.UnsafeWithSize(Size.FullSize), row, 0);
         }
 
         return gridBuilder.Build(new UIElementBuildArgs(width, height));
@@ -120,7 +120,7 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
         
         for (int column = 0; column < _queuedChildren.Count; column++)
         {
-            gridBuilder.Add(_queuedChildren[column].Builder.UnsafeWithSize(Size.FullSize), column, 0);
+            gridBuilder.Add(_queuedChildren[column].Builder.UnsafeWithSize(Size.FullSize), 0, column);
         }
 
         return gridBuilder.Build(new UIElementBuildArgs(width, height));

@@ -1,4 +1,6 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Sunnyyssh.ConsoleUI;
 
 /// <summary>
 /// Handles redrawing <see cref="UIElement"/>.
@@ -18,7 +20,10 @@ public abstract class UIElement
     /// <summary>
     /// Indicates if it is drawn.
     /// </summary>
+    [MemberNotNullWhen(true, nameof(CurrentState))]
     public bool IsDrawn { get; private set; }
+    
+    public bool IsStateInitialized { get; private set; }
     
     /// <summary>
     /// The absolute width. (Counted in characters).
@@ -49,12 +54,20 @@ public abstract class UIElement
     /// Redraws it.
     /// </summary>
     /// <param name="state">The state to redraw with. (This state hides previous one. <see cref="DrawState.HideOverlap"/> is used.)</param>
-    protected void Redraw(DrawState state)
+    /// <param name="hideOverlap">If true then pixels just hide previous. If false it's overlapped smartly.</param>
+    protected void Redraw(DrawState state, bool hideOverlap = true)
     {
         ArgumentNullException.ThrowIfNull(state, nameof(state));
+
+        IsStateInitialized = true;
         
-        CurrentState = CurrentState?.HideOverlapWith(state) ?? state;
-        RedrawElement?.Invoke(this, new RedrawElementEventArgs());
+        CurrentState = hideOverlap 
+            ? CurrentState?.HideOverlapWith(state) ?? state
+            : CurrentState?.OverlapWith(state) ?? state;
+        if (IsDrawn)
+        {
+            RedrawElement?.Invoke(this, new RedrawElementEventArgs());
+        }
     }
 
     /// <summary>
@@ -65,6 +78,8 @@ public abstract class UIElement
     protected internal DrawState RequestDrawState(DrawOptions options)
     {
         ArgumentNullException.ThrowIfNull(options, nameof(options));
+
+        IsStateInitialized = true;
         
         return CurrentState ??= CreateDrawState();
     }
