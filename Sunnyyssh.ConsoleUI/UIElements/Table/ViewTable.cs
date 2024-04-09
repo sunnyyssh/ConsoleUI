@@ -10,14 +10,15 @@ namespace Sunnyyssh.ConsoleUI;
 
 public class ViewTable : UIElement, IFocusable
 {
-     private readonly ImmutableList<ImmutableList<string?>> _initData;
      private static readonly VerticalAligning CellTextVerticalAligning = VerticalAligning.Top;
 
      private static readonly HorizontalAligning CellTextHorizontalAligning = HorizontalAligning.Left;
-     
+
      private static readonly VerticalAligning HeaderTextVerticalAligning = VerticalAligning.Top;
 
      private static readonly HorizontalAligning HeaderTextHorizontalAligning = HorizontalAligning.Left;
+     
+     private readonly ImmutableList<ImmutableList<string?>> _initData;
 
      private readonly string?[][] _dataRows;
 
@@ -52,6 +53,8 @@ public class ViewTable : UIElement, IFocusable
      public int DataRowsCount => _dataRows.Length;
 
      #region init properties.
+     
+     public bool EnterOnCellChange { get; init; }
      
      public Color CellNotFocusedBackground { get; init; } = Color.Default;
 
@@ -218,6 +221,9 @@ public class ViewTable : UIElement, IFocusable
           if (_bound is null)
                return;
 
+          if (_bound.Value[row, column] == text)
+               return;
+          
           var args = new DataTableUpdateArgs<string?>(row, column, text);
           _bound.HandleUpdate(args);
      }
@@ -441,7 +447,10 @@ public class ViewTable : UIElement, IFocusable
                if (CurrentTopAreaRow == 0)
                     return;
 
-               CurrentTopAreaRow--;
+               int prevViewRow = CurrentTopAreaRow--;
+               string? enteredText = this[prevViewRow + CurrentViewRow, CurrentColumn];
+               OnTextEntered(prevViewRow + CurrentViewRow, CurrentColumn, enteredText);
+               
                if (IsStateInitialized)
                {
                     Redraw(CreateDrawState());
@@ -455,6 +464,9 @@ public class ViewTable : UIElement, IFocusable
           RedrawCell(prevRow, CurrentColumn);
           
           RedrawCell(CurrentViewRow, CurrentColumn);
+
+          string? text = this[prevRow + CurrentTopAreaRow, CurrentColumn];
+          OnTextEntered(prevRow + CurrentTopAreaRow, CurrentColumn, text);
      }
 
      private void MoveDown()
@@ -464,7 +476,10 @@ public class ViewTable : UIElement, IFocusable
                if (CurrentTopAreaRow == _dataRows.Length - ViewRowsCount)
                     return;
 
-               CurrentTopAreaRow++;
+               int prevViewRow = CurrentTopAreaRow++;
+               string? enteredText = this[prevViewRow + CurrentViewRow, CurrentColumn];
+               OnTextEntered(prevViewRow + CurrentViewRow, CurrentColumn, enteredText);
+               
                if (IsStateInitialized)
                {
                     Redraw(CreateDrawState());
@@ -478,6 +493,9 @@ public class ViewTable : UIElement, IFocusable
           RedrawCell(prevRow, CurrentColumn);
           
           RedrawCell(CurrentViewRow, CurrentColumn);
+
+          string? text = this[prevRow + CurrentTopAreaRow, CurrentColumn];
+          OnTextEntered(prevRow + CurrentTopAreaRow, CurrentColumn, text);
      }
 
      private void MoveRight()
@@ -491,6 +509,9 @@ public class ViewTable : UIElement, IFocusable
           RedrawCell(CurrentViewRow, prevColumn);
           
           RedrawCell(CurrentViewRow, CurrentColumn);
+
+          string? text = this[CurrentTopAreaRow + CurrentViewRow, prevColumn];
+          OnTextEntered(CurrentTopAreaRow + CurrentViewRow, prevColumn, text);
      }
 
      private void MoveLeft()
@@ -504,6 +525,9 @@ public class ViewTable : UIElement, IFocusable
           RedrawCell(CurrentViewRow, prevColumn);
           
           RedrawCell(CurrentViewRow, CurrentColumn);
+
+          string? text = this[CurrentTopAreaRow + CurrentViewRow, prevColumn];
+          OnTextEntered(CurrentTopAreaRow + CurrentViewRow, prevColumn, text);
      }
      
      #endregion

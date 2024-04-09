@@ -31,6 +31,8 @@ public class ViewTableBuilder : IUIElementBuilder<ViewTable>
     public Size Size { get; }
     
     #region init properties.
+     
+    public bool EnterOnCellChange { get; init; }
 
     public bool LoseFocusOnEnter { get; init; } = false;
     
@@ -111,6 +113,7 @@ public class ViewTableBuilder : IUIElementBuilder<ViewTable>
             CellsWordWrap = CellsWordWrap,
             UserEditable = UserEditable,
             LoseFocusOnEnter = LoseFocusOnEnter,
+            EnterOnCellChange = EnterOnCellChange,
         };
 
         return resultViewTable;
