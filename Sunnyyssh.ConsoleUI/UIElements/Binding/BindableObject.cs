@@ -1,4 +1,4 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI.Binding;
 
 public class BindableObject<TValue> : IBindable<TValue, ValueChangedEventArgs<TValue>>
 {
@@ -19,10 +19,10 @@ public class BindableObject<TValue> : IBindable<TValue, ValueChangedEventArgs<TV
     public void HandleUpdate(ValueChangedEventArgs<TValue> args)
     {
         _value = args.NewValue;
-        BoundUpdate?.Invoke(this, new ValueChangedEventArgs<TValue>(_value));
+        BoundUpdated?.Invoke(this, new ValueChangedEventArgs<TValue>(_value));
     }
 
-    public event UpdatedEventHandler<TValue, ValueChangedEventArgs<TValue>>? BoundUpdate;
+    public event UpdatedEventHandler<TValue, ValueChangedEventArgs<TValue>>? BoundUpdated;
 
     public BindableObject(TValue initValue)
     {

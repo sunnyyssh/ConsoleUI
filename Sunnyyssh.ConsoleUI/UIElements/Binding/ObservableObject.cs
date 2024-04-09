@@ -1,4 +1,4 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI.Binding;
 
 public sealed class ObservableObject<TValue> : IObservable<TValue, ValueChangedEventArgs<TValue>>
 {

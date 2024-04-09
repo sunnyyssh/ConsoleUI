@@ -1,4 +1,4 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI.Binding;
 
 public class ValueChangedEventArgs<TValue> : UpdatedEventArgs
 {

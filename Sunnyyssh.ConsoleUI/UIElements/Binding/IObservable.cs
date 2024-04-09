@@ -1,4 +1,4 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿namespace Sunnyyssh.ConsoleUI.Binding;
 
 public class UpdatedEventArgs : EventArgs
 {
@@ -11,7 +11,7 @@ public delegate void UpdatedEventHandler<in TValue, in TArgs>(IObservable<TValue
 public interface IObservable<out TValue, out TArgs>
     where TArgs : UpdatedEventArgs
 {
-    TValue? Value { get; }
+    TValue Value { get; }
 
     event UpdatedEventHandler<TValue, TArgs> Updated;
 }
