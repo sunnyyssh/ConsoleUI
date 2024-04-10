@@ -27,7 +27,7 @@ internal class KeyListener
 
     private readonly CancellationTokenSource _cancellation = new();
     
-    private readonly AutoResetEvent _waitEvent = new(false);
+    private readonly ManualResetEvent _waitEvent = new(true);
 
     // It may be used in the future, so it's important to get such parameter in constructor
     // ReSharper disable once NotAccessedField.Local
@@ -54,14 +54,14 @@ internal class KeyListener
             throw new KeyListeningException("It's already running.");
         }
 
+        _waitEvent.Reset();
+        IsRunning = IsListening = true;
         // Thread listening keys.
         // It's not background to hold application running while it's running.
         Thread runningThread = new(
                 () => StartWithCancellation(_cancellation.Token))
             { IsBackground = false };
         runningThread.Start();
-        
-        IsRunning = IsListening = true;
     }
 
     private void StartWithCancellation(CancellationToken cancellationToken)

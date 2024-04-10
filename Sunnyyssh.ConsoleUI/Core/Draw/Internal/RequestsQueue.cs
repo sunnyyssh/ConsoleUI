@@ -10,7 +10,7 @@ namespace Sunnyyssh.ConsoleUI;
 /// <typeparam name="T">The type of request.</typeparam>
 internal class RequestsQueue<T> : IEnumerable<T>
 {
-    private readonly AutoResetEvent _requestWaitEvent = new(false);
+    private readonly ManualResetEvent _requestWaitEvent = new(false);
 
     private readonly ConcurrentQueue<T> _requestsQueue = new();
 

@@ -36,7 +36,7 @@ public abstract class Application
     private bool _hasStartedOnce = false;
 
     // Helps wait for running application.
-    private readonly AutoResetEvent _waitForStopEvent = new (true);
+    private readonly ManualResetEvent _waitForStopEvent = new (true);
     
     private protected readonly Drawer Drawer;
 
