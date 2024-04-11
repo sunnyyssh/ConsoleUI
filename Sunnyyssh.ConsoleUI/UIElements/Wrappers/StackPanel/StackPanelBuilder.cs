@@ -41,7 +41,40 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         if (offset < 0)
             throw new ArgumentOutOfRangeException(nameof(offset));
         
-        _orderedQueuedChildren.Add(new QueuedChildWithOffset(builder, offset));
+        _orderedQueuedChildren.Add(new QueuedChildWithOffset(builder, null, offset));
+
+        return this;
+    }
+    
+    public StackPanelBuilder Add(IUIElementBuilder builder, 
+        out BuiltUIElement builtUIElement, int offset = 0)
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        
+        if (offset < 0)
+            throw new ArgumentOutOfRangeException(nameof(offset));
+        
+        var initializer = new UIElementInitializer<UIElement>();
+        builtUIElement = new BuiltUIElement(initializer);
+
+        _orderedQueuedChildren.Add(new QueuedChildWithOffset(builder, initializer, offset));
+
+        return this;
+    }
+    
+    public StackPanelBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> builder, 
+        out BuiltUIElement<TUIElement> builtUIElement, int offset = 0)
+        where TUIElement : UIElement
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        
+        if (offset < 0)
+            throw new ArgumentOutOfRangeException(nameof(offset));
+        
+        var initializer = new UIElementInitializer<TUIElement>();
+        builtUIElement = new BuiltUIElement<TUIElement>(initializer);
+
+        _orderedQueuedChildren.Add(new QueuedChildWithOffset(builder, initializer, offset));
 
         return this;
     }
@@ -148,10 +181,13 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         {
             accumulatedLeft += queuedChild.Offset;
             var position = new Position(accumulatedLeft, absoluteTop);
-            
-            ChildInfo childInfo;
-            
-            placer.Place(queuedChild.Builder, position, out childInfo);
+
+            placer.Place(queuedChild.Builder, position, out var childInfo);
+
+            if (queuedChild.Initializer is not null)
+            {
+                queuedChild.Initializer.Initialize(childInfo.Child);
+            }
 
             accumulatedLeft += childInfo.Width;
         }
@@ -172,10 +208,13 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
         {
             accumulatedTop += queuedChild.Offset;
             var position = new Position(absoluteLeft, accumulatedTop);
+
+            placer.Place(queuedChild.Builder, position, out var childInfo);
             
-            ChildInfo childInfo;
-            
-            placer.Place(queuedChild.Builder, position, out childInfo);
+            if (queuedChild.Initializer is not null)
+            {
+                queuedChild.Initializer.Initialize(childInfo.Child);
+            }
             
             accumulatedTop += childInfo.Height;
         }
@@ -211,7 +250,8 @@ public sealed class StackPanelBuilder : IUIElementBuilder<StackPanel>
     {
         public int Offset { get; }
 
-        public QueuedChildWithOffset(IUIElementBuilder builder, int offset) : base(builder)
+        public QueuedChildWithOffset(IUIElementBuilder builder, IUIElementInitializer? initializer, int offset) 
+            : base(builder, initializer)
         {
             Offset = offset;
         }

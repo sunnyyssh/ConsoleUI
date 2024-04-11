@@ -33,7 +33,68 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
         ArgumentNullException.ThrowIfNull(elementBuilder, nameof(elementBuilder));
         ArgumentNullException.ThrowIfNull(position, nameof(position));
         
-        _orderedQueuedChildren.Add(new QueuedPositionChild(elementBuilder, position));
+        _orderedQueuedChildren.Add(new QueuedPositionChild(elementBuilder, null, position));
+        
+        return this;
+    }
+
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, int left, int top, out BuiltUIElement builtUIElement)
+        => Add(elementBuilder, new Position(left, top), out builtUIElement);
+    
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, int left, double topRelation, out BuiltUIElement builtUIElement)
+        => Add(elementBuilder, new Position(left, topRelation), out builtUIElement);
+    
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, int top, out BuiltUIElement builtUIElement)
+        => Add(elementBuilder, new Position(leftRelation, top), out builtUIElement);
+    
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, double topRelation, out BuiltUIElement builtUIElement)
+        => Add(elementBuilder, new Position(leftRelation, topRelation), out builtUIElement);
+    
+    public CanvasBuilder Add(IUIElementBuilder elementBuilder, Position position, out BuiltUIElement builtUIElement)
+    {
+        ArgumentNullException.ThrowIfNull(elementBuilder, nameof(elementBuilder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+
+        var initializer = new UIElementInitializer<UIElement>();
+        builtUIElement = new BuiltUIElement(initializer);
+        
+        _orderedQueuedChildren.Add(new QueuedPositionChild(elementBuilder, initializer, position));
+        
+        return this;
+    }
+
+    public CanvasBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> elementBuilder, int left, int top, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+        => Add(elementBuilder, new Position(left, top), out builtUIElement);
+    
+    public CanvasBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> elementBuilder, int left, double topRelation, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+        => Add(elementBuilder, new Position(left, topRelation), out builtUIElement);
+    
+    public CanvasBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> elementBuilder, double leftRelation, int top, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+        => Add(elementBuilder, new Position(leftRelation, top), out builtUIElement);
+    
+    public CanvasBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> elementBuilder, 
+        double leftRelation, double topRelation, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+        => Add(elementBuilder, new Position(leftRelation, topRelation), out builtUIElement);
+    
+    public CanvasBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> elementBuilder, Position position, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+    {
+        ArgumentNullException.ThrowIfNull(elementBuilder, nameof(elementBuilder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+        
+        var initializer = new UIElementInitializer<TUIElement>();
+        builtUIElement = new BuiltUIElement<TUIElement>(initializer);
+
+        _orderedQueuedChildren.Add(new QueuedPositionChild(elementBuilder, initializer, position));
         
         return this;
     }
@@ -46,7 +107,12 @@ public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
         
         foreach (var queuedChild in _orderedQueuedChildren)
         {
-            placementBuilder.Place(queuedChild.Builder, queuedChild.Position);
+            placementBuilder.Place(queuedChild.Builder, queuedChild.Position, out var childInfo);
+
+            if (queuedChild.Initializer is not null)
+            {
+                queuedChild.Initializer.Initialize(childInfo.Child);
+            }
         }
 
         var orderedChildren = placementBuilder.Build();

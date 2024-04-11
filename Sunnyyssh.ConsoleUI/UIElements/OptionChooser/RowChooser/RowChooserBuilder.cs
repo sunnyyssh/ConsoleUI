@@ -40,7 +40,21 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
     {
         ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
-        _queuedChildren.Add(new QueuedChild(builder));
+        _queuedChildren.Add(new QueuedChild(builder, null));
+
+        return this;
+    }
+
+    public RowChooserBuilder Add<TOptionElement>(IUIElementBuilder<TOptionElement> builder, 
+        out BuiltUIElement<TOptionElement> builtUIElement)
+        where TOptionElement : OptionElement
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
+        var initializer = new UIElementInitializer<TOptionElement>();
+        builtUIElement = new BuiltUIElement<TOptionElement>(initializer);
+        
+        _queuedChildren.Add(new QueuedChild(builder, initializer));
 
         return this;
     }
@@ -89,13 +103,35 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
             BorderKind = BorderKind,
             BorderColor = BorderColor,
         };
+
+        Dictionary<IUIElementInitializer, BuiltUIElement> builtInitializers = new();
         
         for (int row = 0; row < _queuedChildren.Count; row++)
         {
-            gridBuilder.Add(_queuedChildren[row].Builder.UnsafeWithSize(Size.FullSize), row, 0);
+            var currentQueued = _queuedChildren[row];
+            var fullSizeBuilder = currentQueued.Builder.UnsafeWithSize(Size.FullSize);
+            
+            if (currentQueued.Initializer is null)
+            {
+                gridBuilder.Add(fullSizeBuilder, row, 0);
+                continue;
+            }
+
+            gridBuilder.Add(fullSizeBuilder, row, 0, out var builtUIElement);
+            builtInitializers.Add(currentQueued.Initializer, builtUIElement);
         }
 
-        return gridBuilder.Build(new UIElementBuildArgs(width, height));
+        var result = gridBuilder.Build(new UIElementBuildArgs(width, height));
+
+        foreach (var (initializer, builtUIElement) in builtInitializers)
+        {
+            if (!builtUIElement.IsInitialized)
+                throw new InvalidOperationException();
+            
+            initializer.Initialize(builtUIElement.Element);
+        }
+
+        return result;
     }
 
     private Grid InitializeHorizontalGrid(int width, int height)
@@ -118,12 +154,35 @@ public sealed class RowChooserBuilder : IUIElementBuilder<RowChooser>
             BorderColor = BorderColor,
         };
         
+        
+        Dictionary<IUIElementInitializer, BuiltUIElement> builtInitializers = new();
+        
         for (int column = 0; column < _queuedChildren.Count; column++)
         {
-            gridBuilder.Add(_queuedChildren[column].Builder.UnsafeWithSize(Size.FullSize), 0, column);
+            var currentQueued = _queuedChildren[column];
+            var fullSizeBuilder = currentQueued.Builder.UnsafeWithSize(Size.FullSize);
+            
+            if (currentQueued.Initializer is null)
+            {
+                gridBuilder.Add(fullSizeBuilder, 0, column);
+                continue;
+            }
+
+            gridBuilder.Add(fullSizeBuilder, 0, column, out var builtUIElement);
+            builtInitializers.Add(currentQueued.Initializer, builtUIElement);
         }
 
-        return gridBuilder.Build(new UIElementBuildArgs(width, height));
+        var result = gridBuilder.Build(new UIElementBuildArgs(width, height));
+
+        foreach (var (initializer, builtUIElement) in builtInitializers)
+        {
+            if (!builtUIElement.IsInitialized)
+                throw new InvalidOperationException();
+            
+            initializer.Initialize(builtUIElement.Element);
+        }
+
+        return result;
     }
 
     UIElement IUIElementBuilder.Build(UIElementBuildArgs args) => Build(args);

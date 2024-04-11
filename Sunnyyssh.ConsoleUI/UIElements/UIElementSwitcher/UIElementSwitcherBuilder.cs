@@ -19,7 +19,34 @@ public sealed class UIElementSwitcherBuilder : IUIElementBuilder<UIElementSwitch
     {
         ArgumentNullException.ThrowIfNull(builder, nameof(builder));
         
-        _queuedChildren.Add(new QueuedChild(builder));
+        _queuedChildren.Add(new QueuedChild(builder, null));
+
+        return this;
+    }
+    
+    public UIElementSwitcherBuilder Add(IUIElementBuilder builder, 
+        out BuiltUIElement builtUIElement)
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        
+        var initializer = new UIElementInitializer<UIElement>();
+        builtUIElement = new BuiltUIElement(initializer);
+
+        _queuedChildren.Add(new QueuedChild(builder, initializer));
+
+        return this;
+    }
+    
+    public UIElementSwitcherBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> builder, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+    {
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        
+        var initializer = new UIElementInitializer<TUIElement>();
+        builtUIElement = new BuiltUIElement<TUIElement>(initializer);
+
+        _queuedChildren.Add(new QueuedChild(builder, initializer));
 
         return this;
     }
@@ -55,11 +82,11 @@ public sealed class UIElementSwitcherBuilder : IUIElementBuilder<UIElementSwitch
     private ImmutableList<Canvas> InitializeCanvasStates(int width, int height)
     {
         return _queuedChildren
-            .Select(ch => InitializeCanvas(width, height, ch.Builder))
+            .Select(child => BuildChildToCanvas(width, height, child))
             .ToImmutableList();
     }
 
-    private Canvas InitializeCanvas(int width, int height, IUIElementBuilder builder)
+    private Canvas BuildChildToCanvas(int width, int height, QueuedChild child)
     {
         var canvasBuilder = new CanvasBuilder(width, height)
         {
@@ -69,13 +96,27 @@ public sealed class UIElementSwitcherBuilder : IUIElementBuilder<UIElementSwitch
             FocusFlowLoop = false
         };
 
-        var fullSizeBuilder = builder.UnsafeWithSize(Size.FullSize);
+        var fullSizeBuilder = child.Builder.UnsafeWithSize(Size.FullSize);
 
         var buildArgs = new UIElementBuildArgs(width, height);
 
-        return canvasBuilder
-            .Add(fullSizeBuilder, Position.LeftTop)
+        if (child.Initializer is null)
+        {
+            return canvasBuilder
+                .Add(fullSizeBuilder, Position.LeftTop)
+                .Build(buildArgs);
+        }
+
+        var result = canvasBuilder
+            .Add(fullSizeBuilder, Position.LeftTop, out var builtUIElement)
             .Build(buildArgs);
+
+        if (!builtUIElement.IsInitialized)
+            throw new InvalidOperationException();
+        
+        child.Initializer.Initialize(builtUIElement.Element);
+
+        return result;
     }
 
     public UIElementSwitcherBuilder(int width, int height)

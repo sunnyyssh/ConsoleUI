@@ -70,7 +70,61 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
         if (_queuedCellChildren[row, column] is not null)
             throw new ArgumentException("Grid cell already has child.");
 
-        _queuedCellChildren[row, column] = new QueuedPositionChild(builder, position);
+        _queuedCellChildren[row, column] = new QueuedPositionChild(builder, null, position);
+
+        return this;
+    }
+
+    public GridBuilder Add(IUIElementBuilder builder, int row, int column, out BuiltUIElement builtUIElement)
+        => Add(builder, row, column, Position.LeftTop, out builtUIElement);
+
+    public GridBuilder Add(IUIElementBuilder builder, int row, int column, Position position, out BuiltUIElement builtUIElement)
+    {
+        if (column < 0 || column >= Definition.ColumnCount)
+            throw new ArgumentOutOfRangeException(nameof(column), column, null);
+        
+        if (row < 0 || row >= Definition.RowCount)
+            throw new ArgumentOutOfRangeException(nameof(row), row, null);
+
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+
+        if (_queuedCellChildren[row, column] is not null)
+            throw new ArgumentException("Grid cell already has child.");
+
+        var initializer = new UIElementInitializer<UIElement>();
+        builtUIElement = new BuiltUIElement(initializer);
+        
+        _queuedCellChildren[row, column] = new QueuedPositionChild(builder, initializer, position);
+
+        return this;
+    }
+
+    public GridBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> builder, int row, int column, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+        => Add(builder, row, column, Position.LeftTop, out builtUIElement);
+
+    public GridBuilder Add<TUIElement>(IUIElementBuilder<TUIElement> builder, int row, int column, Position position, 
+        out BuiltUIElement<TUIElement> builtUIElement)
+        where TUIElement : UIElement
+    {
+        if (column < 0 || column >= Definition.ColumnCount)
+            throw new ArgumentOutOfRangeException(nameof(column), column, null);
+        
+        if (row < 0 || row >= Definition.RowCount)
+            throw new ArgumentOutOfRangeException(nameof(row), row, null);
+
+        ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+        ArgumentNullException.ThrowIfNull(position, nameof(position));
+
+        if (_queuedCellChildren[row, column] is not null)
+            throw new ArgumentException("Grid cell already has child.");
+
+        var initializer = new UIElementInitializer<TUIElement>();
+        builtUIElement = new BuiltUIElement<TUIElement>(initializer);
+
+        _queuedCellChildren[row, column] = new QueuedPositionChild(builder, initializer, position);
 
         return this;
     }
@@ -292,11 +346,20 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
             
             for (int row = 0; row < Definition.RowCount; row++)
             {
-                var canvasBuilder = boxes[row, column];
+                var (canvasBuilder, built, initializer) = boxes[row, column];
 
                 var position = new Position(accumulatedRelationalLeft, accumulatedRelationalTop);
 
                 cleanPlacer.Place(canvasBuilder, position, out var cellChild);
+                
+                // Here it's already built.
+                if (built is not null && initializer is not null)
+                {
+                    if (!built.IsInitialized)
+                        throw new InvalidOperationException();
+                    
+                    initializer.Initialize(built.Element);
+                }
 
                 accumulatedRelationalTop += canvasBuilder.Size.IsHeightRelational
                     ? canvasBuilder.Size.HeightRelation.Value
@@ -372,12 +435,14 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
     }
 
     [Pure]
-    private CanvasBuilder[,] ResolveBoxes(int width, int height)
+    private (CanvasBuilder canvasBuilder, BuiltUIElement? built, IUIElementInitializer? initializer)[,] 
+        ResolveBoxes(int width, int height)
     {
         var resolvedColumns = ResolveColumns(width, Definition);
         var resolvedRows = ResolveRows(height, Definition);
 
-        var result = new CanvasBuilder[resolvedRows.Length, resolvedColumns.Length];
+        var result = new (CanvasBuilder, BuiltUIElement?, IUIElementInitializer?)
+            [resolvedRows.Length, resolvedColumns.Length];
 
         for (int column = 0; column < resolvedColumns.Length; column++)
         {
@@ -392,12 +457,22 @@ public sealed class GridBuilder : IUIElementBuilder<Grid>
                     EnableOverlapping = false,
                 };
 
+                (CanvasBuilder, BuiltUIElement?, IUIElementInitializer?) toAdd = (canvasBuilder, null, null);
+
                 if (_queuedCellChildren[row, column] is {} queued)
                 {
-                    canvasBuilder.Add(queued.Builder, queued.Position);
+                    if (queued.Initializer is null)
+                    {
+                        canvasBuilder.Add(queued.Builder, queued.Position);
+                    }
+                    else
+                    {
+                        canvasBuilder.Add(queued.Builder, queued.Position, out var builtUIElement);
+                        toAdd = (canvasBuilder, builtUIElement, queued.Initializer);
+                    }
                 }
 
-                result[row, column] = canvasBuilder;
+                result[row, column] = toAdd;
             }
         }
 

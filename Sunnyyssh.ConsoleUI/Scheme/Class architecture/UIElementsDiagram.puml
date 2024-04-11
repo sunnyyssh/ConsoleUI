@@ -14,9 +14,6 @@ class TextBox
 class Table
 abstract OptionChooser
 abstract Border
-class SingleLineBorder
-class DoubleLineBorder
-class DenseLineBorder
 abstract WrapperBasedChooser
 class RowChooser
 abstract OptionElement
@@ -46,9 +43,6 @@ UIElement <|... OptionChooser
 IFocusable <|... OptionChooser
 
 UIElement <|... Border
-Border <|.. SingleLineBorder
-Border <|.. DoubleLineBorder
-Border <|.. DenseLineBorder
 
 UIElement <|.... OptionChooser
 OptionChooser <|. WrapperBasedChooser
