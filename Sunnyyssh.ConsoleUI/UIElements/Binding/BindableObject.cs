@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI.Binding;
 
-public class BindableObject<TValue> : IBindable<TValue, ValueChangedEventArgs<TValue>>
+public sealed class BindableObject<TValue> : IBindable<TValue, ValueChangedEventArgs<TValue>>
 {
     private TValue _value;
 

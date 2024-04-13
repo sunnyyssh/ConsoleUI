@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public sealed class Handler<TArg>
+internal sealed class Handler<TArg>
 {
     private readonly int? _maxCostMilliseconds;
     
@@ -99,7 +99,7 @@ public sealed class Handler<TArg>
 }
 
 
-public sealed class Handler<TArg1, TArg2>
+internal sealed class Handler<TArg1, TArg2>
 {
     private readonly int? _maxCostMilliseconds;
     

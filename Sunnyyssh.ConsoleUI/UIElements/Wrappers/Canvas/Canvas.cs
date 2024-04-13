@@ -2,6 +2,9 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// <see cref="Wrapper"/> that can place <see cref="UIElement"/>'s at the specific position.
+/// </summary>
 public sealed class Canvas : CompositionWrapper
 {
 

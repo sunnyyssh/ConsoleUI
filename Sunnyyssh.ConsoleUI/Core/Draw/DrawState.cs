@@ -20,15 +20,6 @@ public sealed class DrawState
     public ImmutableList<PixelLine> Lines { get; }
 
     /// <summary>
-    /// Creates the instance of <see cref="DrawState"/> with given lines.
-    /// </summary>
-    /// <param name="lines">Lines that draw state'll consist of.</param>
-    public DrawState(ImmutableList<PixelLine> lines)
-    {
-        Lines = lines ?? throw new ArgumentNullException(nameof(lines));
-    }
-
-    /// <summary>
     /// Tries to get pixel
     /// </summary>
     /// <param name="left">Left coordinate.</param>
@@ -196,6 +187,15 @@ public sealed class DrawState
 
         DrawState result = new(lines);
         return result;
+    }
+
+    /// <summary>
+    /// Creates the instance of <see cref="DrawState"/> with given lines.
+    /// </summary>
+    /// <param name="lines">Lines that draw state'll consist of.</param>
+    public DrawState(ImmutableList<PixelLine> lines)
+    {
+        Lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }
 }
 

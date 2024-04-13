@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public class OptionChosenOnEventArgs
+public sealed class OptionChosenOnEventArgs
 {
     public int OptionIndex { get; }
 
@@ -15,7 +15,7 @@ public class OptionChosenOnEventArgs
 
 public delegate void OptionChosenOnEventHandler(OptionChooser sender, OptionChosenOnEventArgs args);
 
-public class OptionChosenOffEventArgs
+public sealed class OptionChosenOffEventArgs
 {
     public int OptionIndex { get; }
 
@@ -30,7 +30,7 @@ public class OptionChosenOffEventArgs
 
 public delegate void OptionChosenOffEventHandler(OptionChooser sender, OptionChosenOffEventArgs args);
 
-public record OptionChooserKeySet(ConsoleKey[] MoveNextKeys, ConsoleKey[] MovePreviousKeys, ConsoleKey[] ChosenOnKeys, ConsoleKey[] ChosenOffKeys)
+public sealed record OptionChooserKeySet(ConsoleKey[] MoveNextKeys, ConsoleKey[] MovePreviousKeys, ConsoleKey[] ChosenOnKeys, ConsoleKey[] ChosenOffKeys)
 {
     public bool IsMoveNext(ConsoleKey key) => MoveNextKeys.Contains(key);
     
@@ -70,7 +70,7 @@ public abstract class OptionChooser : UIElement, IFocusable
 
     protected int CurrentIndex => _currentIndex;
 
-    public bool HandlePressedKey(ConsoleKeyInfo keyInfo)
+    bool IFocusable.HandlePressedKey(ConsoleKeyInfo keyInfo)
     {
         var key = keyInfo.Key;
 
@@ -219,7 +219,7 @@ public abstract class OptionChooser : UIElement, IFocusable
         remove => _forceTakeFocusHandler -= value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public event ForceLoseFocusHandler? ForceLoseFocus
+    event ForceLoseFocusHandler? IFocusable.ForceLoseFocus
     {
         add => _forceLoseFocusHandler += value ?? throw new ArgumentNullException(nameof(value));
         remove => _forceLoseFocusHandler -= value ?? throw new ArgumentNullException(nameof(value));

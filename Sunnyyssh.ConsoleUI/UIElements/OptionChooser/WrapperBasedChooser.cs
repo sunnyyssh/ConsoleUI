@@ -7,6 +7,7 @@ public abstract class WrapperBasedChooser<TWrapper> : OptionChooser
     
     protected override DrawState CreateDrawState()
     {
+        OptionsWrapper.OnDraw();
         return OptionsWrapper.RequestDrawState(DrawOptions.Empty);
     }
 

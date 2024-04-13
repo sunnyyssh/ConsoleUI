@@ -5,7 +5,7 @@ using Sunnyyssh.ConsoleUI.Binding;
 
 namespace Sunnyyssh.ConsoleUI;
 
-public class CharEnteredEventArgs : EventArgs
+public sealed class CharEnteredEventArgs : EventArgs
 {
     public char Char { get; }
     
@@ -20,7 +20,7 @@ public class CharEnteredEventArgs : EventArgs
 
 public delegate void CharEnteredEventHandler(TextBox sender, CharEnteredEventArgs args);
 
-public class TextEnteredEventArgs : EventArgs
+public sealed class TextEnteredEventArgs : EventArgs
 {
     public string Text { get; }
 

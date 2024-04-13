@@ -22,7 +22,7 @@ public sealed class InvertibleBindable<TData, TArgs>
         SecondSide = second;
     }
     
-    private class UnsafeBindable : IBindable<TData, TArgs>
+    private sealed class UnsafeBindable : IBindable<TData, TArgs>
     {
         private readonly BoundDataChanger<TData, TArgs> _changer;
         

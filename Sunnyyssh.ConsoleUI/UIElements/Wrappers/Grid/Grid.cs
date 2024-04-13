@@ -3,6 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// <see cref="Wrapper"/> that can place <see cref="UIElement"/> in the specific grid cells.
+/// </summary>
 public sealed class Grid : CompositionWrapper
 {
     public LineComposition? Border { get; }

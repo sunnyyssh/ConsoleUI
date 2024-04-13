@@ -8,10 +8,6 @@ namespace Sunnyyssh.ConsoleUI;
 // This type is not thread-safe. But it's used only in thread-safe context.
 internal class DrawerPal
 {
-    /// <summary>
-    /// Stores the previous (latest) state that is drawn in console.
-    /// </summary>
-    protected PartLine[] PreviousState = Array.Empty<PartLine>();
     
     // Indicates if it's expected to throw an exception on trying to draw outside the buffer.
     private readonly bool _borderConflictsAllowed;
@@ -21,10 +17,18 @@ internal class DrawerPal
 
     // The default foreground color
     protected readonly Color DefaultForeground;
+    
+    /// <summary>
+    /// Stores the previous (latest) state that is drawn in console.
+    /// </summary>
+    protected PartLine[] PreviousState = Array.Empty<PartLine>();
 
     private ConsoleColor? _lastBackground;
+    
     private ConsoleColor? _lastForeground;
+    
     private int? _currentCursorLeft;
+    
     private int? _currentCursorTop;
     
     public int BufferWidth => Console.WindowWidth;

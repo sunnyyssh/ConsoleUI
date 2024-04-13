@@ -2,6 +2,9 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
+/// <summary>
+/// Presents <see cref="UIElement"/> that can be one of other <see cref="UIElement"/>'s. It means you can switch states.
+/// </summary>
 public sealed class UIElementSwitcher : Wrapper, IFocusable
 {
     public IReadOnlyList<Canvas> PresentationStates { get; }

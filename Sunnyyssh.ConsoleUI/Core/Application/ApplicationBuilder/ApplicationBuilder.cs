@@ -102,10 +102,12 @@ public sealed class ApplicationBuilder
     /// <param name="elementBuilder">The builder of child to add.</param>
     /// <param name="left">Left absolute position (counted in characters).</param>
     /// <param name="top">Top absolute position (counted in characters).</param>
+    /// <param name="builtUIElement"><see cref="UIElement"/> instance will be built when application is built
+    /// and you can get it using this object.</param>
     /// <returns>Same instance of <see cref="ApplicationBuilder"/> to chain invocations.</returns>
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, int left, int top, out BuiltUIElement builtUIElement) // TODO docs
         => Add(elementBuilder, new Position(left, top), out builtUIElement);
-    
+
     /// <summary>
     /// <inheritdoc cref="Add(Sunnyyssh.ConsoleUI.IUIElementBuilder,Position)"/>
     /// </summary>
@@ -113,10 +115,12 @@ public sealed class ApplicationBuilder
     /// <param name="left">Left absolute position (counted in characters).</param>
     /// <param name="topRelation">Top relational position. Counts from height of placement area.
     /// (Can be more than 0 and less than or equal to 1).</param>
+    /// <param name="builtUIElement"><see cref="UIElement"/> instance will be built when application is built
+    /// and you can get it using this object.</param>
     /// <returns>Same instance of <see cref="ApplicationBuilder"/> to chain invocations.</returns>
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, int left, double topRelation, out BuiltUIElement builtUIElement)
         => Add(elementBuilder, new Position(left, topRelation), out builtUIElement);
-    
+
     /// <summary>
     /// <inheritdoc cref="Add(Sunnyyssh.ConsoleUI.IUIElementBuilder,Position)"/>
     /// </summary>
@@ -124,10 +128,12 @@ public sealed class ApplicationBuilder
     /// <param name="leftRelation">Left relational position. Counts from width of placement area.
     /// (Can be more than 0 and less than or equal to 1).</param>
     /// <param name="top">Top absolute position (counted in characters).</param>
+    /// <param name="builtUIElement"><see cref="UIElement"/> instance will be built when application is built
+    /// and you can get it using this object.</param>
     /// <returns>Same instance of <see cref="ApplicationBuilder"/> to chain invocations.</returns>
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, int top, out BuiltUIElement builtUIElement)
         => Add(elementBuilder, new Position(leftRelation, top), out builtUIElement);
-    
+
     /// <summary>
     /// <inheritdoc cref="Add(Sunnyyssh.ConsoleUI.IUIElementBuilder,Position)"/>
     /// </summary>
@@ -136,6 +142,8 @@ public sealed class ApplicationBuilder
     /// (Can be more than 0 and less than or equal to 1).</param>
     /// <param name="topRelation">Top relational position. Counts from height of placement area.
     /// (Can be more than 0 and less than or equal to 1).</param>
+    /// <param name="builtUIElement"><see cref="UIElement"/> instance will be built when application is built
+    /// and you can get it using this object.</param>
     /// <returns>Same instance of <see cref="ApplicationBuilder"/> to chain invocations.</returns>
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, double leftRelation, double topRelation, out BuiltUIElement builtUIElement)
         => Add(elementBuilder, new Position(leftRelation, topRelation), out builtUIElement);
@@ -146,6 +154,8 @@ public sealed class ApplicationBuilder
     /// </summary>
     /// <param name="elementBuilder">The builder of child to add.</param>
     /// <param name="position">The position to place at.</param>
+    /// <param name="builtUIElement"><see cref="UIElement"/> instance will be built when application is built
+    /// and you can get it using this object.</param>
     /// <returns>Same instance of <see cref="ApplicationBuilder"/> to chain invocations.</returns>
     public ApplicationBuilder Add(IUIElementBuilder elementBuilder, Position position, out BuiltUIElement builtUIElement)
     {

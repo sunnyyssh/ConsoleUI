@@ -18,6 +18,20 @@ namespace Sunnyyssh.ConsoleUI;
 /// </example>
 public abstract class Application
 {
+    // Indicates if this instance was started in past.
+    private bool _hasStartedOnce = false;
+
+    // Helps wait for running application.
+    private readonly ManualResetEvent _waitForStopEvent = new (true);
+
+    private protected readonly ApplicationSettings Settings;
+
+    private protected readonly FocusFlowManager HeadFocusFlowManager;
+
+    private protected readonly Drawer Drawer;
+
+    private protected readonly KeyListener KeyListener;
+
     /// <summary>
     /// Indicates if any <see cref="Application"/> instance is running at this moment.
     /// </summary>
@@ -27,20 +41,6 @@ public abstract class Application
     /// Collection of <see cref="ChildInfo"/> instances holding <see cref="UIElement"/> children.
     /// </summary>
     public IReadOnlyList<ChildInfo> Children { get; }
-    
-    private protected readonly ApplicationSettings Settings;
-
-    private protected readonly FocusFlowManager HeadFocusFlowManager;
-
-    // Indicates if this instance was started in past.
-    private bool _hasStartedOnce = false;
-
-    // Helps wait for running application.
-    private readonly ManualResetEvent _waitForStopEvent = new (true);
-    
-    private protected readonly Drawer Drawer;
-
-    private protected readonly KeyListener KeyListener;
 
     /// <summary>
     /// The width of area where it can draw.

@@ -1,6 +1,6 @@
 ﻿namespace Sunnyyssh.ConsoleUI;
 
-public interface IDataTable<TData>
+public interface IDataTable<out TData>
 {
     TData this[int column, int row] { get; }
     

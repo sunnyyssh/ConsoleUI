@@ -2,9 +2,9 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-public record AbsoluteGridRow(int Height);
+public sealed record AbsoluteGridRow(int Height);
 
-public record AbsoluteGridColumn(int Width);
+public sealed record AbsoluteGridColumn(int Width);
 
 public sealed class AbsoluteGridDefinition
 {

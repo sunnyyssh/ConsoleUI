@@ -174,7 +174,7 @@ public sealed class ChildInfo
     /// <param name="top">Top absolute position (counted in characters).</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public ChildInfo(UIElement child, int left, int top)
+    internal ChildInfo(UIElement child, int left, int top)
     {
         ArgumentNullException.ThrowIfNull(child, nameof(child));
 

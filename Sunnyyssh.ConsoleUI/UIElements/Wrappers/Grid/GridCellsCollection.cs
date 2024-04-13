@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sunnyyssh.ConsoleUI;
 
-public record GridCell(ChildInfo ChildInfo, int Row, int Column);
+public sealed record GridCell(ChildInfo ChildInfo, int Row, int Column);
 
 public sealed class GridCellsCollection : IReadOnlyList<GridCell>
 {

@@ -2,7 +2,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-internal class TimeCounter : IDisposable
+internal sealed class TimeCounter : IDisposable
 {
     private readonly int _maxMilliseconds;
 
