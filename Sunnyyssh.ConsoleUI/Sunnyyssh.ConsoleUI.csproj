@@ -5,6 +5,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Title>ConsoleUI</Title>
+        <Description>UI in console.</Description>
+        <PackageProjectUrl>https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI</PackageProjectUrl>
+        <PackageReadmeFile>.\Sunnyyssh.ConsoleUI\Scheme\NuGetREADME.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI</RepositoryUrl>
+        <PackageTags>ui;console;consoleui;sunnyyssh</PackageTags>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -14,5 +22,16 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+      <None Include="..\README.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
 
 </Project>
