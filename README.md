@@ -27,7 +27,8 @@
 </a>
 
 <h2>Download</h2>
-You can download package using NuGet: [this NuGet package link](https://www.nuget.org/packages/Sunnyyssh.ConsoleUI/)
+You can download package using NuGet:
+<br/> <a href="https://www.nuget.org/packages/Sunnyyssh.ConsoleUI/">Tap link to the package.</a>
 
 <h2>About</h2>
 
