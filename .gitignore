@@ -2,3 +2,5 @@
 global.json
 Sunnyssh.ConsoleUI.sln
 Sunnyyssh.ConsoleUI.sln.DotSettings.user
+\Sunnyyssh.ConsoleUI\bin\
+\Sunnyyssh.ConsoleUI\obj\
