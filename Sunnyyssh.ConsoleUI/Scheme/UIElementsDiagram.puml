@@ -5,6 +5,7 @@ interface IElementContainer
 interface IFocusable
 interface IFocusManagerHolder
 abstract Wrapper
+abstract CompositionWrapper
 class Button
 class Canvas
 class Grid
@@ -24,10 +25,11 @@ IFocusable <|- IFocusManagerHolder
 UIElement <|.. Wrapper 
 IFocusManagerHolder <|. Wrapper
 IElementContainer <|. Wrapper
+Wrapper <|. CompositionWrapper
 
-Wrapper <|.. Canvas
-Wrapper <|.. Grid
-Wrapper <|.. StackPanel
+CompositionWrapper <|.. Canvas
+CompositionWrapper <|.. Grid
+CompositionWrapper <|.. StackPanel
 
 UIElement <|.. Button
 IFocusable <|.. Button
