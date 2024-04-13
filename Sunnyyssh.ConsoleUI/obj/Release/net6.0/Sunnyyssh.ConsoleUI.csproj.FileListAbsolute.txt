@@ -1,0 +1,11 @@
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\bin\Release\net6.0\Sunnyyssh.ConsoleUI.deps.json
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\bin\Release\net6.0\Sunnyyssh.ConsoleUI.dll
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\bin\Release\net6.0\Sunnyyssh.ConsoleUI.pdb
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\Sunnyyssh.ConsoleUI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\Sunnyyssh.ConsoleUI.AssemblyInfoInputs.cache
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\Sunnyyssh.ConsoleUI.AssemblyInfo.cs
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\Sunnyyssh.ConsoleUI.csproj.CoreCompileInputs.cache
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\Sunnyyssh.ConsoleUI.dll
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\refint\Sunnyyssh.ConsoleUI.dll
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\Sunnyyssh.ConsoleUI.pdb
+C:\Users\1234\RiderProjects\Projects\Sunnyyssh.ConsoleUI\Sunnyyssh.ConsoleUI\obj\Release\net6.0\ref\Sunnyyssh.ConsoleUI.dll
