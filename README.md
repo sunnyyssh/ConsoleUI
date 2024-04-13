@@ -26,6 +26,9 @@
     <u><b>Write me</b></u>
 </a>
 
+<h2>Download</h2>
+You can download package using NuGet: [this NuGet package link](https://www.nuget.org/packages/Sunnyyssh.ConsoleUI/)
+
 <h2>About</h2>
 
 This library is released to give an opportunity to create UI in console using C# in .NET
