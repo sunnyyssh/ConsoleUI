@@ -13,5 +13,5 @@
 This library is created to give an opportunity to create UI in console using C# in .NET
 
 <h2>Demo</h2>
-[ToDoApp](https://github.com/sunnyyssh/ToDoApp) - Simple to-do application in console.
+<a href="https://github.com/sunnyyssh/ToDoApp"><u>ToDoApp</u></a> - Simple to-do application in console.
 

@@ -1,6 +1,7 @@
 ﻿@startuml
 
 abstract UIElement
+interface IElementContainer
 interface IFocusable
 interface IFocusManagerHolder
 abstract Wrapper
@@ -10,22 +11,19 @@ class Grid
 class StackPanel
 class TextBlock
 class TextBox
-class ViewTable
+class Table
 abstract OptionChooser
 abstract Border
 abstract WrapperBasedChooser
 class RowChooser
-class RowTextChooser
 abstract OptionElement
 abstract StateOptionElement
-class TextOptionElement
-class Line
-class UIElementSwitcher
 
 IFocusable <|- IFocusManagerHolder
 
 UIElement <|.. Wrapper 
 IFocusManagerHolder <|. Wrapper
+IElementContainer <|. Wrapper
 
 Wrapper <|.. Canvas
 Wrapper <|.. Grid
@@ -38,8 +36,8 @@ UIElement <|.. TextBlock
 UIElement <|.. TextBox
 IFocusable <|... TextBox
 
-UIElement <|... ViewTable
-IFocusable <|... ViewTable
+UIElement <|... Table
+IFocusable <|... Table
 
 UIElement <|... OptionChooser
 IFocusable <|... OptionChooser
@@ -50,16 +48,6 @@ UIElement <|.... OptionChooser
 OptionChooser <|. WrapperBasedChooser
 UIElement <|..... OptionElement
 OptionChooser *- OptionElement
-OptionElement <|.. StateOptionElement 
-StateOptionElement <|.. TextOptionElement
-
 WrapperBasedChooser *- Wrapper
-WrapperBasedChooser <|.. RowChooser 
-RowChooser <|.. RowTextChooser
-
-UIElement <|.. Line
-UIElement <|.. Rectangle
-
-UIElement <|.. UIElementSwitcher
 
 @enduml
