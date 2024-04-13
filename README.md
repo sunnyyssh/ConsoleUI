@@ -54,6 +54,7 @@ The application is built once with fixed size, UIElement children, focus specifi
 <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Wrapper.doc.md"><u>Wrapper </u></a> represents element containing other elements.
 
 <h4>Implemented elements:</h4>
+<br/>
 - <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Button.doc.md"><u>Button </u></a>
 <br/> Represents element able to handle presses.
 

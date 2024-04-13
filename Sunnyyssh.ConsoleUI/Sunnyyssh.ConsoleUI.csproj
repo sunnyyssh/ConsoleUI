@@ -9,10 +9,11 @@
         <Title>ConsoleUI</Title>
         <Description>UI in console.</Description>
         <PackageProjectUrl>https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI</PackageProjectUrl>
-        <PackageReadmeFile>.\Sunnyyssh.ConsoleUI\Scheme\NuGetREADME.md</PackageReadmeFile>
+        <PackageReadmeFile>Scheme\NuGetREADME.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI</RepositoryUrl>
         <PackageTags>ui;console;consoleui;sunnyyssh</PackageTags>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -29,6 +30,13 @@
         <PackagePath>\</PackagePath>
       </None>
       <None Include="..\README.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Scheme\NuGetREADME.md">
         <Pack>True</Pack>
         <PackagePath>\</PackagePath>
       </None>
