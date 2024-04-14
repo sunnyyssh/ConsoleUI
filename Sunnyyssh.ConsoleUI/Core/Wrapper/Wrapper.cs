@@ -16,7 +16,7 @@ public abstract class Wrapper : UIElement, IFocusManagerHolder
     /// <summary>
     /// Whether it waits for focus.
     /// </summary>
-    public virtual bool IsWaitingFocus { get; set; }
+    public virtual bool IsWaitingFocus { get; set; } = true;
     
     bool IFocusable.IsWaitingFocus => IsWaitingFocus && _focusFlowManager.HasWaitingFocusable;
 

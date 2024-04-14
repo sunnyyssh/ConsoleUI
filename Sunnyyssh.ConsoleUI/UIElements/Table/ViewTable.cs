@@ -121,7 +121,7 @@ public class ViewTable : UIElement, IFocusable
         
           if (UserEditable)
           {
-               throw new InvalidOperationException($"Can't observe {nameof(tableObservable)} when {UserEditable}=true." +
+               throw new InvalidOperationException($"Can't observe {nameof(tableObservable)} when {nameof(UserEditable)}=true." +
                                                    $"Try {nameof(Bind)} or set {nameof(UserEditable)}=false.");
           }
         
