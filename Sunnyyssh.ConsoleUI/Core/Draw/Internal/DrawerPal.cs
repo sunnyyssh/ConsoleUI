@@ -254,7 +254,7 @@ internal class DrawerPal
                 throw new DrawingException("Buffer height is less than it's needed. ");
             }
 
-            if (line.Left + line.Length >= BufferWidth)
+            if (line.Left + line.Length > BufferWidth)
             {
                 throw new DrawingException("Buffer width is less than it's needed. ");
             }
