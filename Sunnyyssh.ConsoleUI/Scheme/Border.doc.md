@@ -9,7 +9,7 @@ You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.
 1. `CharSetBorder` class in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Borders/CharSetBorder.cs">CharSetBorder.cs</a>
 
 <h2>Building</h2>
-To build `Border` you should use `BorderBuilder`. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Borders/BorderBuilder.cs">BorderBuilderBorder.cs</a>)
+To build `Border` you should use `BorderBuilder`. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Borders/BorderBuilder.cs">BorderBuilder.cs</a>)
 
 Here is an example:
 ```csharp
