@@ -42,11 +42,13 @@ public sealed class RowTextChooserBuilder : IUIElementBuilder<RowTextChooser>
     public TextOptionColorSet ColorSet { get; init; } = 
         new TextOptionColorSet(Color.Default, Color.Default);
 
-    public void Add(string option)
+    public RowTextChooserBuilder Add(string option)
     {
         ArgumentNullException.ThrowIfNull(option, nameof(option));
 
         _options.Add(option);
+
+        return this;
     }
 
     public RowTextChooser Build(UIElementBuildArgs args)
