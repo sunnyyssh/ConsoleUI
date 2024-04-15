@@ -69,7 +69,7 @@ public sealed class UIElementSwitcherBuilder : IUIElementBuilder<UIElementSwitch
 
     private FocusFlowSpecification InitializeFocusSpecification(ImmutableList<Canvas> canvasStates)
     {
-        var specBuilder = new FocusFlowSpecificationBuilder(true);
+        var specBuilder = new FocusFlowSpecificationBuilder(OverridesFlow);
 
         foreach (var canvasState in canvasStates)
         {
