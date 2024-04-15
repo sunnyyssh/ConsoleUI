@@ -286,7 +286,13 @@ internal sealed class FocusFlowManager
         if (IsFocused)
             throw new FocusFlowException("It's already focused.");
         IsFocused = true;
-        _focusableChain.MoveNextWaitingFocus();
+        
+        // Trying to give focus to waiting.
+        if (_focusableChain.FocusedItem is null)
+        {
+            _focusableChain.MoveNextWaitingFocus();
+        }
+        
         _focusableChain.SetFocusToCurrent();
         if (_focusableChain.FocusedItem is {} focused)
         {
