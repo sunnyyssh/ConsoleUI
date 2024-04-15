@@ -38,7 +38,11 @@ This library is released to give an opportunity to create UI in console using C#
 <h2>Demo</h2>
 
 <a href="https://github.com/sunnyyssh/ToDoApp"><u>ToDoApp</u></a> - Simple to-do application in console.
-
+<br/>
+<div>
+    <img height="60%" src="https://github.com/sunnyyssh/ToDoApp/raw/master/docs/light-theme-demo.gif" width="60%" alt="light-demo"/>
+    <img height="60%" src="https://github.com/sunnyyssh/ToDoApp/raw/master/docs/dark-theme-demo.gif" width="60%" alt="dark-demo"/>
+</div>
 
 <h2>How to code your app</h2>
 <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Use.doc.md"><u>Detail guid here.</u></a>
