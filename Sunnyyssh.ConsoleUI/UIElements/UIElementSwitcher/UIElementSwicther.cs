@@ -66,6 +66,9 @@ public sealed class UIElementSwitcher : Wrapper, IFocusable
 
     private void RedrawCanvasState(UIElement sender, RedrawElementEventArgs args)
     {
+        if (PresentationStates[CurrentStateIndex] != sender)
+            return;
+        
         Redraw(sender.CurrentState!);
     }
 
