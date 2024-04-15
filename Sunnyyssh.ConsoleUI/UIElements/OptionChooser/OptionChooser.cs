@@ -109,6 +109,7 @@ public abstract class OptionChooser : UIElement, IFocusable
             return;
         }
         
+        _chosenOffEventHandler.Invoke(this, new OptionChosenOffEventArgs(CurrentIndex, Current));
         Current.ChosenOff();
         loseFocus = false;
     }
@@ -135,6 +136,7 @@ public abstract class OptionChooser : UIElement, IFocusable
             }
         }
 
+        _chosenOnEventHandler.Invoke(this, new OptionChosenOnEventArgs(CurrentIndex, Current));
         Current.ChosenOn();
         
         loseFocus = CanChooseOnlyOne;
