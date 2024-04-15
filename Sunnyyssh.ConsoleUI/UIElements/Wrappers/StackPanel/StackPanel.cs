@@ -5,7 +5,7 @@ namespace Sunnyyssh.ConsoleUI;
 /// <summary>
 /// <see cref="Wrapper"/> that can place <see cref="UIElement"/>'s in a row (like a stack).
 /// </summary>
-public class StackPanel : CompositionWrapper
+public sealed class StackPanel : CompositionWrapper
 {
     public Orientation Orientation { get; }
 
