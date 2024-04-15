@@ -15,7 +15,7 @@ To build TextBox you should use TextBoxBuilder. (Its source code is in <a href="
 public sealed class TextBoxBuilder : IUIElementBuilder<TextBox>
 ```
 
-Here is an example:
+Here is the first example:
 
 ```csharp
 using Sunnyyssh.ConsoleUI;
@@ -65,5 +65,44 @@ app.Wait();
 
 It runs to this:
 <br/>
-<img src="TextBox.demo.gif">
+<img src="TextBox.demo1.gif" width="60%">
 
+Here is the second example with using binding:
+
+```csharp
+using Sunnyyssh.ConsoleUI;
+using Sunnyyssh.ConsoleUI.Binding;
+
+var appBuilder = new ApplicationBuilder(
+    new ApplicationSettings() { DefaultForeground = Color.Gray }); // app builder init.
+
+var textBox1Builder = new TextBoxBuilder(0.5, 1.0);
+var textBox2Builder = new TextBoxBuilder(0.5, 1.0);
+
+var stackBuilder = new StackPanelBuilder(0.7, 0.7, Orientation.Horizontal)
+    .Add(textBox1Builder, out var builtTextBox1)
+    .Add(textBox2Builder, out var builtTextBox2);
+    
+var app = appBuilder
+    .Add(stackBuilder, Position.LeftTop)
+    .Build();
+    
+var textBox1 = builtTextBox1.Element!; // It won't be null because application is built.
+var textBox2 = builtTextBox2.Element!;
+
+// It just assigns newValue to the changing.
+void TextChanger(ValueChangedEventArgs<string?> eventArgs, ref string? changing) 
+    => changing = eventArgs.NewValue;
+// Two-side bindable object.
+var bindableText = new InvertibleBindable<string?, ValueChangedEventArgs<string?>>(null, TextChanger);
+
+textBox1.Bind(bindableText.FirstSide);
+textBox2.Bind(bindableText.SecondSide);
+
+app.Run();
+app.Wait();
+```
+
+It runs to this:
+<br/>
+<img src="TextBox.demo2.gif" width="60%">

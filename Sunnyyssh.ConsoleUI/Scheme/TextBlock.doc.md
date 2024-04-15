@@ -48,3 +48,39 @@ It runs to this:
 <br/>
 <img src="TextBlock.demo.gif">
 
+Also you can do the same by using binding:
+
+```csharp
+using Sunnyyssh.ConsoleUI;
+using Sunnyyssh.ConsoleUI.Binding;
+
+var appBuilder = new ApplicationBuilder(
+    new ApplicationSettings() { DefaultForeground = Color.Gray }); // app builder init.
+
+var textBlockBuilder = new TextBlockBuilder(30, 10)
+{
+    Background = Color.Transparent, // It will have a background of ubnderlying.
+    Foreground = Color.Default, // It will have a default foreground color (sepcified by ApplicationSettings).
+    WordWrap = true, // Words should be wrapped.
+    TextHorizontalAligning = HorizontalAligning.Center,
+    TextVerticalAligning = VerticalAligning.Center
+};
+
+var app = appBuilder
+    .Add(textBlockBuilder, Position.LeftTop, out var builtTextBlock) // Add textBlockBuilder at left top position.
+    .Build(); // Application builds.
+
+builtTextBlock.WaitInitialization(); // Waits till it's initialized. (Actually, it won't wait because it's built with application).
+var textBlock = builtTextBlock.Element; // Gettings built TextBlock instance.
+
+var observableText = new ObservableObject<string?>(null);
+textBlock.Observe(observableText); // TextBlock will observe content.
+
+// Every second observable value will be updated to the current time.
+using var timer = new Timer(_ => observableText.Value = $"{DateTime.Now:T}", null, 0, 1000);
+
+app.Run();
+// It's waiting because timer will be disposed otherwise. (Just delete to check).
+app.Wait();
+```
+
