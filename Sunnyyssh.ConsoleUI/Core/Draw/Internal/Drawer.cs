@@ -75,7 +75,7 @@ internal class Drawer
         
         if (!IsRunning && !_options.RequestsNotRunningAllowed)
         {
-            throw new DrawingException("Drawer is not running."); // BUG: when program exits something goes wrong.
+            throw new DrawingException("Drawer is not running."); 
         }
         ArgumentNullException.ThrowIfNull(drawState, nameof(drawState));
         

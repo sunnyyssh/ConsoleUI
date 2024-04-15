@@ -41,7 +41,7 @@ internal class DefaultApplication : Application
         if (childInfo is null)
             return;
         
-        var resultDrawState = childInfo.TransformState(); // TODO it's bad.
+        var resultDrawState = childInfo.TransformState();
         
         Drawer.EnqueueRequest(resultDrawState); 
     }

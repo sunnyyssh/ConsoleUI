@@ -105,7 +105,7 @@ public sealed class ApplicationBuilder
     /// <param name="builtUIElement"><see cref="UIElement"/> instance will be built when application is built
     /// and you can get it using this object.</param>
     /// <returns>Same instance of <see cref="ApplicationBuilder"/> to chain invocations.</returns>
-    public ApplicationBuilder Add(IUIElementBuilder elementBuilder, int left, int top, out BuiltUIElement builtUIElement) // TODO docs
+    public ApplicationBuilder Add(IUIElementBuilder elementBuilder, int left, int top, out BuiltUIElement builtUIElement)
         => Add(elementBuilder, new Position(left, top), out builtUIElement);
 
     /// <summary>
