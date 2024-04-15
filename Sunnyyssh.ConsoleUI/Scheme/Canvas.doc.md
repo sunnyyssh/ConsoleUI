@@ -6,8 +6,9 @@ public sealed class Canvas : CompositionWrapper
 You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Wrappers/Canvas/Canvas.cs">Canvas.cs</a>
 
 <h2>Building</h2>
-To build `Canvas` you should use `CanvasBuilder`. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Wrappers/Canvas/CanvasBuilder.cs">CanvasBuilder.cs</a>)
+To build Canvas you should use CanvasBuilder . (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Wrappers/Canvas/CanvasBuilder.cs">CanvasBuilder.cs</a>)
 <br/>
+
 ```csharp
 public sealed class CanvasBuilder : IUIElementBuilder<Canvas>
 ```
