@@ -288,7 +288,7 @@ internal sealed class FocusFlowManager
         IsFocused = true;
         
         // Trying to give focus to waiting.
-        if (_focusableChain.FocusedItem is null)
+        if (_focusableChain.Current?.IsWaitingFocus ?? false)
         {
             _focusableChain.MoveNextWaitingFocus();
         }
