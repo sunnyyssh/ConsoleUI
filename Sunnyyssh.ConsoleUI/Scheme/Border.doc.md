@@ -13,6 +13,8 @@ To build `Border` you should use `BorderBuilder`. (Its source code is in <a href
 
 Here is an example:
 ```csharp
+using Sunnyyssh.ConsoleUI;
+
 var appBuilder = new ApplicationBuilder(new ApplicationSettings()); // App builder init.
 
 // Border will cover the whole window because of Size.FullSize
