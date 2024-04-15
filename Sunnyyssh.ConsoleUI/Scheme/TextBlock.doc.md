@@ -31,7 +31,7 @@ var textBlockBuilder = new TextBlockBuilder(30, 10)
 };
 
 var app = appBuilder
-    .Add(textBlockBuilder, Position.LeftTop, out var builtTextBlock) // Add stackPanelBuilder at left top position.
+    .Add(textBlockBuilder, Position.LeftTop, out var builtTextBlock) // Add textBlockBuilder at left top position.
     .Build(); // Application builds.
 
 builtTextBlock.WaitInitialization(); // Waits till it's initialized. (Actually, it won't wait because it's built with application).
