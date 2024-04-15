@@ -46,8 +46,15 @@ public sealed class UIElementSwitcher : Wrapper, IFocusable
         {
             OnDraw();
         }
+
+        var gotState = PresentationStates[CurrentStateIndex].RequestDrawState(new DrawOptions());
         
-        return PresentationStates[CurrentStateIndex].RequestDrawState(new DrawOptions());
+        // gotState could be not filled but it need to hide previous one.
+        var stateBuilder = new DrawStateBuilder(Width, Height)
+            .Fill(Color.Transparent)
+            .Place(0, 0, gotState);
+        
+        return stateBuilder.ToDrawState();
     }
 
     private static ImmutableList<ChildInfo> ToLeftTopChildren(IReadOnlyList<UIElement> elements)
