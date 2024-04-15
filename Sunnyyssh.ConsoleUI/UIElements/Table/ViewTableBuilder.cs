@@ -2,7 +2,7 @@
 
 namespace Sunnyyssh.ConsoleUI;
 
-public class ViewTableBuilder : IUIElementBuilder<ViewTable>
+public sealed class ViewTableBuilder : IUIElementBuilder<ViewTable>
 {
     private static readonly ImmutableList<ConsoleKey> DefaultMoveUpKeys 
         = new[] { ConsoleKey.UpArrow }.ToImmutableList();

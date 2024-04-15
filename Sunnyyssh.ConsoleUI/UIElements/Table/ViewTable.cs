@@ -8,7 +8,7 @@ using Sunnyyssh.ConsoleUI.Binding;
 
 namespace Sunnyyssh.ConsoleUI;
 
-public class ViewTable : UIElement, IFocusable
+public sealed class ViewTable : UIElement, IFocusable
 {
      private static readonly VerticalAligning CellTextVerticalAligning = VerticalAligning.Top;
 
