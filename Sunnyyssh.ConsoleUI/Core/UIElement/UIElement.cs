@@ -22,7 +22,7 @@ public abstract class UIElement
     /// </summary>
     [MemberNotNullWhen(true, nameof(CurrentState))]
     public bool IsDrawn { get; private set; }
-    
+
     public bool IsStateInitialized { get; private set; }
     
     /// <summary>
