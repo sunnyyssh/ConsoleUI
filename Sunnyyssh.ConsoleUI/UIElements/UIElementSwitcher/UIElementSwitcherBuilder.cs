@@ -7,6 +7,8 @@ public sealed class UIElementSwitcherBuilder : IUIElementBuilder<UIElementSwitch
     public Size Size { get; }
 
     public OverlappingPriority OverlappingPriority { get; init; } = OverlappingPriority.Medium;
+
+    public bool OverridesFlow { get; init; } = false;
     
     private readonly List<QueuedChild> _queuedChildren = new();
 
@@ -91,7 +93,7 @@ public sealed class UIElementSwitcherBuilder : IUIElementBuilder<UIElementSwitch
         var canvasBuilder = new CanvasBuilder(width, height)
         {
             FocusChangeKeys = ImmutableList<ConsoleKey>.Empty,
-            OverridesFocusFlow = true,
+            OverridesFocusFlow = OverridesFlow,
             EnableOverlapping = false,
             FocusFlowLoop = false
         };
