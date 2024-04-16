@@ -60,6 +60,8 @@ The application is built once with fixed size, UIElement children, focus specifi
 <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/IFocusable.doc.md"><u>IFocusable </u></a> represents element able to handle pressed keys.
 <br/>
 <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Wrapper.doc.md"><u>Wrapper </u></a> represents element containing other elements.
+<br/>
+And you can awlays implement your **custom UIElement** [Guid here.](https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/CustomUIElement.doc.md)
 
 <h4>Implemented elements:</h4>
 
