@@ -74,8 +74,7 @@ Under focus flow I mean the assignment of ability to handle keys to the IFocusab
 <br/> It can be resolved only by specifying different keys to conflicting instances. 
 <br/>(Almost every IFocusable's builder has needed properties and I suggest you implement builders with ability to specify keys).
 2. Key handling proceeds in the same thread as KeyListener listens keys. It's like that because of KeyListener implementation.
-<br/>
-Period between key presses may be down to 5-10ms (It's only approximately). 
+<br/>Period between key presses may be down to 5-10ms (It's only approximately). 
 <br/> It's enough for time-cheap operations. But if key is handled in KeyListener thread longer than period between key presses then the next key be handled much later then its pressed. 
 (Also after key which is pressed later the next pressed one may be and it will be handled even later).
 <br/> That's why key handling must be safe and every IFocusable must guarantee that key will be handled almost immediately.
