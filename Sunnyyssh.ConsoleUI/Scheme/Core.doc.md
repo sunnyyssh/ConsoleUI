@@ -43,12 +43,12 @@ It is handled by KeyListener instance. Its source code is in <a href="https://gi
 <br/>
 It just runs in its own (not background) thread and invokes event when key is pressed. 
 <br/>
-Key press is handled in this thread so if it's time-expensive current handler must handle expensive operations in another thread. (Watch focus flow topic to find out details).
+Key press is handled in this thread so current handler must handle time-expensive operations in another thread. (Watch focus flow topic to find out details).
 
 <h3>Key handling and focus flow.</h3>
 To be honest, it is the most complicated part of the library.
 <br/>
-The focus flow is handled by **FocusFlowManager**. Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Core/FocusFlow/FocusFlowManager/FocusFlowManager.cs">FocusFlowManager.cs</a>
+The focus flow is handled by **FocusFlowManager** . Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Core/FocusFlow/FocusFlowManager/FocusFlowManager.cs">FocusFlowManager.cs</a>
 <br/>
 Under focus flow I mean the assignment of ability to handle keys to the IFocusable children.
 <br/>
