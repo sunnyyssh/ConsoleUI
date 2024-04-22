@@ -1,4 +1,7 @@
-﻿namespace Sunnyyssh.ConsoleUI.Binding;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+namespace Sunnyyssh.ConsoleUI.Binding;
 
 public sealed class ObservableObject<TValue> : IObservable<TValue, ValueChangedEventArgs<TValue>>
 {

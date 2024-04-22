@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+using System.Collections;
 using Sunnyyssh.ConsoleUI.Binding;
 
 namespace Sunnyyssh.ConsoleUI;

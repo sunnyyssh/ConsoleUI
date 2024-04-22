@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+using System.Text;
 
 namespace Sunnyyssh.ConsoleUI;
 

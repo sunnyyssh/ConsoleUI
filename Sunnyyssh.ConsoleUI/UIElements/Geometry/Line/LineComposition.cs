@@ -1,4 +1,7 @@
-﻿namespace Sunnyyssh.ConsoleUI;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+namespace Sunnyyssh.ConsoleUI;
 
 internal record LineChild(int Length, Orientation Orientation, int Left, int Top);
 

@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+using System.Collections.Immutable;
 
 namespace Sunnyyssh.ConsoleUI;
 

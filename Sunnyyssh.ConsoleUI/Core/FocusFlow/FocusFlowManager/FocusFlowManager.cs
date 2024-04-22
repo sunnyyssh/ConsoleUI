@@ -1,4 +1,7 @@
-﻿// ReSharper disable InconsistentlySynchronizedField
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+// ReSharper disable InconsistentlySynchronizedField
 
 using System.Diagnostics.CodeAnalysis;
 

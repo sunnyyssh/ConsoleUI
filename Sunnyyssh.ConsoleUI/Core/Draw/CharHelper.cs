@@ -1,4 +1,7 @@
-﻿using System.Diagnostics.Contracts;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace Sunnyyssh.ConsoleUI;

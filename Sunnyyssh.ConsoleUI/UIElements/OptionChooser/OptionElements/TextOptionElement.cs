@@ -1,4 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+using System.Collections.Concurrent;
 
 namespace Sunnyyssh.ConsoleUI;
 

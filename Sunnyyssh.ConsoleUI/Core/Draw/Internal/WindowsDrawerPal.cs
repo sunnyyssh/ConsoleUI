@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿// Developed by Bulat Bagaviev (@sunnyyssh).
+// This file is licensed to you under the MIT license.
+
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 namespace Sunnyyssh.ConsoleUI;
