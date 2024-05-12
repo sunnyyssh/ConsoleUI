@@ -22,6 +22,8 @@ public sealed class Button : UIElement, IFocusable
 
     private int _showingPressesCount = 0;
     
+    private string? _text;
+    
     #region Colors.
 
     private readonly Color? _pressedBackground;
@@ -108,8 +110,20 @@ public sealed class Button : UIElement, IFocusable
 
     [MemberNotNullWhen(true, nameof(BorderCharSet))]
     public bool HasBorder => BorderCharSet is not null;
-    
-    public string Text { get; }
+
+    [NotNull]
+    public string? Text
+    {
+        get => _text ?? string.Empty;
+        set
+        {
+            _text = value;
+            if (IsStateInitialized)
+            {
+                Redraw(CreateDrawState());
+            }
+        }
+    }
 
     public bool LoseFocusAfterPress { get; init; } = false;
     
@@ -310,7 +324,7 @@ public sealed class Button : UIElement, IFocusable
     {
         ArgumentNullException.ThrowIfNull(ignoredKeys, nameof(ignoredKeys));
 
-        Text = text ?? string.Empty;
+        _text = text ?? string.Empty;
         HandledKeys = handledKeys;
         IgnoredKeys = ignoredKeys;
     }
