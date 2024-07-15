@@ -15,6 +15,7 @@
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <RepositoryType>git</RepositoryType>
         <Version>1.0.13</Version>
+        <RootNamespace>Sunnyyssh.ConsoleUI</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
