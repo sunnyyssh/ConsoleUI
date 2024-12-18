@@ -5,10 +5,10 @@ Element that can be one of other elements and switch them.
 ```csharp
 public sealed class UIElementSwitcher : Wrapper, IFocusable
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/UIElementSwitcher/UIElementSwicther.cs">UIElementSwitcher.cs</a>
+You can find its source code in <a href="../src/UIElements/UIElementSwitcher/UIElementSwicther.cs">UIElementSwitcher.cs</a>
 
 <h2>Building</h2>
-To build UIElementSwitcher you should use UIElementSwitcherBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/UIElementSwitcher/UIElementSwitcherBuilder.cs">UIElementSwitcherBuilder.cs</a>)
+To build UIElementSwitcher you should use UIElementSwitcherBuilder. (Its source code is in <a href="../src/UIElements/UIElementSwitcher/UIElementSwitcherBuilder.cs">UIElementSwitcherBuilder.cs</a>)
 <br/>
 
 ```csharp

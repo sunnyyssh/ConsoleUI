@@ -45,66 +45,66 @@ This library is released to give an opportunity to create UI in console using C#
 </div>
 
 <h2>How to code your app</h2>
-<a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Use.doc.md"><u>Detail guid here.</u></a>
+<a href="docs/Use.doc.md"><u>Detail guid here.</u></a>
 
 <h2>How the core works</h2>
-<a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Core.doc.md"><u>You can read about core in detail here.</u></a>
+<a href="docs/Core.doc.md"><u>You can read about core in detail here.</u></a>
 <br/>
 A brief description: 
 The application is built once with fixed size, UIElement children, focus specification and other parameters and they can't be changed.
 
 
 <h2>UI elements</h2>
-<a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/UIElement.doc.md"><u>UIElement </u></a> class is base for all UI classes.
+<a href="docs/UIElement.doc.md"><u>UIElement </u></a> class is base for all UI classes.
 <br/>
-<a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/IFocusable.doc.md"><u>IFocusable </u></a> represents element able to handle pressed keys.
+<a href="docs/IFocusable.doc.md"><u>IFocusable </u></a> represents element able to handle pressed keys.
 <br/>
-<a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Wrapper.doc.md"><u>Wrapper </u></a> represents element containing other elements.
+<a href="docs/Wrapper.doc.md"><u>Wrapper </u></a> represents element containing other elements.
 <br/>
-And you can awlays implement your **custom UIElement** [Guid here.](https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/CustomUIElement.doc.md)
+And you can awlays implement your **custom UIElement** [Guid here.](docs/CustomUIElement.doc.md)
 
 <h4>Implemented elements:</h4>
 
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Button.doc.md"><u>Button </u></a>
+- <a href="docs/Button.doc.md"><u>Button </u></a>
 <br/> Represents element able to handle presses.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/TextBlock.doc.md"><u>TextBlock </u></a>
+- <a href="docs/TextBlock.doc.md"><u>TextBlock </u></a>
 <br/> Just shows text.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/TextBox.doc.md"><u>TextBox </u></a>
+- <a href="docs/TextBox.doc.md"><u>TextBox </u></a>
 <br/> Shows text and can edit text in UI.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/ViewTable.doc.md"><u>ViewTable </u></a> 
+- <a href="docs/ViewTable.doc.md"><u>ViewTable </u></a> 
 <br/>Table of content.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/OptionChooser.doc.md"><u>RowTextChooser</u>, <u>RowOptionChooser</u>, <u>WrapperBasedChooser</u>, <u>OptionChooser </u></a> 
+- <a href="docs/OptionChooser.doc.md"><u>RowTextChooser</u>, <u>RowOptionChooser</u>, <u>WrapperBasedChooser</u>, <u>OptionChooser </u></a> 
 <br/> Represent chooser of options (like a menu). 
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/StackPanel.doc.md"><u>StackPanel </u></a> 
+- <a href="docs/StackPanel.doc.md"><u>StackPanel </u></a> 
 <br/>Wrapper that places children in a row (like a stack).
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Grid.doc.md"><u>Grid </u></a> 
+- <a href="docs/Grid.doc.md"><u>Grid </u></a> 
 <br/>Wrapper that places children in grid cells.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Canvas.doc.md"><u>Canvas </u></a> 
+- <a href="docs/Canvas.doc.md"><u>Canvas </u></a> 
 <br/>Wrapper that places children at any position.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Line.doc.md"><u>Line</u>, <u>LineComposition </u></a> 
+- <a href="docs/Line.doc.md"><u>Line</u>, <u>LineComposition </u></a> 
 <br/>Vertical and horizontal lines.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/UIElementSwitcher.doc.md"><u>UIElementSwitcher</u></a> 
+- <a href="docs/UIElementSwitcher.doc.md"><u>UIElementSwitcher</u></a> 
 <br/> Presents element that can be one of other elements and switch them.
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Rectangle.doc.md"><u>Rectangle</u></a> 
+- <a href="docs/Rectangle.doc.md"><u>Rectangle</u></a> 
 <br/> The poorest rectangle in the whole world. =(
 
-- <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/Border.doc.md"><u>Border</u></a> 
+- <a href="docs/Border.doc.md"><u>Border</u></a> 
 <br/> Simple border. 
 
 
 UML class diagram of UI elements:
 <br/>
-<img alt="architecture-diagram" src="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Scheme/UIElementsDiagram.png?raw=true"/>
+<img alt="architecture-diagram" src="docs/UIElementsDiagram.png?raw=true"/>
 
 

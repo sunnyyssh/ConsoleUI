@@ -5,7 +5,7 @@
 - If you're going to implement element that should handle pressed keys it should implement [IFocusable](IFocusable.doc.md)
 - You will get better understanding how to do it if you will watch simple implementations in the source code: for example, [Rectangle](Rectangle.doc.md) or [Canvas](Canvas.doc.md)
 - You can watch what role UIElement has in [Core](Core.doc.md).
-- I recommend you to look at [UIElement.cs](https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Core/UIElement/UIElement.cs) source code and its protected or public members that give you some opportunities.
+- I recommend you to look at [UIElement.cs](../src/Core/UIElement/UIElement.cs) source code and its protected or public members that give you some opportunities.
 - With T : UIElement implementation you should also implement IUIElementBuilder<T> to use it. 
 
 I think if you understand everything above you will manage.

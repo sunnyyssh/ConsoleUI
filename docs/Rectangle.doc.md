@@ -5,10 +5,10 @@ It's just rectangle. Nothing more. Just... Rectangle...
 ```csharp
 public sealed class Rectangle : UIElement
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Geometry/Rectangle/Rectangle.cs">Rectangle.cs</a>
+You can find its source code in <a href="../src/UIElements/Geometry/Rectangle/Rectangle.cs">Rectangle.cs</a>
 
 <h2>Building</h2>
-To build Rectangle you should use RectangleBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Geometry/Rectangle/RectangleBuilder.cs">RectangleBuilder.cs</a>)
+To build Rectangle you should use RectangleBuilder. (Its source code is in <a href="../src/UIElements/Geometry/Rectangle/RectangleBuilder.cs">RectangleBuilder.cs</a>)
 <br/>
 
 ```csharp

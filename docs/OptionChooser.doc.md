@@ -4,12 +4,12 @@ It is base class for all choosers.
 ```csharp
 public abstract class OptionChooser : UIElement, IFocusable
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/OptionChooser.cs">OptionChooser.cs</a>
+You can find its source code in <a href="../src/UIElements/OptionChooser/OptionChooser.cs">OptionChooser.cs</a>
 
 <h3>Inheritors</h3>
-1. WrapperBasedChooser class in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/WrapperBasedChooser.cs">WrapperBasedChooser.cs</a>
-2. RowChooser class in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowChooser/RowChooser.cs">RowChooser.cs</a>
-3. RowTextChooser class in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
+1. WrapperBasedChooser class in <a href="../src/UIElements/OptionChooser/WrapperBasedChooser.cs">WrapperBasedChooser.cs</a>
+2. RowChooser class in <a href="../src/UIElements/OptionChooser/RowChooser/RowChooser.cs">RowChooser.cs</a>
+3. RowTextChooser class in <a href="../src/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
 
 <h1>WrapperBasedChooser</h1>
 It is base class for all choosers that are based on wrappers. 
@@ -18,11 +18,11 @@ It is base class for all choosers that are based on wrappers.
 public abstract class WrapperBasedChooser<TWrapper> : OptionChooser
     where TWrapper : Wrapper
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/WrapperBasedChooser.cs">WrapperBasedChooser.cs</a>
+You can find its source code in <a href="../src/UIElements/OptionChooser/WrapperBasedChooser.cs">WrapperBasedChooser.cs</a>
 
 <h3>Inheritors</h3>
-1. RowChooser class in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowChooser/RowChooser.cs">RowChooser.cs</a>
-2. RowTextChooser class in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
+1. RowChooser class in <a href="../src/UIElements/OptionChooser/RowChooser/RowChooser.cs">RowChooser.cs</a>
+2. RowTextChooser class in <a href="../src/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
 
 
 <h1>RowChooser</h1>
@@ -31,13 +31,13 @@ It is chooser which options are placed in a row.
 ```csharp
 public class RowChooser : WrapperBasedChooser<Grid>
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowChooser/RowChooser.cs">RowChooser.cs</a>
+You can find its source code in <a href="../src/UIElements/OptionChooser/RowChooser/RowChooser.cs">RowChooser.cs</a>
 
 <h3>Inheritors</h3>
-1. RowTextChooser class in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
+1. RowTextChooser class in <a href="../src/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
 
 <h2>Building</h2>
-To build RowChooser you should use RowChooserBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowChooser/RowChooserBuilder.cs">RowChooserBuilder.cs</a>)
+To build RowChooser you should use RowChooserBuilder. (Its source code is in <a href="../src/UIElements/OptionChooser/RowChooser/RowChooserBuilder.cs">RowChooserBuilder.cs</a>)
 
 Here is an example:
 
@@ -132,10 +132,10 @@ It is chooser of text options that are placed in a row.
 ```csharp
 public sealed class RowTextChooser : RowChooser
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
+You can find its source code in <a href="../src/UIElements/OptionChooser/RowTextChooser/RowTextChooser.cs">RowTextChooser.cs</a>
 
 <h2>Building</h2>
-To build RowTextChooser you should use RowTextChooserBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/OptionChooser/RowTextChooser/RowTextChooserBuilder.cs">RowTextChooserBuilder.cs</a>)
+To build RowTextChooser you should use RowTextChooserBuilder. (Its source code is in <a href="../src/UIElements/OptionChooser/RowTextChooser/RowTextChooserBuilder.cs">RowTextChooserBuilder.cs</a>)
 
 Here is an example:
 

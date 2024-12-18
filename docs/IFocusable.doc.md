@@ -1,6 +1,6 @@
 <h1>IFocusable</h1>
 
-The source code of IFocusable is in [IFocusable.cs](https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Core/FocusFlow/IFocusable.cs).
+The source code of IFocusable is in [IFocusable.cs](../src/Core/FocusFlow/IFocusable.cs).
 There you can find some explanation what its members do.
 
 If element implements IFocusable then it can handle keys.

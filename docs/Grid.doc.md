@@ -3,10 +3,10 @@
 ```csharp
 public sealed class Grid : CompositionWrapper
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Wrappers/Grid/Grid.cs">Grid.cs</a>
+You can find its source code in <a href="../src/UIElements/Wrappers/Grid/Grid.cs">Grid.cs</a>
 
 <h2>Building</h2>
-To build Grid you should use GridBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Wrappers/Grid/GridBuilder.cs">GridBuilder.cs</a>)
+To build Grid you should use GridBuilder. (Its source code is in <a href="../src/UIElements/Wrappers/Grid/GridBuilder.cs">GridBuilder.cs</a>)
 <br/>
 
 ```csharp

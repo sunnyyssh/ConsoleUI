@@ -3,10 +3,10 @@
 ```csharp
 public sealed class Button : UIElement, IFocusable
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Button/Button.cs">Button.cs</a>
+You can find its source code in <a href="../src/UIElements/Button/Button.cs">Button.cs</a>
 
 <h2>Building</h2>
-To build `Button` you should use `ButtonBuilder`. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Button/ButtonBuilder.cs">ButtonBuilder.cs</a>)
+To build `Button` you should use `ButtonBuilder`. (Its source code is in <a href="../src/UIElements/Button/ButtonBuilder.cs">ButtonBuilder.cs</a>)
 <br/>
 ```csharp
 public sealed class ButtonBuilder : IUIElementBuilder<Button>

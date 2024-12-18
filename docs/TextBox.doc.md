@@ -5,10 +5,10 @@ Element that represents box with text. It's text can be edited in UI.
 ```csharp
 public sealed class TextBox : UIElement, IFocusable
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/TextBox/TextBox.cs">TextBox.cs</a>
+You can find its source code in <a href="../src/UIElements/TextBox/TextBox.cs">TextBox.cs</a>
 
 <h2>Building</h2>
-To build TextBox you should use TextBoxBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/TextBox/TextBoxBuilder.cs">TextBoxBuilder.cs</a>)
+To build TextBox you should use TextBoxBuilder. (Its source code is in <a href="../src/UIElements/TextBox/TextBoxBuilder.cs">TextBoxBuilder.cs</a>)
 <br/>
 
 ```csharp

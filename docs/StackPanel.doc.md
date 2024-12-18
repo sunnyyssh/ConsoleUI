@@ -5,10 +5,10 @@ It's Wrapper that contains its children in a row (like a stack).
 ```csharp
 public class StackPanel : CompositionWrapper
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Wrappers/StackPanel/StackPanel.cs">StackPanel.cs</a>
+You can find its source code in <a href="../src/UIElements/Wrappers/StackPanel/StackPanel.cs">StackPanel.cs</a>
 
 <h2>Building</h2>
-To build StackPanel you should use StackPanelBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Wrappers/StackPanel/StackPanelBuilder.cs">StackPanelBuilder.cs</a>)
+To build StackPanel you should use StackPanelBuilder. (Its source code is in <a href="../src/UIElements/Wrappers/StackPanel/StackPanelBuilder.cs">StackPanelBuilder.cs</a>)
 <br/>
 
 ```csharp

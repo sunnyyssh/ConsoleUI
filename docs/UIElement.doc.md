@@ -1,13 +1,13 @@
 <h1>UIElement</h1>
 
 UIElemnt is base class for all elements in UI which may be drawn. It's the only simple role of this class.
-You can watch at its source code in [UIElement.cs](https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Core/UIElement/UIElement.cs)
+You can watch at its source code in [UIElement.cs](../../src/Core/UIElement/UIElement.cs)
 
 Useful:
 - [Custom UIElement implementation](CustomUIElement.doc.md)
 - [Its role in Core](Core.doc.md)
 
-Every UIElement is created with fixed absolute size so relational sizes must be resolved in [IUIElementBuilder](https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/Core/UIElement/IUIElementBuilder.cs). 
+Every UIElement is created with fixed absolute size so relational sizes must be resolved in [IUIElementBuilder](../../src/Core/UIElement/IUIElementBuilder.cs). 
 That's why every UIElement must have its own builder.
 It causes some problems. For example, if you add builder it's problematically to get built instance directly:
 ```csharp

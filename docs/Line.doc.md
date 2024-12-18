@@ -5,10 +5,10 @@ Represents simple horizontal or vertical line.
 ```csharp
 public sealed class Line : UIElement
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Geometry/Line/Line.cs">Line.cs</a>
+You can find its source code in <a href="../src/UIElements/Geometry/Line/Line.cs">Line.cs</a>
 
 <h2>Building</h2>
-To build Line you should use LineBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Geometry/Line/LineBuilder.cs">LineBuilder.cs</a>)
+To build Line you should use LineBuilder. (Its source code is in <a href="../src/UIElements/Geometry/Line/LineBuilder.cs">LineBuilder.cs</a>)
 <br/>
 
 ```csharp
@@ -54,10 +54,10 @@ Represents the composition of vertical or horizontal lines.
 ```csharp
 public sealed class LineComposition : UIElement
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Geometry/Line/LineComposition.cs">LineComposition.cs</a>
+You can find its source code in <a href="../src/UIElements/Geometry/Line/LineComposition.cs">LineComposition.cs</a>
 
 <h2>Building</h2>
-To build LineComposition you should use LineCompositionBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Geometry/Line/LineCompositionBuilder.cs">LineCompositionBuilder.cs</a>)
+To build LineComposition you should use LineCompositionBuilder. (Its source code is in <a href="../src/UIElements/Geometry/Line/LineCompositionBuilder.cs">LineCompositionBuilder.cs</a>)
 <br/>
 
 ```csharp

@@ -5,10 +5,10 @@ Represents a table of content with headers. Can be edited in UI.
 ```csharp
 public sealed class ViewTable : UIElement, IFocusable
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Table/ViewTable.cs">ViewTable.cs</a>
+You can find its source code in <a href="../src/UIElements/Table/ViewTable.cs">ViewTable.cs</a>
 
 <h2>Building</h2>
-To build ViewTable you should use ViewTableBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/Table/ViewTableBuilder.cs">ViewTableBuilder.cs</a>)
+To build ViewTable you should use ViewTableBuilder. (Its source code is in <a href="../src/UIElements/Table/ViewTableBuilder.cs">ViewTableBuilder.cs</a>)
 <br/>
 
 ```csharp

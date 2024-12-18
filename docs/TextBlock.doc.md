@@ -3,10 +3,10 @@
 ```csharp
 public sealed class TextBlock : UIElement
 ```
-You can find its source code in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/TextBlock/TextBlock.cs">TextBlock.cs</a>
+You can find its source code in <a href="../src/UIElements/TextBlock/TextBlock.cs">TextBlock.cs</a>
 
 <h2>Building</h2>
-To build TextBlock you should use TextBlockBuilder. (Its source code is in <a href="https://github.com/sunnyyssh/Sunnyyssh.ConsoleUI/blob/master/Sunnyyssh.ConsoleUI/UIElements/TextBlock/TextBlockBuilder.cs">TextBlockBuilder.cs</a>)
+To build TextBlock you should use TextBlockBuilder. (Its source code is in <a href="../src/UIElements/TextBlock/TextBlockBuilder.cs">TextBlockBuilder.cs</a>)
 <br/>
 
 ```csharp
